@@ -1,30 +1,69 @@
 import React, { useState } from 'react';
-import { Mail, Copy, Check, Send, Sparkles, MapPin, MessageSquare, Download, CheckCircle2 } from 'lucide-react';
+import { Mail, Copy, Check, MapPin, Download } from 'lucide-react';
+import { TikTokIcon, FacebookIcon, ZaloIcon, InstagramIcon } from './SocialIcons';
 
 interface ContactSectionProps {
   onExportHtml?: () => void;
 }
 
+const SOCIAL_LINKS = [
+  {
+    id: 'tiktok',
+    label: 'TikTok',
+    handle: '@yensam.media',
+    href: 'https://www.tiktok.com/@yensam.media',
+    Icon: TikTokIcon,
+    color: 'from-[#010101] to-[#1a1a2e]',
+    hoverBorder: 'hover:border-[#fe2c55]/50',
+    hoverText: 'hover:text-white',
+    accent: '#fe2c55',
+    description: 'Nội dung sáng tạo & hậu trường sản xuất',
+  },
+  {
+    id: 'facebook',
+    label: 'Facebook',
+    handle: 'Yến Sam - Media',
+    href: 'https://www.facebook.com/yensam.media',
+    Icon: FacebookIcon,
+    color: 'from-[#0a1628] to-[#0d1f3c]',
+    hoverBorder: 'hover:border-[#1877F2]/50',
+    hoverText: 'hover:text-white',
+    accent: '#1877F2',
+    description: 'Cập nhật dự án & sự kiện mới nhất',
+  },
+  {
+    id: 'zalo',
+    label: 'Zalo',
+    handle: 'Nguyễn Thị Cẩm Yến',
+    href: 'https://zalo.me/0000000000',
+    Icon: ZaloIcon,
+    color: 'from-[#001a3a] to-[#00112b]',
+    hoverBorder: 'hover:border-[#0068FF]/50',
+    hoverText: 'hover:text-white',
+    accent: '#0068FF',
+    description: 'Liên hệ nhanh qua Zalo',
+  },
+  {
+    id: 'instagram',
+    label: 'Instagram',
+    handle: '@yensam.creative',
+    href: 'https://www.instagram.com/yensam.creative',
+    Icon: InstagramIcon,
+    color: 'from-[#1a0a2e] to-[#2d0a1f]',
+    hoverBorder: 'hover:border-[#d62976]/50',
+    hoverText: 'hover:text-white',
+    accent: '#fa7e1e',
+    description: 'Visual storytelling & creative portfolio',
+  },
+];
+
 export const ContactSection: React.FC<ContactSectionProps> = ({ onExportHtml }) => {
   const [copied, setCopied] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: 'Media & Event Project Collaboration',
-    message: '',
-  });
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText('camyen.nguyen.271@gmail.com');
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.email || !formData.message) return;
-    setFormSubmitted(true);
   };
 
   return (
@@ -125,117 +164,68 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onExportHtml }) 
           )}
         </div>
 
-        {/* Right Column: Interactive Contact Form (7 cols) */}
+        {/* Right Column: Social Media Links (7 cols) */}
         <div className="lg:col-span-7">
-          <div className="glass-card rounded-2xl p-6 sm:p-8 border border-white/10">
-            {formSubmitted ? (
-              <div className="py-12 flex flex-col items-center text-center space-y-4 animate-in fade-in">
-                <div className="w-16 h-16 rounded-full bg-emerald-950/70 border border-emerald-500/50 flex items-center justify-center text-emerald-400">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="text-2xl font-bold text-white font-display">
-                  Message Prepared!
-                </h3>
-                <p className="text-slate-300 text-sm max-w-md leading-relaxed">
-                  Thank you for reaching out, <strong className="text-white">{formData.name || 'Friend'}</strong>. A direct email draft has been generated for Yến Sam at <code className="text-cyan-300 font-mono text-xs">camyen.nguyen.271@gmail.com</code>.
-                </p>
-                <div className="pt-2 flex gap-3">
-                  <a
-                    href={`mailto:camyen.nguyen.271@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Hi Yến Sam,\n\nFrom: ${formData.name} (${formData.email})\n\n${formData.message}`)}`}
-                    className="px-5 py-2.5 rounded-xl bg-white text-slate-950 font-bold text-xs hover:bg-slate-200 transition-colors"
-                  >
-                    Confirm & Send via Email
-                  </a>
-                  <button
-                    onClick={() => setFormSubmitted(false)}
-                    className="px-4 py-2.5 rounded-xl bg-white/10 text-slate-300 hover:text-white text-xs font-mono transition-colors cursor-pointer"
-                  >
-                    Edit Message
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="text-lg font-bold text-white font-display">
-                  Send a Direct Message
-                </h3>
+          <div className="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 space-y-5">
+            <div>
+              <h3 className="text-lg font-bold text-white font-display">
+                Kết Nối Trên Mạng Xã Hội
+              </h3>
+              <p className="text-xs text-slate-400 font-mono mt-1">
+                Theo dõi hành trình sáng tạo của Yến Sam
+              </p>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Alex Johnson"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-white/10 focus:border-cyan-400 text-white text-sm focus:outline-none transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5">
-                      Your Email Address
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="alex@organization.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-white/10 focus:border-cyan-400 text-white text-sm focus:outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5">
-                    Collaboration Focus
-                  </label>
-                  <select
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 focus:border-cyan-400 text-white text-sm focus:outline-none transition-colors"
-                  >
-                    <option value="Media Strategy & PR Campaign">Media Strategy & PR Campaign</option>
-                    <option value="Event, Contest & Hackathon Leadership">Event, Contest & Hackathon Leadership</option>
-                    <option value="Creative MV Direction & AI Prompting">Creative MV Direction & AI Prompting</option>
-                    <option value="Talent & Artist Representation">Talent & Artist Representation</option>
-                    <option value="Full-Time / Contract Position">Full-Time / Contract Position</option>
-                    <option value="General Inquiry / Networking">General Inquiry / Networking</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono uppercase text-slate-400 mb-1.5">
-                    Your Message
-                  </label>
-                  <textarea
-                    rows={4}
-                    required
-                    placeholder="Describe your vision, timeline, or scope of collaboration..."
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-white/10 focus:border-cyan-400 text-white text-sm focus:outline-none transition-colors resize-none"
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {SOCIAL_LINKS.map(({ id, label, handle, href, Icon, color, hoverBorder, accent, description }) => (
+                <a
+                  key={id}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  id={`social-link-${id}`}
+                  className={`group relative flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-br ${color} border border-white/10 ${hoverBorder} transition-all duration-300 hover:scale-[1.03] hover:shadow-lg active:scale-95 cursor-pointer overflow-hidden`}
+                  style={{ '--accent': accent } as React.CSSProperties}
+                >
+                  {/* Subtle glow on hover */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
+                    style={{ background: `radial-gradient(circle at 30% 50%, ${accent}22, transparent 70%)` }}
                   />
-                </div>
 
-                <div className="pt-2 flex items-center justify-between">
-                  <span className="text-xs text-slate-400 font-mono">
-                    Direct reply within 24 hours
-                  </span>
-                  <button
-                    type="submit"
-                    className="px-6 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:scale-105 active:scale-95"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Send Message</span>
-                  </button>
-                </div>
-              </form>
-            )}
+                  {/* Icon container */}
+                  <div className="relative shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-white/20 transition-colors">
+                    <Icon className="w-6 h-6" />
+                  </div>
+
+                  {/* Text */}
+                  <div className="relative flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-white font-display">{label}</span>
+                      <svg className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </div>
+                    <div className="text-xs font-mono mt-0.5 truncate" style={{ color: accent }}>{handle}</div>
+                    <div className="text-[11px] text-slate-400 mt-1 leading-tight line-clamp-1">{description}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            {/* Quick CTA */}
+            <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+              <span className="text-xs text-slate-400 font-mono">
+                Phản hồi trong vòng 24 giờ
+              </span>
+              <a
+                href="mailto:camyen.nguyen.271@gmail.com"
+                className="px-5 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:scale-105 active:scale-95"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>Gửi Email</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>
