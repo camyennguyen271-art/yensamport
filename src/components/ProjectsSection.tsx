@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ProjectItem, ProjectModal } from './ProjectModal';
-import { Sparkles, ExternalLink, Play, Layers, Radio, Award } from 'lucide-react';
+import { Youtube } from 'lucide-react';
 
 const PROJECTS: ProjectItem[] = [
   // Creative / MV
@@ -14,6 +14,7 @@ const PROJECTS: ProjectItem[] = [
     organization: 'Creative & Digital Production',
     featured: true,
     image: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // TODO: thay link thật
     description: 'Groundbreaking generative AI music video combining high-concept art direction with cutting-edge prompt engineering and cinematic production workflows.',
     deliverables: [
       'Engineered detailed visual prompt matrices for AI visual generative engines.',
@@ -31,6 +32,8 @@ const PROJECTS: ProjectItem[] = [
     year: '2024',
     organization: 'FPT Education / Media Production',
     featured: true,
+    image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // TODO: thay link thật
     description: 'High-energy youth anthem music video promoting self-expression, modern style, and campus culture across Vietnam.',
     deliverables: [
       'Led the full pre-production, filming schedule, set design, and creative directing.',
@@ -47,6 +50,8 @@ const PROJECTS: ProjectItem[] = [
     categoryLabel: 'Music Video & Artist Collab',
     year: '2023 - 2024',
     organization: 'National Music Collaboration',
+    image: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
+    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', // TODO: thay link thật
     description: 'Special musical collaboration with acclaimed Vietnamese producer Masew, harmonizing traditional folk motifs with contemporary electronic beats.',
     deliverables: [
       'Coordinated creative alignment between headline music producer Masew and brand themes.',
@@ -268,9 +273,32 @@ export const ProjectsSection: React.FC = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-                <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono uppercase text-cyan-300">
-                  Featured
-                </span>
+                {project.featured && (
+                  <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono uppercase text-cyan-300">
+                    Featured
+                  </span>
+                )}
+                {/* YouTube badge overlay */}
+                {project.youtubeUrl && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-[#FF0000]/90 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Youtube className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* YouTube-only banner (no image) */}
+            {!project.image && project.youtubeUrl && (
+              <div className="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-slate-900 to-[#1a0000] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <div className="w-14 h-14 rounded-full bg-[#FF0000] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <Youtube className="w-7 h-7 text-white" />
+                  </div>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 mt-1">Xem trên YouTube</span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
               </div>
             )}
 

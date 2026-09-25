@@ -79,26 +79,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="absolute inset-0 rounded-full border border-cyan-400/20 animate-pulse" />
           </div>
 
-          {/* Orbit Node 1: Left */}
-          <div className="hidden md:flex absolute -left-24 lg:-left-32 top-1/2 -translate-y-1/2 flex-col items-end text-right pointer-events-auto">
-            <span className="text-xs uppercase tracking-widest text-cyan-400 font-mono font-medium">01 · STRATEGY</span>
-            <span className="text-base lg:text-lg font-bold text-white tracking-tight">Media Strategy</span>
-            <span className="text-xs text-slate-400">PR & Cross-Platform Comms</span>
-          </div>
-
-          {/* Orbit Node 2: Center Top */}
-          <div className="hidden md:flex absolute top-[-36px] left-1/2 -translate-x-1/2 flex-col items-center text-center pointer-events-auto">
-            <span className="text-xs uppercase tracking-widest text-rose-400 font-mono font-medium">02 · PRODUCTION</span>
-            <span className="text-base lg:text-lg font-bold text-white tracking-tight">Creative & Direction</span>
-            <span className="text-xs text-slate-400">Music Videos & AI Prompting</span>
-          </div>
-
-          {/* Orbit Node 3: Right */}
-          <div className="hidden md:flex absolute -right-24 lg:-right-32 top-1/2 -translate-y-1/2 flex-col items-start text-left pointer-events-auto">
-            <span className="text-xs uppercase tracking-widest text-amber-400 font-mono font-medium">03 · LEADERSHIP</span>
-            <span className="text-base lg:text-lg font-bold text-white tracking-tight">Events & Talent</span>
-            <span className="text-xs text-slate-400">Contests, Hackathons & Artists</span>
-          </div>
 
           {/* Hero Portrait Container with Studio Glow and Contrast Scrim */}
           <div className="relative w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden border border-white/15 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] bg-gradient-to-b from-slate-900 to-[#02050f]">

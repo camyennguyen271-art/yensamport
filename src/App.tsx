@@ -11,12 +11,9 @@ import { ProjectsSection } from './components/ProjectsSection';
 import { SkillsSection } from './components/SkillsSection';
 import { ContactSection } from './components/ContactSection';
 import { DockNavigation } from './components/DockNavigation';
-import { ExportHtmlModal } from './components/ExportHtmlModal';
-import { Mail, Download, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>('about');
-  const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
 
   // IntersectionObserver for tracking active section
   useEffect(() => {
@@ -79,17 +76,8 @@ export default function App() {
           <a href="#skills" className="hover:text-white transition-colors">Skills</a>
         </nav>
 
-        {/* Zone 3: 1-2 primary actions */}
+        {/* Zone 3: Contact CTA */}
         <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setIsExportModalOpen(true)}
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono text-cyan-300 bg-white/5 hover:bg-white/10 border border-white/10 transition-colors cursor-pointer"
-            title="Export Single HTML File"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Single HTML</span>
-          </button>
-          
           <button
             onClick={handleContactClick}
             className="px-3.5 py-1.5 text-xs font-semibold text-slate-950 bg-white hover:bg-cyan-100 rounded-full transition-all cursor-pointer whitespace-nowrap shadow-sm hover:scale-105"
@@ -120,9 +108,7 @@ export default function App() {
         <SkillsSection />
 
         {/* Contact Section */}
-        <ContactSection
-          onExportHtml={() => setIsExportModalOpen(true)}
-        />
+        <ContactSection />
       </main>
 
       {/* Floating Capsule Dock (Bottom) */}
@@ -132,11 +118,6 @@ export default function App() {
         onContactClick={handleContactClick}
       />
 
-      {/* Standalone Single HTML Export Modal */}
-      <ExportHtmlModal
-        isOpen={isExportModalOpen}
-        onClose={() => setIsExportModalOpen(false)}
-      />
     </div>
   );
 }

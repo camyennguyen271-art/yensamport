@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, ExternalLink, Sparkles, CheckCircle2, Film, Mic, Award, Code2 } from 'lucide-react';
+import { X, CheckCircle2, Youtube } from 'lucide-react';
 
 export interface ProjectItem {
   id: string;
@@ -14,6 +14,7 @@ export interface ProjectItem {
   image?: string;
   tags: string[];
   featured?: boolean;
+  youtubeUrl?: string; // e.g. "https://www.youtube.com/watch?v=XXXX"
 }
 
 interface ProjectModalProps {
@@ -21,8 +22,18 @@ interface ProjectModalProps {
   onClose: () => void;
 }
 
+/** Extract YouTube video ID from various YouTube URL formats */
+function getYouTubeId(url: string): string | null {
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+  );
+  return match ? match[1] : null;
+}
+
 export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
   if (!project) return null;
+
+  const ytId = project.youtubeUrl ? getYouTubeId(project.youtubeUrl) : null;
 
   return (
     <div 
@@ -61,8 +72,18 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
           </div>
         </div>
 
-        {/* Optional Showcase Image */}
-        {project.image && (
+        {/* YouTube Embed (priority over static image for MV projects) */}
+        {ytId ? (
+          <div className="mt-5 rounded-2xl overflow-hidden border border-white/15 aspect-video w-full relative bg-black">
+            <iframe
+              src={`https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1`}
+              title={project.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          </div>
+        ) : project.image ? (
           <div className="mt-5 rounded-2xl overflow-hidden border border-white/15 aspect-video w-full relative">
             <img
               src={project.image}
@@ -71,6 +92,19 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
           </div>
+        ) : null}
+
+        {/* YouTube external link button */}
+        {project.youtubeUrl && (
+          <a
+            href={project.youtubeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF0000]/15 border border-[#FF0000]/30 text-[#FF4444] hover:bg-[#FF0000]/25 text-xs font-semibold transition-colors cursor-pointer"
+          >
+            <Youtube className="w-4 h-4" />
+            <span>Xem trên YouTube</span>
+          </a>
         )}
 
         {/* Project Description */}

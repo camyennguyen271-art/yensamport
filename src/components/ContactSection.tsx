@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Copy, Check, MapPin, Download } from 'lucide-react';
+import { Mail, Copy, Check, MapPin } from 'lucide-react';
 import { TikTokIcon, FacebookIcon, ZaloIcon, InstagramIcon } from './SocialIcons';
-
-interface ContactSectionProps {
-  onExportHtml?: () => void;
-}
 
 const SOCIAL_LINKS = [
   {
@@ -57,7 +53,7 @@ const SOCIAL_LINKS = [
   },
 ];
 
-export const ContactSection: React.FC<ContactSectionProps> = ({ onExportHtml }) => {
+export const ContactSection: React.FC = () => {
   const [copied, setCopied] = useState(false);
 
   const handleCopyEmail = () => {
@@ -145,24 +141,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onExportHtml }) 
               </a>
             </div>
           </div>
-
-          {/* Quick Technical Single-File Bundle Card */}
-          {onExportHtml && (
-            <div className="p-4 rounded-xl border border-white/10 bg-slate-900/40 flex items-center justify-between gap-4">
-              <div>
-                <div className="text-xs font-bold text-white font-mono">Single-File Production HTML</div>
-                <div className="text-[11px] text-slate-400 mt-0.5">Standalone self-contained portfolio bundle</div>
-              </div>
-              <button
-                onClick={onExportHtml}
-                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-cyan-300 flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Export HTML</span>
-              </button>
-            </div>
-          )}
         </div>
+
 
         {/* Right Column: Social Media Links (7 cols) */}
         <div className="lg:col-span-7">
