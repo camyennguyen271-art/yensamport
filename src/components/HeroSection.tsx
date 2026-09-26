@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { DotMatrixHeader } from './DotMatrixHeader';
 import { Mail, ArrowDown, Sparkles, Check, Copy, ExternalLink } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useI18n } from '../lib/i18n';
 
 interface HeroSectionProps {
   onContactClick: () => void;
@@ -15,6 +16,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [mousePos, setMousePos] = useState({ x: 50, y: 40 });
   const [copied, setCopied] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const { t } = useI18n();
   
   // Data State
   const [heroData, setHeroData] = useState({
@@ -182,7 +184,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
       {/* Down Scroll Indicator */}
       <div className="relative z-10 flex flex-col items-center gap-1.5 cursor-pointer opacity-70 hover:opacity-100 transition-opacity" onClick={() => onNavigate('about')}>
-        <span className="text-[10px] uppercase font-mono tracking-widest text-slate-400">Scroll to Explore</span>
+        <span className="text-[10px] uppercase font-mono tracking-widest text-slate-400">{t('hero.scrollToExplore') || 'Scroll to Explore'}</span>
         <ArrowDown className="w-4 h-4 text-cyan-400 animate-bounce" />
       </div>
     </section>

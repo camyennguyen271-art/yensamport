@@ -20,10 +20,20 @@ const DEFAULT_TRANSLATIONS: TranslationMap = {
   'nav.projects': { vi: 'Dự án', en: 'Projects' },
   'nav.skills': { vi: 'Kỹ năng', en: 'Skills' },
   'nav.contact': { vi: 'Liên hệ', en: 'Contact' },
-  'nav.admin': { vi: 'Quản trị', en: 'Admin' },
   'header.title': { vi: 'YẾN SAM', en: 'YEN SAM' },
   'hero.cta': { vi: 'Liên hệ & Cộng tác', en: 'Contact & Collaborate' },
-  // add more keys as needed
+  'hero.viewWork': { vi: 'Xem Kinh Nghiệm', en: 'View Work Experience' },
+  'hero.viewProjects': { vi: 'Khám Phá Dự Án', en: 'Explore Key Projects' },
+  'hero.scrollToExplore': { vi: 'Cuộn để khám phá', en: 'Scroll to Explore' },
+  'hero.emailCopied': { vi: 'Đã sao chép Email!', en: 'Email Copied!' },
+  'about.title': { vi: 'Giới Thiệu', en: 'About Me' },
+  'experience.title': { vi: 'Kinh Nghiệm', en: 'Experience' },
+  'projects.title': { vi: 'Dự Án Nổi Bật', en: 'Featured Projects' },
+  'projects.viewAll': { vi: 'Xem tất cả', en: 'View All' },
+  'skills.title': { vi: 'Kỹ Năng', en: 'Skills' },
+  'contact.title': { vi: 'Liên Hệ', en: 'Contact' },
+  'contact.subtitle': { vi: 'Kết nối với tôi', en: 'Get in touch' },
+  'footer.copyright': { vi: '© 2024 Yến Sam. Tất cả quyền được bảo lưu.', en: '© 2024 Yen Sam. All rights reserved.' },
 };
 
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
