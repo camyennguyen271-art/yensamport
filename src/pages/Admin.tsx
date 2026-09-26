@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { LayoutDashboard, Image as ImageIcon, FileText, User, Briefcase, Code, LogOut, Plus, Trash2, Edit3, Settings, Share2, RefreshCw, X, Globe, Save, Eye } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, FileText, User, Briefcase, Code, LogOut, Plus, Trash2, Edit3, Settings, Share2, RefreshCw, X, Globe, Save, Eye, Upload } from 'lucide-react';
 import { HARDCODED_PROJECTS } from '../components/ProjectsSection';
 import { SOCIAL_LINKS } from '../components/ContactSection';
 
@@ -344,7 +344,10 @@ export const Admin: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 mb-1">Đường dẫn hình ảnh (Image URL)</label>
-                  <input type="text" value={form.image} onChange={e => setForm({...form, image: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:border-cyan-400 outline-none transition-colors" />
+                  <ImageUploader 
+                    value={form.image} 
+                    onChange={url => setForm({...form, image: url})} 
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 mb-1">Tags (phân cách bằng dấu phẩy)</label>
@@ -559,7 +562,10 @@ const HeroEditor: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-slate-400 mb-1">Đường dẫn hình ảnh (URL)</label>
-              <input type="text" required value={heroData.imageUrl} onChange={e => setHeroData({...heroData, imageUrl: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors mb-2" />
+              <ImageUploader 
+                value={heroData.imageUrl} 
+                onChange={url => setHeroData({...heroData, imageUrl: url})} 
+              />
             </div>
             <div className="bg-[#030611] rounded-xl border border-white/10 p-4 h-72 flex items-center justify-center overflow-hidden relative shadow-inner">
               {heroData.imageUrl ? (
@@ -694,6 +700,77 @@ const FooterEditor: React.FC = () => {
 };
 
 // ==================== I18N EDITOR ====================
+// ... (I18nEditor code remains intact, adding ImageUploader below it) ...
+const ImageUploader: React.FC<{ value: string, onChange: (url: string) => void }> = ({ value, onChange }) => {
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (!e.target.files || e.target.files.length === 0) return;
+      const file = e.target.files[0];
+      
+      // File validation
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+      const filePath = `uploads/${fileName}`;
+
+      setUploading(true);
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get public URL
+      const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+      
+      if (data && data.publicUrl) {
+        onChange(data.publicUrl);
+        alert('Tải ảnh lên thành công!');
+      }
+
+    } catch (error: any) {
+      alert(`Lỗi tải ảnh: ${error.message}. Hãy kiểm tra xem bạn đã tạo bucket "images" và cấu hình Policy đúng như hướng dẫn chưa.`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2 mb-2">
+      <div className="flex gap-2">
+        <input 
+          type="text" 
+          value={value} 
+          onChange={e => onChange(e.target.value)} 
+          className="flex-1 bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors" 
+          placeholder="Dán link ảnh hoặc tải lên..."
+        />
+        <label className="cursor-pointer bg-slate-800 hover:bg-slate-700 text-white font-medium py-2.5 px-4 rounded-lg border border-white/10 transition-colors flex items-center gap-2 whitespace-nowrap">
+          {uploading ? (
+            <span className="animate-pulse">Đang tải...</span>
+          ) : (
+            <>
+              <Upload className="w-4 h-4" />
+              <span>Tải ảnh lên</span>
+            </>
+          )}
+          <input 
+            type="file" 
+            accept="image/*" 
+            onChange={handleUpload} 
+            disabled={uploading} 
+            className="hidden" 
+          />
+        </label>
+      </div>
+    </div>
+  );
+};
 const I18nEditor: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [translations, setTranslations] = useState<{key: string; vi: string; en: string}[]>([
