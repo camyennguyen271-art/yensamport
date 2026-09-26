@@ -3,7 +3,7 @@ import { ProjectItem, ProjectModal } from './ProjectModal';
 import { Youtube } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-const HARDCODED_PROJECTS: ProjectItem[] = [
+export const HARDCODED_PROJECTS: ProjectItem[] = [
   // Creative / MV
   {
     id: 'mv-ai-bon-voyaige',

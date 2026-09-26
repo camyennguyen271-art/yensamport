@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Copy, Check, MapPin } from 'lucide-react';
 import { TikTokIcon, FacebookIcon, ZaloIcon, InstagramIcon } from './SocialIcons';
 
-const SOCIAL_LINKS = [
+export const SOCIAL_LINKS = [
   {
     id: 'tiktok',
     label: 'TikTok',

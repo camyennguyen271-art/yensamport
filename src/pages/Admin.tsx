@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { LayoutDashboard, Image as ImageIcon, FileText, User, Briefcase, Code, LogOut, Plus, Trash2, Edit3, Settings } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, FileText, User, Briefcase, Code, LogOut, Plus, Trash2, Edit3, Settings, Share2, RefreshCw } from 'lucide-react';
+import { HARDCODED_PROJECTS } from '../components/ProjectsSection';
+import { SOCIAL_LINKS } from '../components/ContactSection';
 
 export const Admin: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,6 +64,40 @@ export const Admin: React.FC = () => {
     }
   };
 
+  const syncHardcodedProjects = async () => {
+    if (!confirm('Hành động này sẽ đồng bộ toàn bộ 12 dự án mẫu vào Database (bỏ qua những dự án đã có). Tiếp tục?')) return;
+    
+    setIsLoading(true);
+    let successCount = 0;
+    
+    for (const p of HARDCODED_PROJECTS) {
+      // Check if exists
+      const { data } = await supabase.from('projects').select('id').eq('id', p.id).single();
+      if (!data) {
+        await supabase.from('projects').insert([{
+          id: p.id,
+          title: p.title,
+          role: p.role,
+          category: p.category,
+          category_label: p.categoryLabel,
+          year: p.year,
+          organization: p.organization || '',
+          description: p.description,
+          youtube_url: p.youtubeUrl || '',
+          featured: p.featured || false,
+          image: p.image || '',
+          tags: p.tags,
+          deliverables: p.deliverables
+        }]);
+        successCount++;
+      }
+    }
+    
+    setIsLoading(false);
+    fetchProjects();
+    alert(`Đồng bộ thành công ${successCount} dự án mới vào Database!`);
+  };
+
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-[#030611] flex items-center justify-center p-4">
@@ -120,9 +156,9 @@ export const Admin: React.FC = () => {
   const TABS = [
     { id: 'projects', label: 'Quản lý Dự án', icon: LayoutDashboard },
     { id: 'hero', label: 'Phần Hero', icon: FileText },
+    { id: 'footer', label: 'Mạng Xã Hội', icon: Share2 },
     { id: 'about', label: 'Giới thiệu', icon: User },
     { id: 'experience', label: 'Kinh nghiệm', icon: Briefcase },
-    { id: 'images', label: 'Thư viện ảnh', icon: ImageIcon },
   ];
 
   return (
@@ -226,7 +262,7 @@ export const Admin: React.FC = () => {
                 </div>
                 
                 <button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg transition-all mt-2 shadow-lg shadow-cyan-500/20">
-                  Lưu Dự Án
+                  Lưu Dự Án Mới
                 </button>
               </form>
             </div>
@@ -235,11 +271,16 @@ export const Admin: React.FC = () => {
             <div className="xl:col-span-2 bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col h-[calc(100vh-140px)]">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <LayoutDashboard className="w-5 h-5 text-cyan-400" /> Danh Sách ({projects.length})
+                  <LayoutDashboard className="w-5 h-5 text-cyan-400" /> Danh Sách Trong DB ({projects.length})
                 </h3>
-                <button onClick={fetchProjects} className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-white/10 text-white font-medium transition-colors">
-                  Làm mới
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={syncHardcodedProjects} className="text-xs bg-emerald-500/20 hover:bg-emerald-500/30 px-3 py-1.5 rounded-lg border border-emerald-500/20 text-emerald-400 font-medium transition-colors flex items-center gap-1">
+                    <RefreshCw className="w-3 h-3" /> Đồng bộ Dự án mẫu
+                  </button>
+                  <button onClick={fetchProjects} className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-white/10 text-white font-medium transition-colors">
+                    Làm mới
+                  </button>
+                </div>
               </div>
               
               <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
@@ -247,7 +288,7 @@ export const Admin: React.FC = () => {
                   <div className="text-center py-10 text-slate-400">Đang tải dữ liệu...</div>
                 ) : projects.length === 0 ? (
                   <div className="text-center py-10 text-slate-500 bg-slate-950/50 rounded-xl border border-white/5 border-dashed">
-                    Chưa có dự án nào trong Database.
+                    Chưa có dự án nào trong Database. Hãy bấm nút "Đồng bộ Dự án mẫu" để nạp 12 dự án hiện có!
                   </div>
                 ) : (
                   projects.map(p => (
@@ -284,9 +325,14 @@ export const Admin: React.FC = () => {
         {activeTab === 'hero' && (
           <HeroEditor />
         )}
+        
+        {/* Footer Edit Tab */}
+        {activeTab === 'footer' && (
+          <FooterEditor />
+        )}
 
         {/* Placeholder cho các tab khác */}
-        {(activeTab !== 'projects' && activeTab !== 'hero') && (
+        {(activeTab !== 'projects' && activeTab !== 'hero' && activeTab !== 'footer') && (
           <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center h-[60vh]">
             <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center border border-white/5 shadow-inner mb-6">
               {React.createElement(TABS.find(t => t.id === activeTab)?.icon || Settings, { className: "w-10 h-10 text-cyan-400/50" })}
@@ -295,21 +341,6 @@ export const Admin: React.FC = () => {
             <p className="text-slate-400 max-w-md mx-auto leading-relaxed">
               Tính năng chỉnh sửa nội dung cho phần <strong>{TABS.find(t => t.id === activeTab)?.label}</strong> đang được xây dựng. Để kích hoạt tính năng này, cần khởi tạo bảng tương ứng trên Supabase trước.
             </p>
-            <div className="mt-8 bg-cyan-950/30 border border-cyan-500/20 p-4 rounded-xl text-left max-w-xl">
-              <p className="text-sm text-cyan-300 font-mono mb-2">Bạn phải chạy mã SQL sau trong tab SQL Editor của Supabase để tạo bảng:</p>
-              <pre className="text-xs text-slate-300 bg-slate-950 p-3 rounded-lg overflow-x-auto border border-white/5">
-{`CREATE TABLE site_content (
-  id TEXT PRIMARY KEY,
-  section_name TEXT NOT NULL,
-  content_json JSONB NOT NULL,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE site_content ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Cho phép tất cả" ON site_content FOR ALL USING (true);
-`}
-              </pre>
-            </div>
           </div>
         )}
 
@@ -351,7 +382,7 @@ const HeroEditor: React.FC = () => {
     });
 
     if (error) {
-      alert('Chưa lưu được. Vui lòng chạy lệnh SQL tạo bảng site_content (xem gợi ý ở tab About) trước!\nChi tiết lỗi: ' + error.message);
+      alert('Chưa lưu được. Vui lòng kiểm tra quyền hoặc tạo bảng site_content trước.\nChi tiết lỗi: ' + error.message);
     } else {
       alert('Lưu thành công vào Database!');
     }
@@ -394,9 +425,6 @@ const HeroEditor: React.FC = () => {
             <div>
               <label className="block text-xs font-semibold text-slate-400 mb-1">Đường dẫn hình ảnh (URL)</label>
               <input type="text" required value={heroData.imageUrl} onChange={e => setHeroData({...heroData, imageUrl: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors mb-2" />
-              <p className="text-[11px] text-slate-500 leading-relaxed">
-                Để đổi ảnh, hãy upload ảnh lên Supabase Storage hoặc lấy link URL (imgur, web) dán vào đây.
-              </p>
             </div>
             <div className="bg-[#030611] rounded-xl border border-white/10 p-4 h-72 flex items-center justify-center overflow-hidden relative shadow-inner">
               {heroData.imageUrl ? (
@@ -409,13 +437,94 @@ const HeroEditor: React.FC = () => {
         </div>
         
         <div className="pt-6 border-t border-white/10 flex items-center justify-between">
-          <button type="submit" disabled={loading} className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 flex items-center gap-2">
+          <button type="submit" disabled={loading} className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50">
             {loading ? 'Đang lưu...' : 'Lưu Thay Đổi Trang Chủ'}
           </button>
-          
-          <p className="text-xs text-slate-400 max-w-sm text-right">
-            Lưu ý: Bạn phải tạo bảng <code className="text-cyan-400">site_content</code> trong Supabase trước thì mới có thể lưu được dữ liệu.
-          </p>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+// Component con để quản lý riêng việc sửa Footer/Mạng xã hội
+const FooterEditor: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [socials, setSocials] = useState<any[]>(
+    SOCIAL_LINKS.map(s => ({
+      id: s.id,
+      label: s.label,
+      handle: s.handle,
+      href: s.href,
+      description: s.description
+    }))
+  );
+
+  useEffect(() => {
+    const fetchFooter = async () => {
+      const { data, error } = await supabase.from('site_content').select('*').eq('section_name', 'footer').single();
+      if (!error && data && data.content_json && Array.isArray(data.content_json.socials)) {
+        setSocials(data.content_json.socials);
+      }
+    };
+    fetchFooter();
+  }, []);
+
+  const handleChange = (index: number, field: string, value: string) => {
+    const updated = [...socials];
+    updated[index][field] = value;
+    setSocials(updated);
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.from('site_content').upsert({
+      id: 'footer',
+      section_name: 'footer',
+      content_json: { socials },
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) {
+      alert('Lỗi: ' + error.message);
+    } else {
+      alert('Lưu mạng xã hội thành công!');
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-xl max-w-5xl">
+      <h3 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-4 flex items-center justify-between">
+        <span>Chỉnh sửa Liên Kết Mạng Xã Hội (Footer)</span>
+        <span className="text-xs font-normal text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">Bảng: site_content</span>
+      </h3>
+      
+      <form onSubmit={handleSave} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {socials.map((social, idx) => (
+            <div key={social.id} className="bg-slate-950 p-5 rounded-xl border border-white/10 space-y-3">
+              <h4 className="font-bold text-cyan-400 capitalize">{social.id}</h4>
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 mb-1">Handle (Tên hiển thị)</label>
+                <input type="text" required value={social.handle} onChange={e => handleChange(idx, 'handle', e.target.value)} className="w-full bg-slate-900 border border-white/5 rounded-lg px-3 py-2 text-sm text-white focus:border-cyan-400 outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 mb-1">Đường link (URL)</label>
+                <input type="url" required value={social.href} onChange={e => handleChange(idx, 'href', e.target.value)} className="w-full bg-slate-900 border border-white/5 rounded-lg px-3 py-2 text-sm text-white focus:border-cyan-400 outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 mb-1">Mô tả ngắn</label>
+                <input type="text" required value={social.description} onChange={e => handleChange(idx, 'description', e.target.value)} className="w-full bg-slate-900 border border-white/5 rounded-lg px-3 py-2 text-sm text-white focus:border-cyan-400 outline-none" />
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="pt-6 border-t border-white/10">
+          <button type="submit" disabled={loading} className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50">
+            {loading ? 'Đang lưu...' : 'Lưu Thay Đổi Footer'}
+          </button>
         </div>
       </form>
     </div>
