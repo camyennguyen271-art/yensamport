@@ -1,104 +1,116 @@
 import React, { useState } from 'react';
-import { Briefcase, ChevronDown, ChevronUp, Calendar, Building, Sparkles } from 'lucide-react';
-
-interface ExperienceItem {
-  id: string;
-  role: string;
-  company: string;
-  year: string;
-  tagline: string;
-  achievements: string[];
-  metrics?: string;
-  category: string;
-}
-
-const EXPERIENCES: ExperienceItem[] = [
-  {
-    id: 'fpt-comms-2024',
-    role: 'Communication Specialist',
-    company: 'FPT Education',
-    year: '2024',
-    tagline: 'Strategic corporate communication, media PR events & audience growth',
-    metrics: '+20% Audience Engagement Boost',
-    category: 'Corporate Communications & PR',
-    achievements: [
-      'Developed and executed comprehensive communication strategies to effectively convey brand messages to target audiences across various platforms.',
-      'Managed internal and external communications, including press releases, newsletters, and social media updates, ensuring consistent and aligned messaging.',
-      'Collaborated with cross-functional teams to create content that resonated with both customers and stakeholders, boosting engagement and brand loyalty.',
-      'Analyzed communication campaigns and provided actionable insights to optimize future strategies, contributing to a 20% increase in audience engagement.',
-      'Organized and managed high-profile PR events, enhancing the company\'s visibility and reputation in the education industry.'
-    ]
-  },
-  {
-    id: 'mov-media-2022',
-    role: 'Media & Event Manager',
-    company: 'MOV Communications Joint Stock Company',
-    year: '2022',
-    tagline: 'Artist media strategies, entertainment public relations & tailored activations',
-    category: 'Entertainment & Artist PR',
-    achievements: [
-      'Developed and executed media strategies for the company\'s artists, ensuring alignment with brand goals and audience engagement.',
-      'Planned and organized tailored entertainment events and activations customized to client requirements.',
-      'Enhanced the company\'s industry reputation, artist profile visibility, and client satisfaction metrics.'
-    ]
-  },
-  {
-    id: 'yanh-talent-2021',
-    role: 'Talent Manager',
-    company: 'Y Anh Film Joint Stock Company (Y An Film)',
-    year: '2021',
-    tagline: 'Influencer representation, contract negotiation & commercial campaigns',
-    category: 'Talent & Influencer Management',
-    achievements: [
-      'Managed influencer activities, including commercial contract negotiations, creative content briefs, and campaign execution.',
-      'Successfully secured advertising contracts for influencers, expanding commercial reach, brand sponsorships, and company revenue.'
-    ]
-  },
-  {
-    id: 'hayd-minishow-2021',
-    role: 'Organizer & Event Producer',
-    company: 'Hayd Minishow and Fanmeeting in Vietnam',
-    year: '2021',
-    tagline: 'International artist fanmeeting logistics, marketing & live concert operations',
-    category: 'Live Concert Production',
-    achievements: [
-      'Successfully organized and managed the end-to-end logistics, marketing, and execution of the Hayd Minishow and Fanmeeting in Vietnam.',
-      'Coordinated across international and local stakeholders, management agencies, and venue staff to deliver a seamless event experience for both fans and the artist.'
-    ]
-  },
-  {
-    id: 'fpt-admission-2018',
-    role: 'Admission & Telesales Consultant',
-    company: 'FPT University Ho Chi Minh City',
-    year: '2018 – 2021',
-    tagline: 'Student admissions advisory, enrollment strategy & consultative engagement',
-    category: 'Admissions & Client Advisory',
-    achievements: [
-      'Provided three years of high-performing experience as an enrollment consultant and telesales representative, effectively advising and guiding prospective students through the university admission process.',
-      'Contributed significantly to the university\'s institutional growth by consistently achieving enrollment targets and maintaining high customer satisfaction.'
-    ]
-  }
-];
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useI18n } from '../lib/i18n';
 
 export const ExperienceSection: React.FC = () => {
+  const { language, t } = useI18n();
+  const isVi = language === 'vi';
   const [expandedId, setExpandedId] = useState<string | null>('fpt-comms-2024');
 
   const toggleExpand = (id: string) => {
     setExpandedId(prev => prev === id ? null : id);
   };
 
+  const EXPERIENCES = [
+    {
+      id: 'fpt-comms-2024',
+      role: isVi ? 'Chuyên Viên Tổ Chức Sự Kiện, Kịch Bản & Truyền Thông' : 'Event Operations, Scriptwriting & Communication Executive',
+      company: isVi ? 'Đại học FPT Cần Thơ' : 'FPT University Can Tho',
+      year: '05/2024 — Hiện tại',
+      tagline: isVi ? 'Quản lý sự kiện, viết kịch bản & truyền thông thương hiệu giáo dục' : 'Educational brand marketing, copywriting & full-cycle event production',
+      category: isVi ? 'Truyền thông Giáo dục' : 'Education Communications',
+      metrics: '+20% Engagement',
+      achievements: isVi ? [
+        'Lên kế hoạch và thực hiện các chiến lược truyền thông toàn diện để quảng bá các chương trình và sự kiện của trường.',
+        'Quản lý truyền thông nội bộ và đối ngoại (thông cáo báo chí, bản tin, mạng xã hội) đảm bảo thông điệp nhất quán.',
+        'Hợp tác với các nhóm liên chức năng để tạo nội dung thu hút khách hàng, tăng 20% lượng tương tác.',
+        'Tổ chức và quản lý các sự kiện PR lớn, nâng cao uy tín của trường trong ngành giáo dục.'
+      ] : [
+        'Planned and executed comprehensive communication strategies to promote university programs and events.',
+        'Managed internal and external communications, including press releases, newsletters, and social media updates, ensuring consistent and aligned messaging.',
+        'Collaborated with cross-functional teams to create content that resonated with both customers and stakeholders, boosting engagement and brand loyalty.',
+        'Analyzed communication campaigns and provided actionable insights to optimize future strategies, contributing to a 20% increase in audience engagement.',
+        'Organized and managed high-profile PR events, enhancing the company\'s visibility and reputation in the education industry.'
+      ]
+    },
+    {
+      id: 'mov-media-2022',
+      role: isVi ? 'Quản Lý Truyền Thông & Sự Kiện' : 'Media & Event Manager',
+      company: 'MOV Communications',
+      year: '2022',
+      tagline: isVi ? 'Chiến lược truyền thông nghệ sĩ & PR giải trí' : 'Artist media strategies, entertainment public relations & tailored activations',
+      category: isVi ? 'PR Giải Trí & Nghệ Sĩ' : 'Entertainment & Artist PR',
+      achievements: isVi ? [
+        'Xây dựng và thực thi chiến lược truyền thông cho nghệ sĩ, đảm bảo phù hợp với mục tiêu thương hiệu.',
+        'Lên kế hoạch và tổ chức các sự kiện giải trí và hoạt động kích hoạt thương hiệu theo yêu cầu khách hàng.',
+        'Nâng cao uy tín công ty, mức độ nhận diện nghệ sĩ và sự hài lòng của đối tác.'
+      ] : [
+        'Developed and executed media strategies for the company\'s artists, ensuring alignment with brand goals and audience engagement.',
+        'Planned and organized tailored entertainment events and activations customized to client requirements.',
+        'Enhanced the company\'s industry reputation, artist profile visibility, and client satisfaction metrics.'
+      ]
+    },
+    {
+      id: 'yanh-talent-2021',
+      role: isVi ? 'Quản Lý Talent / KOLs' : 'Talent Manager',
+      company: 'Y Anh Film Joint Stock Company',
+      year: '2021',
+      tagline: isVi ? 'Đại diện KOL, đàm phán hợp đồng & chiến dịch thương mại' : 'Influencer representation, contract negotiation & commercial campaigns',
+      category: isVi ? 'Quản lý KOLs / Influencer' : 'Talent & Influencer Management',
+      achievements: isVi ? [
+        'Quản lý hoạt động của influencer, bao gồm đàm phán hợp đồng thương mại, định hướng nội dung và thực thi chiến dịch.',
+        'Ký kết thành công các hợp đồng quảng cáo, mở rộng phạm vi thương mại, tài trợ và doanh thu công ty.'
+      ] : [
+        'Managed influencer activities, including commercial contract negotiations, creative content briefs, and campaign execution.',
+        'Successfully secured advertising contracts for influencers, expanding commercial reach, brand sponsorships, and company revenue.'
+      ]
+    },
+    {
+      id: 'hayd-minishow-2021',
+      role: isVi ? 'Nhà Sản Xuất & Tổ Chức Sự Kiện' : 'Organizer & Event Producer',
+      company: 'Hayd Minishow in Vietnam',
+      year: '2021',
+      tagline: isVi ? 'Quản lý hậu cần, marketing & vận hành concert nghệ sĩ quốc tế' : 'International artist fanmeeting logistics, marketing & live concert operations',
+      category: isVi ? 'Sản Xuất Concert Live' : 'Live Concert Production',
+      achievements: isVi ? [
+        'Tổ chức thành công và quản lý toàn bộ khâu hậu cần, marketing và vận hành sự kiện Hayd Minishow & Fanmeeting tại VN.',
+        'Phối hợp với các đối tác trong nước và quốc tế, công ty quản lý nghệ sĩ để mang lại trải nghiệm hoàn hảo cho fan.'
+      ] : [
+        'Successfully organized and managed the end-to-end logistics, marketing, and execution of the Hayd Minishow and Fanmeeting in Vietnam.',
+        'Coordinated across international and local stakeholders, management agencies, and venue staff to deliver a seamless event experience for both fans and the artist.'
+      ]
+    },
+    {
+      id: 'fpt-admission-2018',
+      role: isVi ? 'Tư Vấn Tuyển Sinh & Telesales' : 'Admission & Telesales Consultant',
+      company: 'Đại học FPT TP.HCM',
+      year: '2018 — 2021',
+      tagline: isVi ? 'Tư vấn tuyển sinh, chiến lược ghi danh & chăm sóc học sinh' : 'Student admissions advisory, enrollment strategy & consultative engagement',
+      category: isVi ? 'Tuyển Sinh & Tư Vấn' : 'Admissions & Client Advisory',
+      achievements: isVi ? [
+        'Tư vấn và hướng dẫn sinh viên tương lai trong quá trình tuyển sinh với thành tích xuất sắc trong 3 năm.',
+        'Góp phần đáng kể vào sự phát triển của trường thông qua việc đạt chỉ tiêu tuyển sinh và duy trì tỷ lệ hài lòng cao.'
+      ] : [
+        'Provided three years of high-performing experience as an enrollment consultant and telesales representative, effectively advising and guiding prospective students through the university admission process.',
+        'Contributed significantly to the university\'s institutional growth by consistently achieving enrollment targets and maintaining high customer satisfaction.'
+      ]
+    }
+  ];
+
   return (
     <section id="experience" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-12">
         <div>
-          <span className="text-xs uppercase font-mono tracking-widest text-cyan-400">02 / PROFESSIONAL TIMELINE</span>
+          <span className="text-xs uppercase font-mono tracking-widest text-cyan-400">
+            {isVi ? '02 / HÀNH TRÌNH SỰ NGHIỆP' : '02 / PROFESSIONAL TIMELINE'}
+          </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white font-display tracking-tight mt-1">
-            Work Experience
+            {t('experience.title') || (isVi ? 'Kinh Nghiệm' : 'Work Experience')}
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-slate-400 mt-2 sm:mt-0 font-mono">
-          5 Key Appointments · Strategic Communications & Media Leadership
+          {isVi ? '5 Cột mốc quan trọng · Lãnh đạo Truyền thông & Chiến lược' : '5 Key Appointments · Strategic Communications & Media Leadership'}
         </p>
       </div>
 
@@ -161,7 +173,7 @@ export const ExperienceSection: React.FC = () => {
               {isExpanded && (
                 <div className="mt-5 pt-4 border-t border-white/10 ml-0 md:ml-12 space-y-2.5 transition-all">
                   <div className="text-xs uppercase font-mono tracking-wider text-slate-400 mb-2">
-                    Key Responsibilities & Deliverables
+                    {isVi ? 'Trách Nhiệm & Kết Quả' : 'Key Responsibilities & Deliverables'}
                   </div>
                   <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
                     {item.achievements.map((bullet, bIdx) => (

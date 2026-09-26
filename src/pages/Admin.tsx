@@ -254,23 +254,26 @@ export const Admin: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 ml-64 p-8">
-        <header className="mb-8 flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-white font-display">
-              {TABS.find(t => t.id === activeTab)?.label}
-            </h2>
-            <p className="text-slate-400 text-sm mt-1">
-              Chỉnh sửa và cập nhật nội dung website
-            </p>
-          </div>
-        </header>
+      <div className="flex-1 ml-64 flex h-screen overflow-hidden">
+        
+        {/* Editor Area (Left Pane) */}
+        <div className="w-[55%] overflow-y-auto p-8 border-r border-white/10">
+          <header className="mb-8 flex items-end justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-white font-display">
+                {TABS.find(t => t.id === activeTab)?.label}
+              </h2>
+              <p className="text-slate-400 text-sm mt-1">
+                Chỉnh sửa và cập nhật nội dung website
+              </p>
+            </div>
+          </header>
 
         {/* ==================== PROJECTS TAB ==================== */}
         {activeTab === 'projects' && (
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="flex flex-col gap-8">
             {/* Form */}
-            <div className="xl:col-span-1 bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-xl h-fit">
+            <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-xl h-fit">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   {isEditMode ? (
@@ -367,7 +370,7 @@ export const Admin: React.FC = () => {
             </div>
 
             {/* Project List */}
-            <div className="xl:col-span-2 bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col h-[calc(100vh-140px)]">
+            <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-xl flex flex-col h-[500px]">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
                   <LayoutDashboard className="w-5 h-5 text-cyan-400" /> Danh Sách Trong DB ({projects.length})
@@ -444,7 +447,7 @@ export const Admin: React.FC = () => {
 
         {/* ==================== PLACEHOLDER TABS ==================== */}
         {(activeTab !== 'projects' && activeTab !== 'hero' && activeTab !== 'footer' && activeTab !== 'i18n') && (
-          <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center h-[60vh]">
+          <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center h-[50vh]">
             <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center border border-white/5 shadow-inner mb-6">
               {React.createElement(TABS.find(t => t.id === activeTab)?.icon || Settings, { className: "w-10 h-10 text-cyan-400/50" })}
             </div>
@@ -454,6 +457,27 @@ export const Admin: React.FC = () => {
             </p>
           </div>
         )}
+
+        </div>
+
+        {/* Live Preview Area (Right Pane) */}
+        <div className="w-[45%] h-full bg-[#030611] relative">
+          <div className="absolute top-0 left-0 w-full p-2 bg-slate-900 border-b border-white/10 flex justify-between items-center z-10">
+            <span className="text-xs font-mono text-cyan-400 pl-2">Live Website Preview</span>
+            <button onClick={() => {
+              const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
+              if (iframe) iframe.src = iframe.src;
+            }} className="text-xs bg-white/5 hover:bg-white/10 px-3 py-1 rounded border border-white/10 transition-colors">
+              Refresh Preview
+            </button>
+          </div>
+          <iframe 
+            id="preview-iframe"
+            src="/" 
+            className="w-full h-full border-none pt-10"
+            title="Website Preview"
+          />
+        </div>
 
       </div>
     </div>

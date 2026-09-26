@@ -78,9 +78,9 @@ export const Home: React.FC = () => {
           {/* Language toggle */}
           <button
             onClick={toggleLanguage}
-            className="ml-3 px-2 py-1 text-xs font-medium bg-slate-800 text-slate-200 rounded hover:bg-slate-700"
+            className="ml-3 px-3 py-1.5 text-xs font-medium bg-slate-800 text-slate-200 rounded-full hover:bg-slate-700 flex items-center gap-2 border border-white/10 transition-colors"
           >
-            {language === 'vi' ? 'EN' : 'VI'}
+            {language === 'vi' ? '🇻🇳 VIE' : '🇬🇧 ENG'}
           </button>
 
         </div>
