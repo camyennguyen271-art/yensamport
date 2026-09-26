@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ProjectItem, ProjectModal } from './ProjectModal';
 import { Youtube } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
-const PROJECTS: ProjectItem[] = [
+const HARDCODED_PROJECTS: ProjectItem[] = [
   // Creative / MV
   {
     id: 'mv-ai-bon-voyaige',
@@ -211,6 +212,30 @@ const PROJECTS: ProjectItem[] = [
 export const ProjectsSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
+  const [projects, setProjects] = useState<ProjectItem[]>(HARDCODED_PROJECTS);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
+      if (!error && data && data.length > 0) {
+        // Map data from Supabase to match the structure
+        const dbProjects = data.map((item: any) => ({
+          ...item,
+          categoryLabel: item.category_label,
+          youtubeUrl: item.youtube_url,
+          tags: item.tags || [],
+          deliverables: item.deliverables || []
+        }));
+        
+        // Merge DB projects at the top, avoiding duplicates by id
+        const dbIds = new Set(dbProjects.map((p: any) => p.id));
+        const filteredHardcoded = HARDCODED_PROJECTS.filter(p => !dbIds.has(p.id));
+        
+        setProjects([...dbProjects, ...filteredHardcoded]);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const categories = [
     { id: 'all', label: 'All Projects' },
@@ -221,11 +246,10 @@ export const ProjectsSection: React.FC = () => {
   ];
 
   const filteredProjects = selectedCategory === 'all'
-    ? PROJECTS
-    : PROJECTS.filter(p => p.category === selectedCategory);
+    ? projects
+    : projects.filter(p => p.category === selectedCategory);
 
-  return (
-    <section id="projects" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+  return (    <section id="projects" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-8">
         <div>
