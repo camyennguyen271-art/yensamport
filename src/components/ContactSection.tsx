@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
 
 // Fallback socials just in case
-const DEFAULT_SOCIALS = [
+export const SOCIAL_LINKS = [
   {
     id: 'tiktok',
     label: 'TikTok',
@@ -45,7 +45,7 @@ export const ContactSection: React.FC = () => {
   const { language, t } = useI18n();
   const isVi = language === 'vi';
   const [copied, setCopied] = useState(false);
-  const [socials, setSocials] = useState<any[]>(DEFAULT_SOCIALS);
+  const [socials, setSocials] = useState<any[]>(SOCIAL_LINKS);
 
   useEffect(() => {
     const fetchSocials = async () => {
