@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useI18n } from '../lib/i18n';
 import { HeroSection } from '../components/HeroSection';
 import { AboutSection } from '../components/AboutSection';
 import { ExperienceSection } from '../components/ExperienceSection';
@@ -8,6 +9,7 @@ import { ContactSection } from '../components/ContactSection';
 import { DockNavigation } from '../components/DockNavigation';
 
 export const Home: React.FC = () => {
+  const { t, language, toggleLanguage } = useI18n();
   const [activeSection, setActiveSection] = useState<string>('about');
 
   useEffect(() => {
@@ -60,10 +62,10 @@ export const Home: React.FC = () => {
         </a>
 
         <nav className="hidden md:flex items-center gap-6 text-xs sm:text-sm font-medium text-slate-400">
-          <a href="#about" className="hover:text-white transition-colors">About</a>
-          <a href="#experience" className="hover:text-white transition-colors">Experience</a>
-          <a href="#projects" className="hover:text-white transition-colors">Projects</a>
-          <a href="#skills" className="hover:text-white transition-colors">Skills</a>
+          <a href="#about" className="hover:text-white transition-colors">{t('nav.about')}</a>
+          <a href="#experience" className="hover:text-white transition-colors">{t('nav.experience')}</a>
+          <a href="#projects" className="hover:text-white transition-colors">{t('nav.projects')}</a>
+          <a href="#skills" className="hover:text-white transition-colors">{t('nav.skills')}</a>
         </nav>
 
         <div className="flex items-center gap-2.5">
@@ -71,8 +73,16 @@ export const Home: React.FC = () => {
             onClick={handleContactClick}
             className="px-3.5 py-1.5 text-xs font-semibold text-slate-950 bg-white hover:bg-cyan-100 rounded-full transition-all cursor-pointer whitespace-nowrap shadow-sm hover:scale-105"
           >
-            Contact
+            {t('nav.contact')}
           </button>
+          {/* Language toggle */}
+          <button
+            onClick={toggleLanguage}
+            className="ml-3 px-2 py-1 text-xs font-medium bg-slate-800 text-slate-200 rounded hover:bg-slate-700"
+          >
+            {language === 'vi' ? 'EN' : 'VI'}
+          </button>
+
         </div>
       </header>
 
