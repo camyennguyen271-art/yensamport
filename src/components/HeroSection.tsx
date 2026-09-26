@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { DotMatrixHeader } from './DotMatrixHeader';
 import { Mail, ArrowDown, Sparkles, Check, Copy, ExternalLink } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface HeroSectionProps {
   onContactClick: () => void;
@@ -14,6 +15,31 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [mousePos, setMousePos] = useState({ x: 50, y: 40 });
   const [copied, setCopied] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  
+  // Data State
+  const [heroData, setHeroData] = useState({
+    title: 'NGUYỄN THỊ CẨM YẾN',
+    subtitle: 'YẾN SAM · MEDIA SPECIALIST',
+    tagline: 'Proactive · Friendly · Motivated Ambivert',
+    description: 'Connecting strategic communication, viral media production, and artist management through a holistic, creative problem-solving approach.',
+    email: 'camyen.nguyen.271@gmail.com',
+    imageUrl: '/src/assets/images/hero_yen_portrait_1790314347035.jpg'
+  });
+
+  useEffect(() => {
+    const fetchHeroData = async () => {
+      const { data, error } = await supabase
+        .from('site_content')
+        .select('content_json')
+        .eq('section_name', 'hero')
+        .single();
+      
+      if (!error && data && data.content_json) {
+        setHeroData((prev) => ({ ...prev, ...data.content_json }));
+      }
+    };
+    fetchHeroData();
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!heroRef.current) return;
@@ -25,7 +51,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText('camyen.nguyen.271@gmail.com');
+    navigator.clipboard.writeText(heroData.email);
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
@@ -87,8 +113,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             
             {/* Candidate Editorial Portrait */}
             <img
-              src="/src/assets/images/hero_yen_portrait_1790314347035.jpg"
-              alt="Nguyễn Thị Cẩm Yến - Media Specialist"
+              src={heroData.imageUrl}
+              alt={heroData.title}
               className="w-full h-full object-cover object-center filter contrast-105 brightness-95 transform scale-[1.02] hover:scale-105 transition-transform duration-700 ease-out"
               loading="eager"
             />
@@ -100,13 +126,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="absolute bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-6 z-20 text-center">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 text-[11px] font-mono tracking-widest uppercase text-cyan-300 backdrop-blur-md mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-                YẾN SAM · MEDIA SPECIALIST
+                {heroData.subtitle}
               </span>
               <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight font-display drop-shadow-md">
-                NGUYỄN THỊ CẨM YẾN
+                {heroData.title}
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-sm mx-auto font-normal leading-relaxed drop-shadow">
-                Proactive · Friendly · Motivated Ambivert
+                {heroData.tagline}
               </p>
             </div>
           </div>
@@ -115,7 +141,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Orbit Curved Editorial Arc Statement */}
         <div className="mt-6 text-center max-w-xl mx-auto px-4">
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
-            Connecting strategic communication, viral media production, and artist management through a holistic, creative problem-solving approach.
+            {heroData.description}
           </p>
 
           {/* Quick Action Buttons */}
@@ -145,7 +171,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5" />
-                  <span>camyen.nguyen.271@gmail.com</span>
+                  <span>{heroData.email}</span>
                 </>
               )}
             </button>

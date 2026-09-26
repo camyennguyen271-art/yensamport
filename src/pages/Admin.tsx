@@ -280,31 +280,144 @@ export const Admin: React.FC = () => {
           </div>
         )}
 
+        {/* Hero Edit Tab */}
+        {activeTab === 'hero' && (
+          <HeroEditor />
+        )}
+
         {/* Placeholder cho các tab khác */}
-        {activeTab !== 'projects' && (
+        {(activeTab !== 'projects' && activeTab !== 'hero') && (
           <div className="bg-slate-900 border border-white/10 rounded-2xl p-8 shadow-xl flex flex-col items-center justify-center text-center h-[60vh]">
             <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center border border-white/5 shadow-inner mb-6">
               {React.createElement(TABS.find(t => t.id === activeTab)?.icon || Settings, { className: "w-10 h-10 text-cyan-400/50" })}
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">Đang phát triển</h3>
             <p className="text-slate-400 max-w-md mx-auto leading-relaxed">
-              Tính năng chỉnh sửa nội dung cho phần <strong>{TABS.find(t => t.id === activeTab)?.label}</strong> đang được xây dựng. Để kích hoạt tính năng này, cần khởi tạo bảng tương ứng trên Supabase (ví dụ: bảng <code>site_settings</code> hoặc <code>hero_content</code>) trước.
+              Tính năng chỉnh sửa nội dung cho phần <strong>{TABS.find(t => t.id === activeTab)?.label}</strong> đang được xây dựng. Để kích hoạt tính năng này, cần khởi tạo bảng tương ứng trên Supabase trước.
             </p>
             <div className="mt-8 bg-cyan-950/30 border border-cyan-500/20 p-4 rounded-xl text-left max-w-xl">
-              <p className="text-sm text-cyan-300 font-mono mb-2">Gợi ý SQL tạo bảng cài đặt chung:</p>
+              <p className="text-sm text-cyan-300 font-mono mb-2">Bạn phải chạy mã SQL sau trong tab SQL Editor của Supabase để tạo bảng:</p>
               <pre className="text-xs text-slate-300 bg-slate-950 p-3 rounded-lg overflow-x-auto border border-white/5">
 {`CREATE TABLE site_content (
   id TEXT PRIMARY KEY,
   section_name TEXT NOT NULL,
   content_json JSONB NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);`}
+);
+
+ALTER TABLE site_content ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Cho phép tất cả" ON site_content FOR ALL USING (true);
+`}
               </pre>
             </div>
           </div>
         )}
 
       </div>
+    </div>
+  );
+};
+
+// Component con để quản lý riêng việc sửa Hero
+const HeroEditor: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [heroData, setHeroData] = useState({
+    title: 'NGUYỄN THỊ CẨM YẾN',
+    subtitle: 'YẾN SAM · MEDIA SPECIALIST',
+    tagline: 'Proactive · Friendly · Motivated Ambivert',
+    description: 'Connecting strategic communication, viral media production, and artist management through a holistic, creative problem-solving approach.',
+    email: 'camyen.nguyen.271@gmail.com',
+    imageUrl: '/src/assets/images/hero_yen_portrait_1790314347035.jpg'
+  });
+
+  useEffect(() => {
+    const fetchHero = async () => {
+      const { data, error } = await supabase.from('site_content').select('*').eq('section_name', 'hero').single();
+      if (!error && data && data.content_json) {
+        setHeroData(data.content_json);
+      }
+    };
+    fetchHero();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.from('site_content').upsert({
+      id: 'hero',
+      section_name: 'hero',
+      content_json: heroData,
+      updated_at: new Date().toISOString()
+    });
+
+    if (error) {
+      alert('Chưa lưu được. Vui lòng chạy lệnh SQL tạo bảng site_content (xem gợi ý ở tab About) trước!\nChi tiết lỗi: ' + error.message);
+    } else {
+      alert('Lưu thành công vào Database!');
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-xl max-w-5xl">
+      <h3 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-4 flex items-center justify-between">
+        <span>Chỉnh sửa Nội dung Trang Chủ (Hero Section)</span>
+        <span className="text-xs font-normal text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">Bảng: site_content</span>
+      </h3>
+      
+      <form onSubmit={handleSave} className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1">Tiêu đề chính (Tên)</label>
+              <input type="text" required value={heroData.title} onChange={e => setHeroData({...heroData, title: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1">Tiêu đề phụ (Phía trên tên)</label>
+              <input type="text" required value={heroData.subtitle} onChange={e => setHeroData({...heroData, subtitle: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1">Tagline (Định vị bản thân)</label>
+              <input type="text" required value={heroData.tagline} onChange={e => setHeroData({...heroData, tagline: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1">Đoạn văn mô tả (Description)</label>
+              <textarea rows={4} required value={heroData.description} onChange={e => setHeroData({...heroData, description: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors"></textarea>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1">Email Liên Hệ</label>
+              <input type="email" required value={heroData.email} onChange={e => setHeroData({...heroData, email: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors" />
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1">Đường dẫn hình ảnh (URL)</label>
+              <input type="text" required value={heroData.imageUrl} onChange={e => setHeroData({...heroData, imageUrl: e.target.value})} className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white focus:border-cyan-400 outline-none transition-colors mb-2" />
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Để đổi ảnh, hãy upload ảnh lên Supabase Storage hoặc lấy link URL (imgur, web) dán vào đây.
+              </p>
+            </div>
+            <div className="bg-[#030611] rounded-xl border border-white/10 p-4 h-72 flex items-center justify-center overflow-hidden relative shadow-inner">
+              {heroData.imageUrl ? (
+                <img src={heroData.imageUrl} alt="Preview" className="w-full h-full object-cover rounded-lg shadow-2xl opacity-90 filter contrast-105" />
+              ) : (
+                <span className="text-slate-500 text-sm font-mono">Chưa có ảnh (Preview Image)</span>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        <div className="pt-6 border-t border-white/10 flex items-center justify-between">
+          <button type="submit" disabled={loading} className="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 disabled:opacity-50 flex items-center gap-2">
+            {loading ? 'Đang lưu...' : 'Lưu Thay Đổi Trang Chủ'}
+          </button>
+          
+          <p className="text-xs text-slate-400 max-w-sm text-right">
+            Lưu ý: Bạn phải tạo bảng <code className="text-cyan-400">site_content</code> trong Supabase trước thì mới có thể lưu được dữ liệu.
+          </p>
+        </div>
+      </form>
     </div>
   );
 };
