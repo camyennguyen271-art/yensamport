@@ -77,7 +77,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
           setSavedData(loaded);
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loaded));
         } else {
-          // If full_site section is not found, check section by section or use default
           setSavedData(data);
         }
       } catch (err) {
@@ -216,20 +215,24 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
         }, { onConflict: 'section_name' });
 
       if (error) {
-        console.warn('Supabase upsert returned error (will fall back to localStorage):', error.message);
-        setSaveMessage('Đã lưu vào bộ nhớ trình duyệt (Supabase chưa kết nối)');
+        console.warn('Supabase upsert returned error:', error);
+        if (error.code === '42501') {
+          setSaveMessage('⚠️ Lỗi Supabase RLS Policy (42501). Cần chạy SQL cấp quyền ghi cho anon role.');
+        } else {
+          setSaveMessage(`⚠️ Lỗi lưu Supabase: ${error.message}`);
+        }
       } else {
         setSaveMessage('✅ Đã lưu thành công lên Server & Supabase!');
       }
 
       setSavedData(data);
-      setTimeout(() => setSaveMessage(null), 3500);
-      return true;
+      setTimeout(() => setSaveMessage(null), 5000);
+      return !error;
     } catch (err: any) {
       console.error('Save failed', err);
-      setSaveMessage('Đã lưu local. Lỗi kết nối Supabase: ' + (err.message || 'Error'));
+      setSaveMessage('Đã lưu local. Lỗi Supabase: ' + (err.message || 'Error'));
       setSavedData(data);
-      setTimeout(() => setSaveMessage(null), 4000);
+      setTimeout(() => setSaveMessage(null), 5000);
       return false;
     } finally {
       setIsSaving(false);
@@ -262,7 +265,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
 
       if (uploadError) {
         console.warn('Supabase storage upload error, fallback to Base64:', uploadError.message);
-        // Fallback to Base64 Data URL so user can still upload images without bucket setup
         return new Promise<string>((resolve) => {
           const reader = new FileReader();
           reader.onloadend = () => resolve(reader.result as string);
@@ -277,7 +279,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
       return publicUrlData.publicUrl;
     } catch (err) {
       console.error('Error uploading image', err);
-      // Base64 fallback
       return new Promise<string>((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
