@@ -3,8 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 const DEFAULT_SUPABASE_URL = 'https://umcffywhiiwznyxsmpnr.supabase.co';
 const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtY2ZmeXdoaWl3em55eHNtcG5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyMzU2NjEsImV4cCI6MjEwNTgxMTY2MX0.FByX1hAFp-XIjBZycVIYv1F0sg2ZvxnVjciF89GDvBs';
 
-const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || DEFAULT_SUPABASE_URL;
-const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY as string) || DEFAULT_SUPABASE_ANON_KEY;
+const rawUrl = (import.meta.env.VITE_SUPABASE_URL as string || '').trim();
+const rawKey = (import.meta.env.VITE_SUPABASE_ANON_KEY as string || '').trim();
+
+// Ensure key starts with valid Supabase JWT prefix 'eyJ' and has sufficient length
+const supabaseUrl = (rawUrl.startsWith('http://') || rawUrl.startsWith('https://')) ? rawUrl : DEFAULT_SUPABASE_URL;
+const supabaseAnonKey = (rawKey.startsWith('eyJ') && rawKey.length > 50) ? rawKey : DEFAULT_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

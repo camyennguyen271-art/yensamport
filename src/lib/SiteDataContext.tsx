@@ -68,11 +68,23 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
     const loadFromSupabase = async () => {
       setIsLoading(true);
       try {
-        const { data: result, error } = await supabase
+        let { data: result, error } = await supabase
           .from('site_content')
           .select('content_json')
           .eq('section_name', 'full_site')
-          .single();
+          .maybeSingle();
+
+        if (!result || !result.content_json) {
+          const fallback = await supabase
+            .from('site_content')
+            .select('content_json')
+            .limit(1)
+            .maybeSingle();
+          if (fallback.data) {
+            result = fallback.data;
+            error = null;
+          }
+        }
 
         if (!error && result && result.content_json) {
           const loaded = { ...DEFAULT_SITE_DATA, ...(result.content_json as FullSiteData) };
@@ -239,13 +251,24 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
 
       // Save to Supabase site_content table
-      const { error } = await supabase
+      const payload = {
+        id: 1,
+        section_name: 'full_site',
+        content_json: data,
+        updated_at: new Date().toISOString()
+      };
+
+      let { error } = await supabase
         .from('site_content')
-        .upsert({
-          section_name: 'full_site',
-          content_json: data,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'section_name' });
+        .upsert(payload, { onConflict: 'id' });
+
+      // Fallback if onConflict id fails
+      if (error) {
+        const retry = await supabase
+          .from('site_content')
+          .upsert(payload);
+        error = retry.error;
+      }
 
       if (error) {
         console.warn('Supabase upsert returned error:', error);

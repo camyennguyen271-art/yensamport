@@ -113,8 +113,8 @@ export interface SocialLinkItem {
   url: string;
   handle: string;
   icon: string;
-  descriptionVi: string;
-  descriptionEn: string;
+  descriptionVi?: string;
+  descriptionEn?: string;
 }
 
 export interface ContactData {
