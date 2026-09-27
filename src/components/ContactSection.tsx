@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
-import { Mail, Copy, Check, MapPin } from 'lucide-react';
+import { Mail, Copy, Check, MapPin, Plus, Trash2, Globe, ExternalLink } from 'lucide-react';
 import { TikTokIcon, FacebookIcon, ZaloIcon, InstagramIcon } from './SocialIcons';
 import { useI18n } from '../lib/i18n';
 import { useSiteData } from '../lib/SiteDataContext';
-import { InlineText } from './admin/InlineEditHelpers';
+import { InlineText, ItemControls } from './admin/InlineEditHelpers';
+
+const ICON_MAP: Record<string, React.FC<{ className?: string }>> = {
+  TikTok: TikTokIcon,
+  Facebook: FacebookIcon,
+  Zalo: ZaloIcon,
+  Instagram: InstagramIcon,
+  Mail: Mail,
+  Globe: Globe,
+};
 
 export const ContactSection: React.FC = () => {
   const { language, t } = useI18n();
-  const { data, updateContact } = useSiteData();
+  const { data, updateContact, updateSocialLink, addSocialLink, deleteSocialLink, isEditMode } = useSiteData();
   const contact = data.contact;
+  const socialLinks = contact.socialLinks || [];
   const isVi = language === 'vi';
   const [copied, setCopied] = useState(false);
 
@@ -18,41 +28,18 @@ export const ContactSection: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const socials = [
-    {
-      id: 'tiktok',
-      label: 'TikTok',
+  const handleAddSocialLink = () => {
+    const newId = `soc_${Date.now()}`;
+    addSocialLink({
+      id: newId,
+      name: 'Mạng Xã Hội Mới',
       handle: '@yensam.media',
-      href: 'https://www.tiktok.com/@yensam.media',
-      Icon: TikTokIcon,
-      color: 'from-[#010101] to-[#1a1a2e]',
-      hoverBorder: 'hover:border-[#fe2c55]/50',
-      accent: '#fe2c55',
-      description: isVi ? 'Nội dung sáng tạo & hậu trường' : 'Creative content & behind-the-scenes',
-    },
-    {
-      id: 'facebook',
-      label: 'Facebook',
-      handle: 'Yến Sam - Media',
-      href: 'https://www.facebook.com/yensam.media',
-      Icon: FacebookIcon,
-      color: 'from-[#0a1628] to-[#0d1f3c]',
-      hoverBorder: 'hover:border-[#1877F2]/50',
-      accent: '#1877F2',
-      description: isVi ? 'Cập nhật dự án mới nhất' : 'Latest project announcements',
-    },
-    {
-      id: 'zalo',
-      label: 'Zalo',
-      handle: 'Nguyễn Thị Cẩm Yến',
-      href: 'https://zalo.me',
-      Icon: ZaloIcon,
-      color: 'from-[#001a3a] to-[#00112b]',
-      hoverBorder: 'hover:border-[#0068FF]/50',
-      accent: '#0068FF',
-      description: isVi ? 'Liên hệ làm việc nhanh' : 'Instant business chat',
-    }
-  ];
+      url: 'https://example.com',
+      icon: 'Globe',
+      descriptionVi: 'Mô tả kênh mạng xã hội',
+      descriptionEn: 'Social channel description'
+    });
+  };
 
   return (
     <section id="contact" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -151,49 +138,94 @@ export const ContactSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column */}
+        {/* Right Column: Social Links */}
         <div className="lg:col-span-7">
           <div className="glass-card rounded-2xl p-6 sm:p-8 border border-white/10 space-y-5">
-            <div>
-              <h3 className="text-lg font-bold text-white font-display">
-                {isVi ? 'Kết Nối Trên Mạng Xã Hội' : 'Connect on Social Media'}
-              </h3>
-              <p className="text-xs text-slate-400 font-mono mt-1">
-                {isVi ? 'Theo dõi hành trình sáng tạo của Yến Sam' : 'Follow the creative journey of Yen Sam'}
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-white font-display">
+                  {isVi ? 'Kết Nối Trên Mạng Xã Hội' : 'Connect on Social Media'}
+                </h3>
+                <p className="text-xs text-slate-400 font-mono mt-1">
+                  {isVi ? 'Theo dõi hành trình sáng tạo của Yến Sam' : 'Follow the creative journey of Yen Sam'}
+                </p>
+              </div>
+
+              {isEditMode && (
+                <button
+                  type="button"
+                  onClick={handleAddSocialLink}
+                  className="px-3 py-1.5 rounded-full text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center gap-1 shadow-md transition-all cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Thêm kênh</span>
+                </button>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {socials.map(({ id, label, handle, href, Icon, color, hoverBorder, accent, description }) => (
-                <a
-                  key={id}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`group relative flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-br ${color} border border-white/10 ${hoverBorder} transition-all duration-300 hover:scale-[1.03] hover:shadow-lg active:scale-95 cursor-pointer overflow-hidden`}
-                  style={{ '--accent': accent } as React.CSSProperties}
-                >
+              {socialLinks.map((item) => {
+                const IconComponent = ICON_MAP[item.icon] || Globe;
+                const desc = isVi ? (item.descriptionVi || 'Nội dung sáng tạo') : (item.descriptionEn || 'Social content');
+
+                return (
                   <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
-                    style={{ background: `radial-gradient(circle at 30% 50%, ${accent}22, transparent 70%)` }}
-                  />
+                    key={item.id}
+                    className="group relative flex items-center gap-4 p-4 rounded-2xl bg-slate-900/90 border border-white/10 hover:border-cyan-400/50 transition-all duration-300 hover:scale-[1.02] shadow-md overflow-hidden"
+                  >
+                    {isEditMode && (
+                      <button
+                        type="button"
+                        onClick={() => deleteSocialLink(item.id)}
+                        className="absolute top-2 right-2 p-1 text-rose-400 hover:text-rose-200 bg-rose-500/20 hover:bg-rose-500/30 rounded-lg transition-colors z-20 cursor-pointer"
+                        title="Xóa kênh này"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
 
-                  <div className="relative shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-white/20 transition-colors">
-                    <Icon className="w-6 h-6" />
-                  </div>
-
-                  <div className="relative flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-white font-display">{label}</span>
-                      <svg className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
+                    <div className="relative shrink-0 w-12 h-12 rounded-xl bg-cyan-950/50 border border-cyan-500/30 flex items-center justify-center text-cyan-300">
+                      <IconComponent className="w-6 h-6" />
                     </div>
-                    <div className="text-xs font-mono mt-0.5 truncate" style={{ color: accent }}>{handle}</div>
-                    <div className="text-[11px] text-slate-400 mt-1 leading-tight line-clamp-1">{description}</div>
+
+                    <div className="relative flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm font-bold text-white font-display">
+                          <InlineText
+                            value={item.name}
+                            onChange={(val) => updateSocialLink(item.id, { name: val })}
+                          />
+                        </span>
+                        {!isEditMode && (
+                          <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white">
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+
+                      <div className="text-xs font-mono text-cyan-400 mt-0.5 truncate">
+                        <InlineText
+                          value={item.handle}
+                          onChange={(val) => updateSocialLink(item.id, { handle: val })}
+                        />
+                      </div>
+
+                      {isEditMode && (
+                        <div className="text-[10px] font-mono text-slate-500 truncate mt-0.5">
+                          Link: <InlineText value={item.url} onChange={(val) => updateSocialLink(item.id, { url: val })} />
+                        </div>
+                      )}
+
+                      <div className="text-[11px] text-slate-400 mt-1 leading-tight line-clamp-1">
+                        <InlineText
+                          value={desc}
+                          onChange={(val) => updateSocialLink(item.id, isVi ? { descriptionVi: val } : { descriptionEn: val })}
+                        />
+                      </div>
+                    </div>
                   </div>
-                </a>
-              ))}
+                );
+              })}
             </div>
 
             <div className="pt-2 border-t border-white/10 flex items-center justify-between">
@@ -228,4 +260,3 @@ export const ContactSection: React.FC = () => {
     </section>
   );
 };
-

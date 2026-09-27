@@ -107,6 +107,16 @@ export interface SkillGroupData {
   highlightsEn: string[];
 }
 
+export interface SocialLinkItem {
+  id: string;
+  name: string;
+  url: string;
+  handle: string;
+  icon: string;
+  descriptionVi: string;
+  descriptionEn: string;
+}
+
 export interface ContactData {
   titleVi: string;
   titleEn: string;
@@ -118,13 +128,7 @@ export interface ContactData {
   phone: string;
   addressVi: string;
   addressEn: string;
-  socialLinks: {
-    id: string;
-    name: string;
-    url: string;
-    handle: string;
-    icon: string;
-  }[];
+  socialLinks: SocialLinkItem[];
 }
 
 export interface FullSiteData {

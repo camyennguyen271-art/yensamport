@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { DotMatrixHeader } from './DotMatrixHeader';
-import { ArrowDown, Check, Copy } from 'lucide-react';
+import { ArrowDown, Check, Copy, Camera } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
 import { useSiteData } from '../lib/SiteDataContext';
 import { InlineText, InlineImage } from './admin/InlineEditHelpers';
@@ -91,12 +91,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {/* Background dynamic rim shadow */}
             <div className="absolute inset-0 bg-gradient-to-tr from-cyan-900/40 via-transparent to-rose-800/30 mix-blend-screen z-10 pointer-events-none" />
             
-            {/* Candidate Editorial Portrait */}
+            {/* Candidate Editorial Portrait with Inline Image editor */}
             <InlineImage
               src={heroData.imageUrl}
               alt={heroData.title}
+              buttonText="Thay ảnh chân dung"
               onChange={(newSrc) => updateHero({ imageUrl: newSrc })}
-              className="w-full h-full object-cover object-center filter contrast-105 brightness-95 transform hover:scale-105 transition-transform duration-700 ease-out"
+              className="w-full h-full object-cover object-center filter contrast-105 brightness-95"
             />
 
             {/* Bottom Scrim for text readability */}
@@ -196,4 +197,3 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </section>
   );
 };
-

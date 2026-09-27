@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Camera, Edit3, Trash2, ArrowUp, ArrowDown, Plus, Link, Upload, Check, X } from 'lucide-react';
+import { Camera, Edit3, Trash2, ArrowUp, ArrowDown, Link, Upload, Check, X } from 'lucide-react';
 import { useSiteData } from '../../lib/SiteDataContext';
 
 // ==================== 1. INLINE TEXT EDITOR ====================
@@ -100,12 +100,13 @@ export const InlineText: React.FC<InlineTextProps> = ({
   );
 };
 
-// ==================== 2. INLINE IMAGE EDITOR (USING PORTAL) ====================
+// ==================== 2. INLINE IMAGE EDITOR (PORTAL MODAL) ====================
 interface InlineImageProps {
   src: string;
   alt: string;
   onChange: (newSrc: string) => void;
   className?: string;
+  buttonText?: string;
 }
 
 export const InlineImage: React.FC<InlineImageProps> = ({
@@ -113,6 +114,7 @@ export const InlineImage: React.FC<InlineImageProps> = ({
   alt,
   onChange,
   className = '',
+  buttonText = 'Thay đổi ảnh',
 }) => {
   const { isEditMode, uploadImage } = useSiteData();
   const [modalOpen, setModalOpen] = useState(false);
@@ -151,12 +153,12 @@ export const InlineImage: React.FC<InlineImageProps> = ({
 
   const modalContent = modalOpen ? (
     <div 
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) setModalOpen(false);
       }}
     >
-      <div className="bg-slate-900 border border-white/20 rounded-3xl p-6 w-full max-w-lg shadow-2xl space-y-5 text-left text-slate-100 relative z-[10000]">
+      <div className="bg-slate-900 border border-white/20 rounded-3xl p-6 w-full max-w-lg shadow-2xl space-y-5 text-left text-slate-100 relative z-[100000]">
         <button
           type="button"
           onClick={() => setModalOpen(false)}
@@ -171,7 +173,7 @@ export const InlineImage: React.FC<InlineImageProps> = ({
             Cập nhật Hình ảnh
           </h3>
           <p className="text-xs text-slate-400 mt-1">
-            Chọn file từ máy tính hoặc dán trực tiếp đường dẫn URL của hình ảnh.
+            Chọn file từ thiết bị của bạn hoặc dán đường dẫn URL hình ảnh mới.
           </p>
         </div>
 
@@ -180,10 +182,10 @@ export const InlineImage: React.FC<InlineImageProps> = ({
           {urlInput ? (
             <img src={urlInput} alt="Preview" className="w-full h-full object-cover" />
           ) : (
-            <span className="text-xs text-slate-500">Chưa chọn hình ảnh</span>
+            <span className="text-xs text-slate-500">Chưa có hình ảnh</span>
           )}
           {uploading && (
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-xs flex items-center justify-center text-cyan-400 text-xs font-semibold">
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-xs flex items-center justify-center text-cyan-400 text-xs font-semibold">
               Đang tải ảnh lên...
             </div>
           )}
@@ -194,7 +196,7 @@ export const InlineImage: React.FC<InlineImageProps> = ({
           {/* File Upload Button */}
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1.5 font-mono">
-              1. TẢI FILE TỪ MÁY TÍNH
+              1. TẢI ẢNH TỪ THIẾT BỊ / MÁY TÍNH
             </label>
             <input
               type="file"
@@ -210,14 +212,14 @@ export const InlineImage: React.FC<InlineImageProps> = ({
               className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 border border-white/15 rounded-xl text-xs font-semibold text-cyan-300 flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <Upload className="w-4 h-4" />
-              <span>{uploading ? 'Đang xử lý...' : 'Chọn hình ảnh từ thiết bị...'}</span>
+              <span>{uploading ? 'Đang xử lý tải...' : 'Chọn file ảnh từ thiết bị...'}</span>
             </button>
           </div>
 
           {/* URL Input */}
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1.5 font-mono">
-              2. HOẶC DÁN ĐƯỜNG DẪN LINK KÍCH THƯỚC (IMAGE URL)
+              2. HOẶC DÁN ĐƯỜNG DẪN ẢNH (IMAGE URL)
             </label>
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -229,7 +231,7 @@ export const InlineImage: React.FC<InlineImageProps> = ({
                     setUrlInput(e.target.value);
                     setPreviewSrc(e.target.value);
                   }}
-                  placeholder="https://example.com/image.png"
+                  placeholder="https://example.com/image.jpg"
                   className="w-full bg-slate-950 border border-white/15 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
                 />
               </div>
@@ -260,21 +262,27 @@ export const InlineImage: React.FC<InlineImageProps> = ({
   ) : null;
 
   return (
-    <div className="relative group/image overflow-hidden">
+    <div className={`relative group/image overflow-hidden ${className.includes('h-full') ? 'h-full' : ''} ${className.includes('w-full') ? 'w-full' : ''}`}>
       <img src={previewSrc || src} alt={alt} className={className} />
       
-      {/* Visual Edit Overlay Button */}
-      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs opacity-0 group-hover/image:opacity-100 transition-all duration-300 flex items-center justify-center z-20 p-2 border-2 border-dashed border-cyan-400 rounded-lg">
+      {/* Overlay Hover Edit Button */}
+      <div 
+        onClick={(e) => {
+          e.stopPropagation();
+          setModalOpen(true);
+        }}
+        className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs opacity-0 group-hover/image:opacity-100 transition-all duration-300 flex items-center justify-center z-30 p-2 border-2 border-dashed border-cyan-400 rounded-lg cursor-pointer"
+      >
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             setModalOpen(true);
           }}
-          type="button"
-          className="px-3.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-xl flex items-center gap-2 transform group-hover/image:scale-105 transition-all cursor-pointer"
+          className="px-3.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-2xl flex items-center gap-2 transform group-hover/image:scale-105 transition-all cursor-pointer pointer-events-auto"
         >
           <Camera className="w-4 h-4" />
-          <span>Thay đổi ảnh</span>
+          <span>{buttonText}</span>
         </button>
       </div>
 
@@ -311,6 +319,7 @@ export const ItemControls: React.FC<ItemControlsProps> = ({
     <div className="absolute top-2 right-2 z-30 flex items-center gap-1 bg-slate-950/90 border border-cyan-500/40 rounded-xl p-1 shadow-xl backdrop-blur-md transition-opacity">
       {onMoveUp && canMoveUp && (
         <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); onMoveUp(); }}
           title="Di chuyển lên trước"
           className="p-1.5 text-slate-300 hover:text-cyan-300 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
@@ -320,6 +329,7 @@ export const ItemControls: React.FC<ItemControlsProps> = ({
       )}
       {onMoveDown && canMoveDown && (
         <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); onMoveDown(); }}
           title="Di chuyển xuống dưới"
           className="p-1.5 text-slate-300 hover:text-cyan-300 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
@@ -329,6 +339,7 @@ export const ItemControls: React.FC<ItemControlsProps> = ({
       )}
       {onEdit && (
         <button
+          type="button"
           onClick={(e) => { e.stopPropagation(); onEdit(); }}
           title={`Sửa ${itemTitle}`}
           className="p-1.5 text-slate-300 hover:text-amber-300 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
@@ -338,6 +349,7 @@ export const ItemControls: React.FC<ItemControlsProps> = ({
       )}
       {onDelete && (
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             if (confirm(`Bạn có chắc muốn xóa ${itemTitle} này?`)) {

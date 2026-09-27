@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from './supabase';
-import { DEFAULT_SITE_DATA, FullSiteData, HeroData, AboutData, ExperienceItemData, ProjectItemData, SkillGroupData, ContactData } from '../data/mockSiteData';
+import { DEFAULT_SITE_DATA, FullSiteData, HeroData, AboutData, ExperienceItemData, ProjectItemData, SkillGroupData, ContactData, SocialLinkItem } from '../data/mockSiteData';
 
 const LOCAL_STORAGE_KEY = 'yensam_site_data_v1';
 
@@ -28,6 +28,9 @@ interface SiteDataContextType {
   addSkillItem: (newItem: SkillGroupData) => void;
   deleteSkillItem: (id: string) => void;
   updateContact: (fields: Partial<ContactData>) => void;
+  updateSocialLink: (id: string, updated: Partial<SocialLinkItem>) => void;
+  addSocialLink: (newLink: SocialLinkItem) => void;
+  deleteSocialLink: (id: string) => void;
 
   // Global Actions
   saveChanges: () => Promise<boolean>;
@@ -197,6 +200,36 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
     }));
   };
 
+  const updateSocialLink = (id: string, updated: Partial<SocialLinkItem>) => {
+    setData(prev => ({
+      ...prev,
+      contact: {
+        ...prev.contact,
+        socialLinks: (prev.contact.socialLinks || []).map(link => link.id === id ? { ...link, ...updated } : link)
+      }
+    }));
+  };
+
+  const addSocialLink = (newLink: SocialLinkItem) => {
+    setData(prev => ({
+      ...prev,
+      contact: {
+        ...prev.contact,
+        socialLinks: [...(prev.contact.socialLinks || []), newLink]
+      }
+    }));
+  };
+
+  const deleteSocialLink = (id: string) => {
+    setData(prev => ({
+      ...prev,
+      contact: {
+        ...prev.contact,
+        socialLinks: (prev.contact.socialLinks || []).filter(link => link.id !== id)
+      }
+    }));
+  };
+
   // Save changes to Supabase & LocalStorage
   const saveChanges = async (): Promise<boolean> => {
     setIsSaving(true);
@@ -312,6 +345,9 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
         addSkillItem,
         deleteSkillItem,
         updateContact,
+        updateSocialLink,
+        addSocialLink,
+        deleteSocialLink,
         saveChanges,
         discardChanges,
         uploadImage,
