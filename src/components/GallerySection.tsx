@@ -176,7 +176,7 @@ export const GallerySection: React.FC = () => {
       {/* Active Album Description Header */}
       {activeAlbum && (
         <div className="glass-card rounded-2xl p-5 mb-8 border border-white/10 bg-slate-900/40">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider font-semibold">
               <InlineText
                 value={isVi ? activeAlbum.categoryVi : activeAlbum.categoryEn}
@@ -187,20 +187,12 @@ export const GallerySection: React.FC = () => {
               {(activeAlbum.images || []).length} {isVi ? 'hình ảnh trình chiếu' : 'showcase items'}
             </span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold text-white font-display mb-2">
+          <h3 className="text-xl sm:text-2xl font-bold text-white font-display mt-2">
             <InlineText
               value={isVi ? activeAlbum.titleVi : activeAlbum.titleEn}
               onChange={(val) => updateGalleryAlbum(activeAlbum.id, isVi ? { titleVi: val } : { titleEn: val })}
             />
           </h3>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            <InlineText
-              value={isVi ? (activeAlbum.descriptionVi || '') : (activeAlbum.descriptionEn || '')}
-              onChange={(val) => updateGalleryAlbum(activeAlbum.id, isVi ? { descriptionVi: val } : { descriptionEn: val })}
-              multiline={true}
-              placeholder="Nhập mô tả album visual LED..."
-            />
-          </p>
         </div>
       )}
 
@@ -249,24 +241,6 @@ export const GallerySection: React.FC = () => {
                     </span>
                   </div>
                 )}
-              </div>
-
-              {/* Photo Title & Caption */}
-              <div className="p-4 bg-slate-900/80 border-t border-white/5 space-y-1">
-                <h4 className="text-sm font-bold text-white font-display">
-                  <InlineText
-                    value={img.title || ''}
-                    onChange={(val) => updateImageInAlbum(activeAlbum.id, img.id, { title: val })}
-                    placeholder="Tên ảnh / Visual LED..."
-                  />
-                </h4>
-                <p className="text-xs text-slate-400">
-                  <InlineText
-                    value={img.caption || ''}
-                    onChange={(val) => updateImageInAlbum(activeAlbum.id, img.id, { caption: val })}
-                    placeholder="Mô tả bối cảnh visual..."
-                  />
-                </p>
               </div>
             </div>
           ))}
@@ -362,30 +336,6 @@ export const GallerySection: React.FC = () => {
                   />
                 </div>
               </div>
-
-              {/* Title & Caption */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div>
-                  <label className="block text-[11px] text-slate-400 mb-1 font-mono">Tên ảnh Visual</label>
-                  <input
-                    type="text"
-                    value={newImgTitle}
-                    onChange={(e) => setNewImgTitle(e.target.value)}
-                    placeholder="Masew Stage LED..."
-                    className="w-full bg-slate-950 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] text-slate-400 mb-1 font-mono">Mô tả ngắn</label>
-                  <input
-                    type="text"
-                    value={newImgCaption}
-                    onChange={(e) => setNewImgCaption(e.target.value)}
-                    placeholder="Visual lặp 3D..."
-                    className="w-full bg-slate-950 border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
-                  />
-                </div>
-              </div>
             </div>
 
             {/* Modal Actions */}
@@ -424,7 +374,7 @@ export const GallerySection: React.FC = () => {
                 {lightboxIndex + 1} / {(activeAlbum.images || []).length}
               </span>
               <h3 className="text-lg font-bold font-display">
-                {activeAlbum.images[lightboxIndex]?.title || (isVi ? activeAlbum.titleVi : activeAlbum.titleEn)}
+                {isVi ? activeAlbum.titleVi : activeAlbum.titleEn}
               </h3>
             </div>
             <button
@@ -437,11 +387,11 @@ export const GallerySection: React.FC = () => {
           </div>
 
           {/* Lightbox Center Image */}
-          <div className="relative max-w-5xl max-h-[75vh] w-full flex items-center justify-center my-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="relative max-w-5xl max-h-[85vh] w-full flex items-center justify-center my-auto" onClick={(e) => e.stopPropagation()}>
             <img
               src={activeAlbum.images[lightboxIndex]?.url}
-              alt={activeAlbum.images[lightboxIndex]?.title || 'Visual LED Photo'}
-              className="max-h-[75vh] max-w-full object-contain rounded-2xl shadow-2xl border border-white/10"
+              alt={isVi ? activeAlbum.titleVi : activeAlbum.titleEn}
+              className="max-h-[85vh] max-w-full object-contain rounded-2xl shadow-2xl border border-white/10"
             />
 
             {/* Prev Button */}
@@ -465,13 +415,6 @@ export const GallerySection: React.FC = () => {
                 <ChevronRight className="w-6 h-6" />
               </button>
             )}
-          </div>
-
-          {/* Lightbox Bottom Caption */}
-          <div className="w-full max-w-3xl text-center z-20" onClick={(e) => e.stopPropagation()}>
-            <p className="text-sm text-slate-300 font-light">
-              {activeAlbum.images[lightboxIndex]?.caption}
-            </p>
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Mail, Sparkles } from 'lucide-react';
+import { Mail } from 'lucide-react';
+import { useI18n } from '../lib/i18n';
 
 interface DockNavigationProps {
   activeSection: string;
@@ -12,12 +13,15 @@ export const DockNavigation: React.FC<DockNavigationProps> = ({
   onNavigate,
   onContactClick,
 }) => {
+  const { language } = useI18n();
+  const isVi = language === 'vi';
+
   const navItems = [
-    { id: 'about', label: 'About' },
-    { id: 'experience', label: 'Experience' },
-    { id: 'projects', label: 'Projects' },
+    { id: 'about', label: isVi ? 'Giới thiệu' : 'About' },
+    { id: 'experience', label: isVi ? 'Kinh nghiệm' : 'Experience' },
+    { id: 'projects', label: isVi ? 'Dự án' : 'Projects' },
     { id: 'gallery', label: 'Visual LED' },
-    { id: 'skills', label: 'Skills' },
+    { id: 'skills', label: isVi ? 'Kỹ năng' : 'Skills' },
   ];
 
   return (
@@ -66,13 +70,13 @@ export const DockNavigation: React.FC<DockNavigationProps> = ({
         {/* Hairline vertical divider */}
         <div className="w-[1px] h-4 bg-white/15 mx-0.5 sm:mx-1 shrink-0" />
 
-        {/* Highlighted CTA: "Contact Me" */}
+        {/* Highlighted CTA: "Contact Me" / "Liên hệ" */}
         <button
           onClick={onContactClick}
           className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-1.5 rounded-full bg-white text-slate-950 hover:bg-cyan-50 font-bold text-xs sm:text-sm transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.25)] hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap"
         >
           <Mail className="w-3.5 h-3.5 text-slate-900" />
-          <span>Contact Me</span>
+          <span>{isVi ? 'Liên hệ' : 'Contact Me'}</span>
         </button>
       </nav>
     </div>
