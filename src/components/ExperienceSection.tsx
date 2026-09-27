@@ -141,15 +141,8 @@ export const ExperienceSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Right side: Key metric & Expand toggle */}
-                <div className="flex items-center gap-3 self-end md:self-center">
-                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 font-mono whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                    <InlineText
-                      value={item.metrics || ''}
-                      onChange={(val) => updateExperienceItem(item.id, { metrics: val })}
-                      placeholder="+ Metric"
-                    />
-                  </span>
+                {/* Right side: Expand toggle */}
+                <div className="flex items-center self-end md:self-center">
                   <div className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
