@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from './supabase';
-import { DEFAULT_SITE_DATA, FullSiteData, HeroData, AboutData, ExperienceItemData, ProjectItemData, SkillGroupData, ContactData, SocialLinkItem } from '../data/mockSiteData';
+import { DEFAULT_SITE_DATA, FullSiteData, HeroData, AboutData, ExperienceItemData, ProjectItemData, SkillGroupData, ContactData, SocialLinkItem, GalleryAlbum, GalleryImage } from '../data/mockSiteData';
 
 const LOCAL_STORAGE_KEY = 'yensam_site_data_v1';
 
@@ -31,6 +31,13 @@ interface SiteDataContextType {
   updateSocialLink: (id: string, updated: Partial<SocialLinkItem>) => void;
   addSocialLink: (newLink: SocialLinkItem) => void;
   deleteSocialLink: (id: string) => void;
+  // Gallery Albums & Images
+  updateGalleryAlbum: (id: string, updated: Partial<GalleryAlbum>) => void;
+  addGalleryAlbum: (newAlbum: GalleryAlbum) => void;
+  deleteGalleryAlbum: (id: string) => void;
+  addImageToAlbum: (albumId: string, image: GalleryImage) => void;
+  updateImageInAlbum: (albumId: string, imageId: string, updated: Partial<GalleryImage>) => void;
+  deleteImageFromAlbum: (albumId: string, imageId: string) => void;
 
   // Global Actions
   saveChanges: () => Promise<boolean>;
@@ -242,6 +249,70 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
     }));
   };
 
+  // Gallery Handlers
+  const updateGalleryAlbum = (id: string, updated: Partial<GalleryAlbum>) => {
+    setData(prev => ({
+      ...prev,
+      galleryAlbums: (prev.galleryAlbums || []).map(album => album.id === id ? { ...album, ...updated } : album)
+    }));
+  };
+
+  const addGalleryAlbum = (newAlbum: GalleryAlbum) => {
+    setData(prev => ({
+      ...prev,
+      galleryAlbums: [...(prev.galleryAlbums || []), newAlbum]
+    }));
+  };
+
+  const deleteGalleryAlbum = (id: string) => {
+    setData(prev => ({
+      ...prev,
+      galleryAlbums: (prev.galleryAlbums || []).filter(album => album.id !== id)
+    }));
+  };
+
+  const addImageToAlbum = (albumId: string, image: GalleryImage) => {
+    setData(prev => ({
+      ...prev,
+      galleryAlbums: (prev.galleryAlbums || []).map(album => {
+        if (album.id === albumId) {
+          return { ...album, images: [...album.images, image] };
+        }
+        return album;
+      })
+    }));
+  };
+
+  const updateImageInAlbum = (albumId: string, imageId: string, updated: Partial<GalleryImage>) => {
+    setData(prev => ({
+      ...prev,
+      galleryAlbums: (prev.galleryAlbums || []).map(album => {
+        if (album.id === albumId) {
+          return {
+            ...album,
+            images: album.images.map(img => img.id === imageId ? { ...img, ...updated } : img)
+          };
+        }
+        return album;
+      })
+    }));
+  };
+
+  const deleteImageFromAlbum = (albumId: string, imageId: string) => {
+    setData(prev => ({
+      ...prev,
+      galleryAlbums: (prev.galleryAlbums || []).map(album => {
+        if (album.id === albumId) {
+          return {
+            ...album,
+            images: album.images.filter(img => img.id !== imageId)
+          };
+        }
+        return album;
+      })
+    }));
+  };
+
   // Save changes to Supabase & LocalStorage
   const saveChanges = async (): Promise<boolean> => {
     setIsSaving(true);
@@ -371,6 +442,12 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
         updateSocialLink,
         addSocialLink,
         deleteSocialLink,
+        updateGalleryAlbum,
+        addGalleryAlbum,
+        deleteGalleryAlbum,
+        addImageToAlbum,
+        updateImageInAlbum,
+        deleteImageFromAlbum,
         saveChanges,
         discardChanges,
         uploadImage,

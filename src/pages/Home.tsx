@@ -4,6 +4,7 @@ import { HeroSection } from '../components/HeroSection';
 import { AboutSection } from '../components/AboutSection';
 import { ExperienceSection } from '../components/ExperienceSection';
 import { ProjectsSection } from '../components/ProjectsSection';
+import { GallerySection } from '../components/GallerySection';
 import { SkillsSection } from '../components/SkillsSection';
 import { ContactSection } from '../components/ContactSection';
 import { DockNavigation } from '../components/DockNavigation';
@@ -13,7 +14,7 @@ export const Home: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('about');
 
   useEffect(() => {
-    const sectionIds = ['about', 'experience', 'projects', 'skills', 'contact'];
+    const sectionIds = ['about', 'experience', 'projects', 'gallery', 'skills', 'contact'];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach(id => {
@@ -65,6 +66,7 @@ export const Home: React.FC = () => {
           <a href="#about" className="hover:text-white transition-colors">{t('nav.about')}</a>
           <a href="#experience" className="hover:text-white transition-colors">{t('nav.experience')}</a>
           <a href="#projects" className="hover:text-white transition-colors">{t('nav.projects')}</a>
+          <a href="#gallery" className="hover:text-white transition-colors">Visual LED</a>
           <a href="#skills" className="hover:text-white transition-colors">{t('nav.skills')}</a>
         </nav>
 
@@ -94,6 +96,7 @@ export const Home: React.FC = () => {
         <AboutSection />
         <ExperienceSection />
         <ProjectsSection />
+        <GallerySection />
         <SkillsSection />
         <ContactSection />
       </main>

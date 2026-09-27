@@ -7,10 +7,11 @@ import { ProjectItemData } from '../data/mockSiteData';
 
 export const ProjectsSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [activeProject, setActiveProject] = useState<ProjectItem | null>(null);
+  const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
   const { data, updateProjectItem, addProjectItem, deleteProjectItem, reorderProjects, isEditMode } = useSiteData();
   const projects = data.projects;
+  const activeProject = projects.find(p => p.id === activeProjectId) || null;
 
   const categories = [
     { id: 'all', label: 'All Projects' },
@@ -123,7 +124,7 @@ export const ProjectsSection: React.FC = () => {
                 )}
                 {project.youtubeUrl && !isEditMode && (
                   <div 
-                    onClick={() => setActiveProject(project as ProjectItem)}
+                    onClick={() => setActiveProjectId(project.id)}
                     className="absolute inset-0 flex items-center justify-center cursor-pointer"
                   >
                     <div className="w-12 h-12 rounded-full bg-[#FF0000]/90 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -197,7 +198,7 @@ export const ProjectsSection: React.FC = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => setActiveProject(project as ProjectItem)}
+                  onClick={() => setActiveProjectId(project.id)}
                   className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
                 >
                   Chi tiết →
@@ -211,7 +212,7 @@ export const ProjectsSection: React.FC = () => {
       {/* Project Detail Modal */}
       <ProjectModal
         project={activeProject}
-        onClose={() => setActiveProject(null)}
+        onClose={() => setActiveProjectId(null)}
       />
     </section>
   );

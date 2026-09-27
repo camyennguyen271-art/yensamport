@@ -131,6 +131,25 @@ export interface ContactData {
   socialLinks: SocialLinkItem[];
 }
 
+export interface GalleryImage {
+  id: string;
+  url: string;
+  title?: string;
+  caption?: string;
+}
+
+export interface GalleryAlbum {
+  id: string;
+  titleVi: string;
+  titleEn: string;
+  categoryVi: string;
+  categoryEn: string;
+  descriptionVi?: string;
+  descriptionEn?: string;
+  coverImage: string;
+  images: GalleryImage[];
+}
+
 export interface FullSiteData {
   hero: HeroData;
   about: AboutData;
@@ -138,6 +157,7 @@ export interface FullSiteData {
   projects: ProjectItemData[];
   skills: SkillGroupData[];
   contact: ContactData;
+  galleryAlbums?: GalleryAlbum[];
 }
 
 export const DEFAULT_SITE_DATA: FullSiteData = {
@@ -737,5 +757,79 @@ export const DEFAULT_SITE_DATA: FullSiteData = {
       { id: 'soc-3', name: 'LinkedIn', url: 'https://linkedin.com', handle: 'Nguyen Thi Cam Yen', icon: 'Linkedin' },
       { id: 'soc-4', name: 'Instagram', url: 'https://instagram.com', handle: '@yensam.media', icon: 'Instagram' }
     ]
-  }
+  },
+  galleryAlbums: [
+    {
+      id: 'album-led-stage-1',
+      titleVi: 'Sân Khấu & Visual LED Concert 3D',
+      titleEn: 'Stage & 3D Concert LED Visuals',
+      categoryVi: 'Sân Khấu Live & Concert',
+      categoryEn: 'Live Concert & Stage',
+      descriptionVi: 'Tổng hợp thiết kế visual màn hình LED, hiệu ứng ánh sáng 3D và bối cảnh sân khấu quy mô lớn.',
+      descriptionEn: 'Collection of 3D LED background graphics, lighting visuals and stage designs for live music concerts.',
+      coverImage: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
+      images: [
+        {
+          id: 'img-101',
+          url: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
+          title: 'Main Concert LED Stage',
+          caption: 'Thiết kế visual 3D sân khấu chính Masew Concert'
+        },
+        {
+          id: 'img-102',
+          url: '/src/assets/images/project_lead_showcase_1790314373406.jpg',
+          title: 'Dynamic Stage Lighting & LED Loop',
+          caption: 'Hiệu ứng ánh sáng phối hợp cùng nhịp điệu âm nhạc'
+        },
+        {
+          id: 'img-103',
+          url: '/src/assets/images/project_podcast_showcase_1790314389146.jpg',
+          title: 'Event Visual Atmosphere',
+          caption: 'Không gian truyền thông visual ấn tượng'
+        }
+      ]
+    },
+    {
+      id: 'album-led-motion-2',
+      titleVi: 'Visual Motion & AI Art LED',
+      titleEn: 'Visual Motion & AI Art LED',
+      categoryVi: 'Nghệ Thuật Sáng Tạo',
+      categoryEn: 'Creative Visual Art',
+      descriptionVi: 'Các vòng lặp đồ họa chuyển động (motion loops) kết hợp công nghệ AI Prompting cho video ca nhạc và biểu diễn.',
+      descriptionEn: 'Motion visual loops and AI-prompted background graphics crafted for music videos.',
+      coverImage: '/src/assets/images/project_lead_showcase_1790314373406.jpg',
+      images: [
+        {
+          id: 'img-201',
+          url: '/src/assets/images/project_lead_showcase_1790314373406.jpg',
+          title: 'Cyberpunk Futuristic Visual Loop',
+          caption: 'Visual chuyển động phong cách tương lai'
+        },
+        {
+          id: 'img-202',
+          url: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
+          title: 'Generative AI Visual Texture',
+          caption: 'Hình ảnh visual sáng tạo kết hợp AI'
+        }
+      ]
+    },
+    {
+      id: 'album-led-kv-3',
+      titleVi: 'Key Visual & LED Billboard Event',
+      titleEn: 'Key Visual & Event LED Billboards',
+      categoryVi: 'Truyền Thông & Quảng Cáo',
+      categoryEn: 'Media & Branding',
+      descriptionVi: 'Key visual hiển thị trên hệ thống màn hình LED ngoài trời, biển LED quảng cáo sự kiện.',
+      descriptionEn: 'Outdoor LED billboard key visuals and multimedia branding assets.',
+      coverImage: '/src/assets/images/hero_yen_portrait_1790314347035.jpg',
+      images: [
+        {
+          id: 'img-301',
+          url: '/src/assets/images/hero_yen_portrait_1790314347035.jpg',
+          title: 'Outdoor Event LED Billboard',
+          caption: 'Biển LED quảng cáo ngoài trời cho chiến dịch truyền thông'
+        }
+      ]
+    }
+  ]
 };
