@@ -46,13 +46,7 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
     try {
       const local = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (local) {
-        const parsed = JSON.parse(local);
-        if (Array.isArray(parsed.projects) && parsed.projects.length < DEFAULT_SITE_DATA.projects.length) {
-          const existingIds = new Set(parsed.projects.map((p: any) => p.id));
-          const missing = DEFAULT_SITE_DATA.projects.filter(p => !existingIds.has(p.id));
-          parsed.projects = [...parsed.projects, ...missing];
-        }
-        return parsed;
+        return JSON.parse(local);
       }
     } catch (e) {
       console.error('Failed to load local storage site data', e);
@@ -94,11 +88,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         if (!error && result && result.content_json) {
           const loaded = { ...DEFAULT_SITE_DATA, ...(result.content_json as FullSiteData) };
-          if (Array.isArray(loaded.projects) && loaded.projects.length < DEFAULT_SITE_DATA.projects.length) {
-            const existingIds = new Set(loaded.projects.map((p: any) => p.id));
-            const missing = DEFAULT_SITE_DATA.projects.filter(p => !existingIds.has(p.id));
-            loaded.projects = [...loaded.projects, ...missing];
-          }
           setData(loaded);
           setSavedData(loaded);
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(loaded));
