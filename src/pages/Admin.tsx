@@ -6,6 +6,7 @@ import { HeroSection } from '../components/HeroSection';
 import { AboutSection } from '../components/AboutSection';
 import { ExperienceSection } from '../components/ExperienceSection';
 import { ProjectsSection } from '../components/ProjectsSection';
+import { GallerySection } from '../components/GallerySection';
 import { SkillsSection } from '../components/SkillsSection';
 import { ContactSection } from '../components/ContactSection';
 import { DockNavigation } from '../components/DockNavigation';
@@ -33,7 +34,7 @@ export const Admin: React.FC = () => {
   }, [isAuthenticated, setIsEditMode]);
 
   useEffect(() => {
-    const sectionIds = ['about', 'experience', 'projects', 'skills', 'contact'];
+    const sectionIds = ['about', 'experience', 'projects', 'gallery', 'skills', 'contact'];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach(id => {
@@ -210,6 +211,7 @@ export const Admin: React.FC = () => {
         <AboutSection />
         <ExperienceSection />
         <ProjectsSection />
+        <GallerySection />
         <SkillsSection />
         <ContactSection />
       </main>
