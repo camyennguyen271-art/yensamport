@@ -271,7 +271,7 @@ export const InlineImage: React.FC<InlineImageProps> = ({
           e.stopPropagation();
           setModalOpen(true);
         }}
-        className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs opacity-0 group-hover/image:opacity-100 transition-all duration-300 flex items-center justify-center z-30 p-2 border-2 border-dashed border-cyan-400 rounded-lg cursor-pointer"
+        className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs opacity-0 group-hover/image:opacity-100 transition-all duration-300 flex items-center justify-center z-20 p-2 border-2 border-dashed border-cyan-400 rounded-lg cursor-pointer"
       >
         <button
           type="button"
@@ -316,7 +316,7 @@ export const ItemControls: React.FC<ItemControlsProps> = ({
   if (!isEditMode) return null;
 
   return (
-    <div className="absolute top-2 right-2 z-30 flex items-center gap-1 bg-slate-950/90 border border-cyan-500/40 rounded-xl p-1 shadow-xl backdrop-blur-md transition-opacity">
+    <div className="absolute top-2 right-2 z-50 flex items-center gap-1 bg-slate-950/90 border border-cyan-500/40 rounded-xl p-1 shadow-xl backdrop-blur-md transition-opacity">
       {onMoveUp && canMoveUp && (
         <button
           type="button"
