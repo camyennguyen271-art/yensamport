@@ -339,6 +339,177 @@ export const DEFAULT_SITE_DATA: FullSiteData = {
   ],
   projects: [
     {
+      id: 'fpt-hackathon-2024',
+      title: 'FPT Edu Hackathon Technology Contest 2024',
+      role: 'Media Leader',
+      category: 'lead',
+      categoryLabel: 'Cuộc Thi Công Nghệ Quốc Gia',
+      year: '2024',
+      organization: 'FPT Education',
+      featured: true,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=kYJv8Z1t_Yo',
+      description: 'Giải đấu công nghệ quy mô toàn quốc của FPT Education quy tụ hàng trăm đội thi lập trình và AI từ khắp các cơ sở trên cả nước.',
+      deliverables: [
+        'Chịu trách nhiệm chính xây dựng chiến lược truyền thông toàn diện & tổng duyệt nội dung báo chí.',
+        'Chỉ đạo livestream phát sóng trực tiếp vòng chung kết và thực hiện video recap aftermovie.',
+        'Điều phối đội ngũ media tại chỗ, gian hàng phỏng vấn và bảo trợ truyền thông.'
+      ],
+      tags: ['Media Leader', 'Hackathon 2024', 'Lập Trình & AI', 'Livestream Toàn Quốc']
+    },
+    {
+      id: 'fpt-nihongoeng-2023',
+      title: 'FPT Edu NihongoEng Language Contest 2023',
+      role: 'Media Leader',
+      category: 'lead',
+      categoryLabel: 'Cuộc Thi Ngôn Ngữ Tiếng Anh & Tiếng Nhật',
+      year: '2023',
+      organization: 'FPT Education & MMU Malaysia',
+      featured: true,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=2bQW08cZJpE',
+      description: 'Cuộc thi tranh tài ngôn ngữ quy mô lớn dành cho sinh viên FPT Edu với bảng thi Tiếng Anh (tại Malaysia) và Tiếng Nhật.',
+      deliverables: [
+        'Lên kế hoạch và thực thi chiến lược truyền thông quốc tế tại Việt Nam và Malaysia.',
+        'Sản xuất chuỗi Aftermovie recap hành trình thi đấu của các thí sinh xuất sắc.',
+        'Quản lý nội dung mạng xã hội, thông cáo báo chí và hình ảnh đại diện thương hiệu.'
+      ],
+      tags: ['Media Leader', 'NihongoEng 2023', 'Truyền Thông Quốc Tế', 'English & Japanese']
+    },
+    {
+      id: 'fpt-tich-tich-tinh-tang-2024',
+      title: 'FPT Edu Traditional Music Contest - Tích Tịch Tình Tang 2024',
+      role: 'Media Sub-Leader',
+      category: 'lead',
+      categoryLabel: 'Cuộc Thi Nhạc Cụ Dân Tộc Quốc Gia',
+      year: '2024',
+      organization: 'FPT Education',
+      featured: true,
+      image: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=HC5S3y1NiiL',
+      description: 'Cuộc thi trình diễn nhạc cụ dân tộc quy mô lớn nhất hệ thống FPT Edu, tôn vinh và lan tỏa bản sắc âm nhạc truyền thống Việt Nam.',
+      deliverables: [
+        'Phó ban truyền thông, đồng điều phối sản xuất bài hát chủ đề "Giai Điệu Việt Nam Mình" feat Masew.',
+        'Quản lý chiến dịch PR lan tỏa văn hóa dân tộc kết hợp nghệ thuật hiện đại.',
+        'Thực hiện Aftermovie và truyền thông đa kênh thu hút hàng triệu lượt xem.'
+      ],
+      tags: ['Media Sub-Leader', 'Nhạc Cụ Dân Tộc', 'Masew Collab', 'Văn Hóa Việt']
+    },
+    {
+      id: 'fpt-color-up-2024',
+      title: 'FPT Edu Color Up Graphic Design Contest 2024',
+      role: 'Media Sub-Leader',
+      category: 'lead',
+      categoryLabel: 'Cuộc Thi Thiết Kế Đồ Họa',
+      year: '2024',
+      organization: 'FPT Education',
+      featured: false,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=Qx3x8WkZ9mE',
+      description: 'Sân chơi sáng tạo nghệ thuật thị giác và thiết kế đồ họa hàng đầu dành cho các tài năng trẻ FPT Edu.',
+      deliverables: [
+        'Đồng quản lý nội dung truyền thông, định hướng hình ảnh triển lãm thiết kế đồ họa.',
+        'Thực hiện chuỗi bài đăng sản phẩm thi đấu, phỏng vấn giám khảo và ban cố vấn.',
+        'Sản xuất Aftermovie trao giải và triển lãm tác phẩm đồ họa xuất sắc.'
+      ],
+      tags: ['Media Sub-Leader', 'Color Up 2024', 'Graphic Design', 'Visual Arts']
+    },
+    {
+      id: 'first-tech-challenge-2024',
+      title: 'FIRST Tech Challenge Vietnam 2023-2024',
+      role: 'Media Sub-Leader',
+      category: 'lead',
+      categoryLabel: 'Giải Đấu Robot Quốc Tế',
+      year: '2023 - 2024',
+      organization: 'FPT Education & FIRST Global',
+      featured: false,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=ETgpMTQpFan',
+      description: 'Giải đấu Robot tiêu chuẩn quốc tế lần đầu tiên tổ chức tại Việt Nam, tìm kiếm đại diện tham dự Chung kết thế giới tại Mỹ.',
+      deliverables: [
+        'Phó ban truyền thông điều phối truyền thông giải đấu Robotics quốc tế.',
+        'Đồng hành cùng 26 đội thi toàn quốc, cập nhật kết quả trận đấu tự hành và điều khiển.',
+        'Sản xuất video tổng kết hành trình và bảo trợ truyền thông báo chí.'
+      ],
+      tags: ['Media Sub-Leader', 'FIRST Tech Challenge', 'Robotics', 'STEM Vietnam']
+    },
+    {
+      id: 'fpt-got-talent-2024',
+      title: 'FPT Edu Got Talent 2024',
+      role: 'Media Sub-Leader',
+      category: 'lead',
+      categoryLabel: 'Cuộc Thi Tìm Kiếm Tài Năng',
+      year: '2024',
+      organization: 'FPT Education',
+      featured: false,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=FWDZWgForwz',
+      description: 'Đại hội tài năng âm nhạc, vũ đạo và nghệ thuật trình diễn quy tụ các ngôi sao trẻ hàng đầu FPT Edu.',
+      deliverables: [
+        'Phó ban truyền thông chỉ đạo nội dung quảng bá MV chủ đề "Slay Your Way".',
+        'Tổ chức truyền thông đêm chung kết toàn quốc với sự tham gia của 120+ thí sinh.',
+        'Thực hiện Aftermovie bùng nổ cảm xúc và chiến dịch mạng xã hội viral.'
+      ],
+      tags: ['Media Sub-Leader', 'Got Talent 2024', 'Nghệ Thuật Trình Diễn', 'Slay Your Way']
+    },
+    {
+      id: 'fpt-biz-talent-2023',
+      title: 'FPT Edu Biz Talent Economics Contest 2023',
+      role: 'Media Sub-Leader',
+      category: 'lead',
+      categoryLabel: 'Cuộc Thi Ý Tưởng Kinh Doanh',
+      year: '2023',
+      organization: 'FPT Education',
+      featured: false,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=R9N2s8mJ2fI',
+      description: 'Cuộc thi ý tưởng kinh doanh và giải pháp kinh tế thực chiến cho sinh viên đam mê khởi nghiệp.',
+      deliverables: [
+        'Đồng điều phối chiến dịch truyền thông nhận diện thương hiệu cuộc thi kinh tế.',
+        'Tạo dựng nội dung giới thiệu các đề án kinh doanh và hội đồng giám khảo doanh nhân.',
+        'Quản lý ghi hình và phát sóng Aftermovie chung kết tranh tài.'
+      ],
+      tags: ['Media Sub-Leader', 'Biz Talent 2023', 'Khởi Nghiệp Kinh Tế', 'Business Case']
+    },
+    {
+      id: 'fes-camp-4-thang-am-viet',
+      title: 'FES-Camp 4: Thang Âm Việt',
+      role: 'Media Sub-Leader',
+      category: 'lead',
+      categoryLabel: 'Trại Hè Truyền Thông & Văn Hóa',
+      year: '2023',
+      organization: 'FPT Edu Experience Space (FES)',
+      featured: false,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=HC5S3y1NiiL',
+      description: 'Chuỗi trải nghiệm trại hè sáng tạo truyền thông kết hợp âm nhạc dân tộc và hoạt động trải nghiệm thực tế.',
+      deliverables: [
+        'Điều phối chiến dịch truyền thông đa nền tảng cho chuỗi sự kiện FES-Camp.',
+        'Lên kịch bản nội dung, thông điệp trải nghiệm văn hóa dân gian.',
+        'Sản xuất Aftermovie tài liệu ghi lại khoảnh khắc đáng nhớ của camper.'
+      ],
+      tags: ['Media Sub-Leader', 'FES-Camp 4', 'Thang Âm Việt', 'Trải Nghiệm Văn Hóa']
+    },
+    {
+      id: 'hayd-minishow-2021',
+      title: 'Hayd Minishow & Fanmeeting in Vietnam',
+      role: 'Organizer (Logistics, Marketing & Execution)',
+      category: 'lead',
+      categoryLabel: 'Sản Xuất Concert Quốc Tế',
+      year: '2021',
+      organization: 'Y Anh Film & Concert Production',
+      featured: false,
+      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Sự kiện Minishow và Fanmeeting chính thức tại Việt Nam của ca sĩ quốc tế Hayd (chủ nhân bản hit "Head In The Clouds").',
+      deliverables: [
+        'Tổ chức thành công và quản lý toàn bộ hậu cần, marketing & vận hành trực tiếp.',
+        'Điều phối giữa ban quản lý nghệ sĩ quốc tế, ê-kíp sản xuất sân khấu và đơn vị tài trợ.',
+        'Mang lại trải nghiệm biểu diễn live hoàn hảo cho người hâm mộ tại Việt Nam.'
+      ],
+      tags: ['Organizer', 'Hayd Minishow', 'Concert Quốc Tế', 'Event Logistics']
+    },
+    {
       id: 'mv-ai-bon-voyaige',
       title: 'MV "AI Bon Voyaige"',
       role: 'Producer, Director, Creative, Prompt Engineer',
@@ -349,32 +520,32 @@ export const DEFAULT_SITE_DATA: FullSiteData = {
       featured: true,
       image: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
       youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      description: 'Groundbreaking generative AI music video combining high-concept art direction with cutting-edge prompt engineering and cinematic production workflows.',
+      description: 'MV ca nhạc nghệ thuật kết hợp làm phim truyền thống với công nghệ Generative AI & Prompt Engineering tiên phong.',
       deliverables: [
-        'Engineered detailed visual prompt matrices for AI visual generative engines.',
-        'Directed full creative narrative, color grading, storyboarding, and video editing.',
-        'Synchronized multi-track audio scoring with AI visuals for cohesive pacing.'
+        'Kỹ sư Prompt thiết kế ma trận hình ảnh Generative AI cho toàn bộ khung hình MV.',
+        'Đạo diễn nghệ thuật, lên ý tưởng kịch bản, dựng phim và chỉnh màu hiệu ứng thị giác.',
+        'Đồng bộ hóa âm thanh đa tầng với hình ảnh AI tạo nhịp điệu cuốn hút.'
       ],
-      tags: ['AI Prompt Engineering', 'Directing', 'Music Video Production', 'Creative Concept']
+      tags: ['AI Prompt Engineering', 'Directing', 'Music Video Production', 'Generative Art']
     },
     {
       id: 'mv-slay-your-way',
       title: 'MV "Slay Your Way"',
       role: 'Producer, Director, Creative',
       category: 'mv',
-      categoryLabel: 'Music Video & Creative Direction',
+      categoryLabel: 'Music Video & Theme Song',
       year: '2024',
       organization: 'FPT Education / Media Production',
       featured: true,
       image: '/src/assets/images/project_event_stage_1790314370784.jpg',
-      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      description: 'High-energy youth anthem music video promoting self-expression, modern style, and campus culture across Vietnam.',
+      youtubeUrl: 'https://www.youtube.com/watch?v=FWDZWgForwz',
+      description: 'MV ca nhạc chủ đề FPT Edu Got Talent 2024 lan tỏa năng lượng tuổi trẻ, phong cách hiện đại và tinh thần tự tin.',
       deliverables: [
-        'Led full pre-production, filming schedule, set design, and creative directing.',
-        'Managed artist rehearsals, costume aesthetics, and multi-camera crew operations.',
-        'Achieved viral social spread and high positive sentiment across youth audiences.'
+        'Chỉ đạo toàn bộ tiền sản xuất, lịch quay, thiết kế bối cảnh và đạo diễn sáng tạo.',
+        'Quản lý tập luyện vũ đạo nghệ sĩ, trang phục và vận hành ê-kíp camera đa góc.',
+        'Đạt hàng triệu lượt xem và tương tác tích cực trên các nền tảng mạng xã hội.'
       ],
-      tags: ['Directing', 'Production Management', 'Viral Media', 'Youth Culture']
+      tags: ['Producer & Director', 'Slay Your Way', 'Theme Song MV', 'Youth Culture']
     },
     {
       id: 'mv-giai-dieu-viet-nam-minh',
@@ -384,16 +555,16 @@ export const DEFAULT_SITE_DATA: FullSiteData = {
       categoryLabel: 'Music Video & Artist Collab',
       year: '2023 - 2024',
       organization: 'National Music Collaboration',
-      featured: false,
+      featured: true,
       image: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
-      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      description: 'Special musical collaboration with acclaimed Vietnamese producer Masew, harmonizing traditional folk motifs with contemporary electronic beats.',
+      youtubeUrl: 'https://www.youtube.com/watch?v=HC5S3y1NiiL',
+      description: 'MV ca nhạc kết hợp cùng Producer Masew, hòa quyện giai điệu nhạc cụ dân tộc Việt Nam với chất nhạc điện tử hiện đại.',
       deliverables: [
-        'Coordinated creative alignment between headline music producer Masew and brand themes.',
-        'Produced visual campaign assets, press teasers, and promotional rollouts.',
-        'Delivered widespread press coverage across top Vietnamese entertainment portals.'
+        'Điều phối sáng tạo giữa Producer Masew và thông điệp văn hóa cuộc thi Tích Tịch Tình Tang.',
+        'Sản xuất ấn phẩm truyền thông, teaser báo chí và kế hoạch phát hành đa nền tảng.',
+        'Đạt phủ sóng rộng rãi trên các trang tin tức giải trí và truyền thông hàng đầu.'
       ],
-      tags: ['Masew Collaboration', 'Creative Producing', 'Traditional Meets Modern', 'PR Campaign']
+      tags: ['Masew Collaboration', 'Nhạc Cụ Dân Tộc', 'Producer', 'PR Campaign']
     },
     {
       id: 'f-exp-podcast',
@@ -405,32 +576,14 @@ export const DEFAULT_SITE_DATA: FullSiteData = {
       organization: 'FPT Education',
       featured: false,
       image: '/src/assets/images/project_event_stage_1790314370784.jpg',
-      youtubeUrl: '',
-      description: 'In-depth experience podcast series bringing authentic discussions with industry pioneers, creative talents, and student leaders.',
+      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Chuỗi Podcast chuyên sâu chia sẻ góc nhìn trải nghiệm thực tế với các chuyên gia ngành, nghệ sĩ sáng tạo và sinh viên tiêu biểu.',
       deliverables: [
-        'Led end-to-end podcast project management from guest curation to distribution.',
-        'Managed audio recording engineering, episode scripting, and social soundbites.',
-        'Established multi-platform distribution across Spotify, YouTube, and Apple Podcasts.'
+        'Quản lý toàn bộ dự án từ khâu chọn lọc khách mời, kịch bản đến phát hành.',
+        'Chỉ đạo kỹ thuật thu âm, biên tập âm thanh và thiết kế trích đoạn ngắn cho social.',
+        'Phát triển kênh phân phối đa nền tảng trên Spotify, YouTube và Apple Podcasts.'
       ],
-      tags: ['Project Management', 'Podcast Production', 'Audio Storytelling', 'Guest Curation']
-    },
-    {
-      id: 'fpt-hackathon-2024',
-      title: 'FPT Edu Hackathon Technology Contest 2024',
-      role: 'Media Leader',
-      category: 'lead',
-      categoryLabel: 'National Technology Contest',
-      year: '2024',
-      organization: 'FPT Education',
-      featured: true,
-      image: '/src/assets/images/project_event_stage_1790314370784.jpg',
-      description: 'Nationwide technology tournament challenging hundreds of top engineering and AI student teams across all FPT Education campuses.',
-      deliverables: [
-        'Headed all media planning, broadcast livestreams, and tech press releases.',
-        'Spearheaded real-time competition updates, mentor spotlights, and finale recap videos.',
-        'Coordinated on-ground media teams, press interview booths, and sponsor exposure.'
-      ],
-      tags: ['Media Leader', 'Hackathon', 'Tech PR', 'Livestream Operations']
+      tags: ['Project Manager', 'Podcast Production', 'Audio Storytelling', 'Guest Curation']
     }
   ],
   skills: [
