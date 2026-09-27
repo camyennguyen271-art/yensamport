@@ -16,7 +16,6 @@ export const ProjectsSection: React.FC = () => {
     { id: 'all', label: 'All Projects' },
     { id: 'mv', label: 'Music Videos & Creative' },
     { id: 'lead', label: 'Media Leadership' },
-    { id: 'sublead', label: 'Competitions & Camps' },
     { id: 'podcast', label: 'Original Podcasts' },
   ];
 
