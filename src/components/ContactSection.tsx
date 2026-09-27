@@ -1,83 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Mail, Copy, Check, MapPin } from 'lucide-react';
 import { TikTokIcon, FacebookIcon, ZaloIcon, InstagramIcon } from './SocialIcons';
-import { supabase } from '../lib/supabase';
 import { useI18n } from '../lib/i18n';
-
-// Fallback socials just in case
-export const SOCIAL_LINKS = [
-  {
-    id: 'tiktok',
-    label: 'TikTok',
-    handle: '@yensam.media',
-    href: 'https://www.tiktok.com/@yensam.media',
-    Icon: TikTokIcon,
-    color: 'from-[#010101] to-[#1a1a2e]',
-    hoverBorder: 'hover:border-[#fe2c55]/50',
-    accent: '#fe2c55',
-    description: 'Nội dung sáng tạo & hậu trường',
-  },
-  {
-    id: 'facebook',
-    label: 'Facebook',
-    handle: 'Yến Sam - Media',
-    href: 'https://www.facebook.com/yensam.media',
-    Icon: FacebookIcon,
-    color: 'from-[#0a1628] to-[#0d1f3c]',
-    hoverBorder: 'hover:border-[#1877F2]/50',
-    accent: '#1877F2',
-    description: 'Cập nhật dự án mới nhất',
-  },
-  {
-    id: 'zalo',
-    label: 'Zalo',
-    handle: 'Nguyễn Thị Cẩm Yến',
-    href: 'https://zalo.me/0000000000',
-    Icon: ZaloIcon,
-    color: 'from-[#001a3a] to-[#00112b]',
-    hoverBorder: 'hover:border-[#0068FF]/50',
-    accent: '#0068FF',
-    description: 'Liên hệ nhanh',
-  }
-];
+import { useSiteData } from '../lib/SiteDataContext';
+import { InlineText } from './admin/InlineEditHelpers';
 
 export const ContactSection: React.FC = () => {
   const { language, t } = useI18n();
+  const { data, updateContact } = useSiteData();
+  const contact = data.contact;
   const isVi = language === 'vi';
   const [copied, setCopied] = useState(false);
-  const [socials, setSocials] = useState<any[]>(SOCIAL_LINKS);
-
-  useEffect(() => {
-    const fetchSocials = async () => {
-      const { data, error } = await supabase.from('site_content').select('*').eq('section_name', 'footer').single();
-      if (!error && data && data.content_json && Array.isArray(data.content_json.socials)) {
-        // Map icon based on id
-        const iconMap: Record<string, any> = { tiktok: TikTokIcon, facebook: FacebookIcon, zalo: ZaloIcon, instagram: InstagramIcon };
-        const colorMap: Record<string, any> = {
-          tiktok: { color: 'from-[#010101] to-[#1a1a2e]', border: 'hover:border-[#fe2c55]/50', accent: '#fe2c55' },
-          facebook: { color: 'from-[#0a1628] to-[#0d1f3c]', border: 'hover:border-[#1877F2]/50', accent: '#1877F2' },
-          zalo: { color: 'from-[#001a3a] to-[#00112b]', border: 'hover:border-[#0068FF]/50', accent: '#0068FF' },
-          instagram: { color: 'from-[#2e0916] to-[#1a0515]', border: 'hover:border-[#E1306C]/50', accent: '#E1306C' }
-        };
-
-        const parsed = data.content_json.socials.map((s: any) => ({
-          ...s,
-          Icon: iconMap[s.id] || Mail,
-          color: colorMap[s.id]?.color || 'from-slate-900 to-slate-950',
-          hoverBorder: colorMap[s.id]?.border || 'hover:border-cyan-400/50',
-          accent: colorMap[s.id]?.accent || '#22d3ee'
-        }));
-        setSocials(parsed);
-      }
-    };
-    fetchSocials();
-  }, []);
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText('camyen.nguyen.271@gmail.com');
+    navigator.clipboard.writeText(contact.email || 'camyen.nguyen.271@gmail.com');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const socials = [
+    {
+      id: 'tiktok',
+      label: 'TikTok',
+      handle: '@yensam.media',
+      href: 'https://www.tiktok.com/@yensam.media',
+      Icon: TikTokIcon,
+      color: 'from-[#010101] to-[#1a1a2e]',
+      hoverBorder: 'hover:border-[#fe2c55]/50',
+      accent: '#fe2c55',
+      description: isVi ? 'Nội dung sáng tạo & hậu trường' : 'Creative content & behind-the-scenes',
+    },
+    {
+      id: 'facebook',
+      label: 'Facebook',
+      handle: 'Yến Sam - Media',
+      href: 'https://www.facebook.com/yensam.media',
+      Icon: FacebookIcon,
+      color: 'from-[#0a1628] to-[#0d1f3c]',
+      hoverBorder: 'hover:border-[#1877F2]/50',
+      accent: '#1877F2',
+      description: isVi ? 'Cập nhật dự án mới nhất' : 'Latest project announcements',
+    },
+    {
+      id: 'zalo',
+      label: 'Zalo',
+      handle: 'Nguyễn Thị Cẩm Yến',
+      href: 'https://zalo.me',
+      Icon: ZaloIcon,
+      color: 'from-[#001a3a] to-[#00112b]',
+      hoverBorder: 'hover:border-[#0068FF]/50',
+      accent: '#0068FF',
+      description: isVi ? 'Liên hệ làm việc nhanh' : 'Instant business chat',
+    }
+  ];
 
   return (
     <section id="contact" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
@@ -87,11 +62,17 @@ export const ContactSection: React.FC = () => {
             {isVi ? '05 / KẾT NỐI TRỰC TIẾP' : '05 / DIRECT INQUIRY'}
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white font-display tracking-tight mt-1">
-            {t('contact.title') || (isVi ? 'Kết Nối & Hợp Tác' : 'Let\'s Connect & Collaborate')}
+            <InlineText
+              value={isVi ? contact.titleVi : contact.titleEn}
+              onChange={(val) => updateContact(isVi ? { titleVi: val } : { titleEn: val })}
+            />
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-slate-400 mt-2 sm:mt-0 font-mono">
-          {isVi ? 'Sẵn Sàng Cho Các Dự Án Media, PR & Sự Kiện Mới' : 'Ready for Strategic Media, PR & Production Challenges'}
+          <InlineText
+            value={isVi ? contact.subtitleVi : contact.subtitleEn}
+            onChange={(val) => updateContact(isVi ? { subtitleVi: val } : { subtitleEn: val })}
+          />
         </p>
       </div>
 
@@ -115,7 +96,10 @@ export const ContactSection: React.FC = () => {
               <div className="text-xs font-mono text-slate-400">{isVi ? 'Email Trực Tiếp' : 'Official Direct Email'}</div>
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm sm:text-base font-bold text-white truncate font-mono">
-                  camyen.nguyen.271@gmail.com
+                  <InlineText
+                    value={contact.email}
+                    onChange={(val) => updateContact({ email: val })}
+                  />
                 </span>
                 <button
                   type="button"
@@ -140,7 +124,12 @@ export const ContactSection: React.FC = () => {
             <div className="space-y-3 text-xs sm:text-sm text-slate-300">
               <div className="flex items-center gap-3">
                 <MapPin className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>{isVi ? 'TP. Hồ Chí Minh, Việt Nam (On-site & Hybrid)' : 'Ho Chi Minh City, Vietnam (Available for On-site & Hybrid)'}</span>
+                <span>
+                  <InlineText
+                    value={isVi ? contact.addressVi : contact.addressEn}
+                    onChange={(val) => updateContact(isVi ? { addressVi: val } : { addressEn: val })}
+                  />
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
@@ -152,7 +141,7 @@ export const ContactSection: React.FC = () => {
 
             <div className="pt-2">
               <a
-                href="mailto:camyen.nguyen.271@gmail.com?subject=Inquiry%20regarding%20Media%20Specialist%20Role%20/%20Project"
+                href={`mailto:${contact.email}?subject=Inquiry%20regarding%20Media%20Specialist%20Role`}
                 className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-slate-950 hover:bg-cyan-50 font-bold text-xs sm:text-sm transition-all duration-200 shadow-md cursor-pointer"
               >
                 <Mail className="w-4 h-4" />
@@ -212,7 +201,7 @@ export const ContactSection: React.FC = () => {
                 {isVi ? 'Phản hồi trong vòng 24 giờ' : 'Response within 24 hours'}
               </span>
               <a
-                href="mailto:camyen.nguyen.271@gmail.com"
+                href={`mailto:${contact.email}`}
                 className="px-5 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:scale-105 active:scale-95"
               >
                 <Mail className="w-3.5 h-3.5" />
@@ -239,3 +228,4 @@ export const ContactSection: React.FC = () => {
     </section>
   );
 };
+

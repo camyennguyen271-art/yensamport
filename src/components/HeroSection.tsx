@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { DotMatrixHeader } from './DotMatrixHeader';
-import { Mail, ArrowDown, Sparkles, Check, Copy, ExternalLink } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { ArrowDown, Check, Copy } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
+import { useSiteData } from '../lib/SiteDataContext';
+import { InlineText, InlineImage } from './admin/InlineEditHelpers';
 
 interface HeroSectionProps {
   onContactClick: () => void;
@@ -10,38 +11,15 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  onContactClick,
   onNavigate,
 }) => {
   const [mousePos, setMousePos] = useState({ x: 50, y: 40 });
   const [copied, setCopied] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const { t } = useI18n();
-  
-  // Data State
-  const [heroData, setHeroData] = useState({
-    title: 'NGUYỄN THỊ CẨM YẾN',
-    subtitle: 'YẾN SAM · MEDIA SPECIALIST',
-    tagline: 'Proactive · Friendly · Motivated Ambivert',
-    description: 'Connecting strategic communication, viral media production, and artist management through a holistic, creative problem-solving approach.',
-    email: 'camyen.nguyen.271@gmail.com',
-    imageUrl: '/src/assets/images/hero_yen_portrait_1790314347035.jpg'
-  });
-
-  useEffect(() => {
-    const fetchHeroData = async () => {
-      const { data, error } = await supabase
-        .from('site_content')
-        .select('content_json')
-        .eq('section_name', 'hero')
-        .single();
-      
-      if (!error && data && data.content_json) {
-        setHeroData((prev) => ({ ...prev, ...data.content_json }));
-      }
-    };
-    fetchHeroData();
-  }, []);
+  const { t, language } = useI18n();
+  const { data, updateHero, isEditMode } = useSiteData();
+  const heroData = data.hero;
+  const isVi = language === 'vi';
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!heroRef.current) return;
@@ -60,6 +38,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section
+      id="hero"
       ref={heroRef}
       onMouseMove={handleMouseMove}
       className="relative min-h-[92vh] lg:min-h-screen flex flex-col justify-between items-center px-4 sm:px-6 lg:px-8 pt-6 pb-24 overflow-hidden bg-[#030611] select-none"
@@ -76,7 +55,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         }}
       />
 
-      {/* Atmospheric Dual-Color Stage Glows (Inspired by the Reference Image) */}
+      {/* Atmospheric Dual-Color Stage Glows */}
       <div className="pointer-events-none absolute top-1/4 -left-20 w-[450px] h-[450px] rounded-full bg-cyan-700/20 blur-[130px]" />
       <div className="pointer-events-none absolute top-1/3 -right-20 w-[450px] h-[450px] rounded-full bg-rose-600/18 blur-[140px]" />
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-blue-900/25 blur-[160px]" />
@@ -107,18 +86,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="absolute inset-0 rounded-full border border-cyan-400/20 animate-pulse" />
           </div>
 
-
-          {/* Hero Portrait Container with Studio Glow and Contrast Scrim */}
+          {/* Hero Portrait Container */}
           <div className="relative w-full h-full rounded-2xl sm:rounded-3xl overflow-hidden border border-white/15 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] bg-gradient-to-b from-slate-900 to-[#02050f]">
             {/* Background dynamic rim shadow */}
             <div className="absolute inset-0 bg-gradient-to-tr from-cyan-900/40 via-transparent to-rose-800/30 mix-blend-screen z-10 pointer-events-none" />
             
             {/* Candidate Editorial Portrait */}
-            <img
+            <InlineImage
               src={heroData.imageUrl}
               alt={heroData.title}
-              className="w-full h-full object-cover object-center filter contrast-105 brightness-95 transform scale-[1.02] hover:scale-105 transition-transform duration-700 ease-out"
-              loading="eager"
+              onChange={(newSrc) => updateHero({ imageUrl: newSrc })}
+              className="w-full h-full object-cover object-center filter contrast-105 brightness-95 transform hover:scale-105 transition-transform duration-700 ease-out"
             />
 
             {/* Bottom Scrim for text readability */}
@@ -128,13 +106,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="absolute bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-6 z-20 text-center">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 text-[11px] font-mono tracking-widest uppercase text-cyan-300 backdrop-blur-md mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-                {heroData.subtitle}
+                <InlineText
+                  value={heroData.subtitle}
+                  onChange={(val) => updateHero({ subtitle: val })}
+                />
               </span>
+
               <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight font-display drop-shadow-md">
-                {heroData.title}
+                <InlineText
+                  value={heroData.title}
+                  onChange={(val) => updateHero({ title: val })}
+                />
               </h1>
+
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-sm mx-auto font-normal leading-relaxed drop-shadow">
-                {heroData.tagline}
+                <InlineText
+                  value={heroData.tagline}
+                  onChange={(val) => updateHero({ tagline: val })}
+                />
               </p>
             </div>
           </div>
@@ -143,24 +132,38 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Orbit Curved Editorial Arc Statement */}
         <div className="mt-6 text-center max-w-xl mx-auto px-4">
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
-            {heroData.description}
+            <InlineText
+              value={heroData.description}
+              onChange={(val) => updateHero({ description: val })}
+              multiline={true}
+            />
           </p>
 
           {/* Quick Action Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
             <button
+              type="button"
               onClick={() => onNavigate('experience')}
               className="px-4 py-2 rounded-full text-xs font-semibold text-white bg-slate-800/90 border border-white/20 hover:bg-slate-700 hover:border-cyan-400/50 transition-all cursor-pointer shadow-sm"
             >
-              View Work Experience
+              <InlineText
+                value={isVi ? (heroData.ctaExperienceTextVi || 'Xem Kinh Nghiệm') : (heroData.ctaExperienceTextEn || 'View Work Experience')}
+                onChange={(val) => updateHero(isVi ? { ctaExperienceTextVi: val } : { ctaExperienceTextEn: val })}
+              />
             </button>
             <button
+              type="button"
               onClick={() => onNavigate('projects')}
               className="px-4 py-2 rounded-full text-xs font-semibold text-white bg-slate-800/90 border border-white/20 hover:bg-slate-700 hover:border-rose-400/50 transition-all cursor-pointer shadow-sm"
             >
-              Explore Key Projects
+              <InlineText
+                value={isVi ? (heroData.ctaProjectsTextVi || 'Khám Phá Dự Án') : (heroData.ctaProjectsTextEn || 'Explore Key Projects')}
+                onChange={(val) => updateHero(isVi ? { ctaProjectsTextVi: val } : { ctaProjectsTextEn: val })}
+              />
             </button>
+
             <button
+              type="button"
               onClick={handleCopyEmail}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-white text-slate-900 hover:bg-cyan-100 hover:text-cyan-950 transition-all cursor-pointer shadow-md"
               title="Click to copy email address"
@@ -173,7 +176,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5" />
-                  <span>{heroData.email}</span>
+                  <InlineText
+                    value={heroData.email}
+                    onChange={(val) => updateHero({ email: val })}
+                  />
                 </>
               )}
             </button>
@@ -190,3 +196,4 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     </section>
   );
 };
+

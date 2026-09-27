@@ -1,9 +1,13 @@
 import React from 'react';
-import { GraduationCap, Sparkles, Compass, Target, HeartHandshake } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 import { useI18n } from '../lib/i18n';
+import { useSiteData } from '../lib/SiteDataContext';
+import { InlineText } from './admin/InlineEditHelpers';
 
 export const AboutSection: React.FC = () => {
   const { language, t } = useI18n();
+  const { data, updateAbout } = useSiteData();
+  const about = data.about;
   const isVi = language === 'vi';
 
   return (
@@ -12,14 +16,23 @@ export const AboutSection: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-white/10 pb-6 mb-12">
         <div>
           <span className="text-xs uppercase font-mono tracking-widest text-cyan-400">
-            {isVi ? '01 / HỒ SƠ ỨNG VIÊN' : '01 / CANDIDATE DOSSIER'}
+            <InlineText
+              value={isVi ? about.candidateDossierVi : about.candidateDossierEn}
+              onChange={(val) => updateAbout(isVi ? { candidateDossierVi: val } : { candidateDossierEn: val })}
+            />
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white font-display tracking-tight mt-1">
-            {t('about.title') || (isVi ? 'Về Yến Sam' : 'About Yến Sam')}
+            <InlineText
+              value={isVi ? about.titleVi : about.titleEn}
+              onChange={(val) => updateAbout(isVi ? { titleVi: val } : { titleEn: val })}
+            />
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-slate-400 mt-2 sm:mt-0 font-mono">
-          {isVi ? 'TP. Hồ Chí Minh, Việt Nam' : 'Ho Chi Minh City, Vietnam'} · camyen.nguyen.271@gmail.com
+          <InlineText
+            value={isVi ? about.locationEmailVi : about.locationEmailEn}
+            onChange={(val) => updateAbout(isVi ? { locationEmailVi: val } : { locationEmailEn: val })}
+          />
         </p>
       </div>
 
@@ -28,69 +41,85 @@ export const AboutSection: React.FC = () => {
         <div className="lg:col-span-7 space-y-6">
           <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-4">
             <h3 className="text-xl sm:text-2xl font-bold text-white font-display">
-              {isVi 
-                ? 'Người Kết Nối Toàn Diện Giữa Truyền Thông, Chiến Lược & Sản Xuất' 
-                : 'A Holistic Connector at the Intersection of Media, Strategy & Production'}
+              <InlineText
+                value={isVi ? about.headingVi : about.headingEn}
+                onChange={(val) => updateAbout(isVi ? { headingVi: val } : { headingEn: val })}
+                multiline={true}
+              />
             </h3>
             
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              {isVi 
-                ? <>Tôi là một <strong className="text-white font-semibold">người hướng trung (ambivert)</strong>, chủ động, thân thiện và giàu động lực. Tôi phát triển tốt nhất trong các môi trường năng động, nơi tôi có thể liên tục học hỏi và tích lũy những kinh nghiệm thực tế mang tính đột phá.</>
-                : <>I am an <strong className="text-white font-semibold">ambivert</strong> who is proactive, friendly, and highly motivated. I thrive in dynamic environments where I can continuously expand my knowledge and acquire high-impact experience.</>}
+              <InlineText
+                value={isVi ? about.paragraph1Vi : about.paragraph1En}
+                onChange={(val) => updateAbout(isVi ? { paragraph1Vi: val } : { paragraph1En: val })}
+                multiline={true}
+              />
             </p>
 
             <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-              {isVi
-                ? <>Điểm mạnh của tôi nằm ở <strong className="text-cyan-300 font-semibold">khả năng kết nối các khía cạnh khác nhau của công việc</strong>—từ kể chuyện cho nghệ sĩ, đạo diễn MV đến phân tích PR dựa trên dữ liệu và tổ chức sự kiện giới trẻ quy mô lớn—nhằm tạo ra phương pháp giải quyết vấn đề sáng tạo và toàn diện.</>
-                : <>My superpower lies in <strong className="text-cyan-300 font-semibold">connecting different aspects of work</strong>—from artist storytelling and MV direction to data-driven PR analytics and large-scale youth events—contributing to a well-rounded, holistic approach to creative problem-solving.</>}
+              <InlineText
+                value={isVi ? about.paragraph2Vi : about.paragraph2En}
+                onChange={(val) => updateAbout(isVi ? { paragraph2Vi: val } : { paragraph2En: val })}
+                multiline={true}
+              />
             </p>
 
             {/* Core Values / Work Ethic Points */}
             <div className="pt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-white/10">
-              <div className="flex flex-col gap-1">
-                <span className="text-xs uppercase font-mono text-cyan-400 font-semibold">{isVi ? 'Sự Chủ Động' : 'Proactivity'}</span>
-                <span className="text-xs text-slate-300">{isVi ? 'Thúc đẩy tiến độ trong các dự án truyền thông đa chức năng.' : 'Initiates forward momentum across cross-functional media projects.'}</span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs uppercase font-mono text-rose-400 font-semibold">{isVi ? 'Cân Bằng Nội-Ngoại' : 'Ambivert Balance'}</span>
-                <span className="text-xs text-slate-300">{isVi ? 'Kết hợp sự thấu hiểu đối tác với khả năng phân tích chuyên sâu.' : 'Blends empathetic stakeholder relations with deep analytical focus.'}</span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs uppercase font-mono text-amber-400 font-semibold">{isVi ? 'Tầm Nhìn Toàn Diện' : 'Holistic Vision'}</span>
-                <span className="text-xs text-slate-300">{isVi ? 'Hợp nhất ý tưởng, sản xuất, PR và hiệu quả đo lường được (ROI).' : 'Unifies concept, production, PR dissemination, and measurable ROI.'}</span>
-              </div>
+              {about.coreValues.map((cv, idx) => (
+                <div key={cv.id || idx} className="flex flex-col gap-1">
+                  <span className={`text-xs uppercase font-mono ${cv.color} font-semibold`}>
+                    <InlineText
+                      value={isVi ? cv.titleVi : cv.titleEn}
+                      onChange={(val) => {
+                        const updated = [...about.coreValues];
+                        updated[idx] = { ...cv, [isVi ? 'titleVi' : 'titleEn']: val };
+                        updateAbout({ coreValues: updated });
+                      }}
+                    />
+                  </span>
+                  <span className="text-xs text-slate-300">
+                    <InlineText
+                      value={isVi ? cv.descVi : cv.descEn}
+                      onChange={(val) => {
+                        const updated = [...about.coreValues];
+                        updated[idx] = { ...cv, [isVi ? 'descVi' : 'descEn']: val };
+                        updateAbout({ coreValues: updated });
+                      }}
+                      multiline={true}
+                    />
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Impact Stats Grid (Unboxed Clean Typography) */}
+          {/* Impact Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/10">
-            <div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-display tabular-nums">
-                +20%
+            {about.stats.map((st, idx) => (
+              <div key={st.id || idx}>
+                <div className={`text-2xl sm:text-3xl font-extrabold ${st.color} font-display tabular-nums`}>
+                  <InlineText
+                    value={st.value}
+                    onChange={(val) => {
+                      const updated = [...about.stats];
+                      updated[idx] = { ...st, value: val };
+                      updateAbout({ stats: updated });
+                    }}
+                  />
+                </div>
+                <div className="text-xs text-slate-400 mt-1 font-medium">
+                  <InlineText
+                    value={isVi ? st.labelVi : st.labelEn}
+                    onChange={(val) => {
+                      const updated = [...about.stats];
+                      updated[idx] = { ...st, [isVi ? 'labelVi' : 'labelEn']: val };
+                      updateAbout({ stats: updated });
+                    }}
+                  />
+                </div>
               </div>
-              <div className="text-xs text-slate-400 mt-1 font-medium">{isVi ? 'Tương Tác Khán Giả' : 'Audience Engagement Boost'}</div>
-            </div>
-
-            <div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-white font-display tabular-nums">
-                10+
-              </div>
-              <div className="text-xs text-slate-400 mt-1 font-medium">{isVi ? 'Sự Kiện & Cuộc Thi' : 'Contests & Youth Events'}</div>
-            </div>
-
-            <div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-rose-400 font-display tabular-nums">
-                3+
-              </div>
-              <div className="text-xs text-slate-400 mt-1 font-medium">{isVi ? 'MV Đã Đạo Diễn' : 'Directed Music Videos'}</div>
-            </div>
-
-            <div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 font-display tabular-nums">
-                {isVi ? '4+ Năm' : '4+ Yrs'}
-              </div>
-              <div className="text-xs text-slate-400 mt-1 font-medium">{isVi ? 'Kinh Nghiệm Truyền Thông' : 'Media & Talent Track Record'}</div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -104,54 +133,82 @@ export const AboutSection: React.FC = () => {
               </h3>
             </div>
 
-            {/* University 1 */}
-            <div className="space-y-1.5 relative pl-4 border-l-2 border-cyan-500/40">
-              <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                <span>2018 — 2022</span>
-                <span className="text-cyan-400 font-medium">{isVi ? 'TP. HỒ CHÍ MINH' : 'HO CHI MINH CITY'}</span>
+            {/* Education list */}
+            {about.education.map((edu, idx) => (
+              <div key={edu.id || idx} className={`space-y-1.5 relative pl-4 border-l-2 ${edu.color.includes('rose') ? 'border-rose-500/40' : 'border-cyan-500/40'}`}>
+                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                  <span>
+                    <InlineText
+                      value={edu.period}
+                      onChange={(val) => {
+                        const updated = [...about.education];
+                        updated[idx] = { ...edu, period: val };
+                        updateAbout({ education: updated });
+                      }}
+                    />
+                  </span>
+                  <span className={edu.color.includes('rose') ? 'text-rose-400 font-medium' : 'text-cyan-400 font-medium'}>
+                    <InlineText
+                      value={isVi ? edu.locationVi : edu.locationEn}
+                      onChange={(val) => {
+                        const updated = [...about.education];
+                        updated[idx] = { ...edu, [isVi ? 'locationVi' : 'locationEn']: val };
+                        updateAbout({ education: updated });
+                      }}
+                    />
+                  </span>
+                </div>
+                <h4 className="text-base font-bold text-white tracking-tight">
+                  <InlineText
+                    value={edu.school}
+                    onChange={(val) => {
+                      const updated = [...about.education];
+                      updated[idx] = { ...edu, school: val };
+                      updateAbout({ education: updated });
+                    }}
+                  />
+                </h4>
+                <p className="text-xs sm:text-sm text-slate-300">
+                  <InlineText
+                    value={isVi ? edu.degreeVi : edu.degreeEn}
+                    onChange={(val) => {
+                      const updated = [...about.education];
+                      updated[idx] = { ...edu, [isVi ? 'degreeVi' : 'degreeEn']: val };
+                      updateAbout({ education: updated });
+                    }}
+                  />
+                </p>
+                <p className="text-xs text-slate-400 leading-relaxed pt-1">
+                  <InlineText
+                    value={isVi ? edu.descVi : edu.descEn}
+                    onChange={(val) => {
+                      const updated = [...about.education];
+                      updated[idx] = { ...edu, [isVi ? 'descVi' : 'descEn']: val };
+                      updateAbout({ education: updated });
+                    }}
+                    multiline={true}
+                  />
+                </p>
               </div>
-              <h4 className="text-base font-bold text-white tracking-tight">
-                FPT UNIVERSITY
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-300">
-                {isVi ? 'Cử nhân Truyền thông Đa phương tiện' : 'Multimedia Communications Student'}
-              </p>
-              <p className="text-xs text-slate-400 leading-relaxed pt-1">
-                {isVi 
-                  ? 'Nền tảng về truyền thông đại chúng, chiến lược digital media, quản lý chiến dịch, nghệ thuật kể chuyện phát thanh/truyền hình và hệ thống tương tác.' 
-                  : 'Foundations in mass communications, digital media strategies, campaign management, broadcast storytelling, and interactive systems.'}
-              </p>
-            </div>
-
-            {/* University 2 (Exchange) */}
-            <div className="space-y-1.5 relative pl-4 border-l-2 border-rose-500/40">
-              <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                <span>2019 — 2020</span>
-                <span className="text-rose-400 font-medium">MALAYSIA</span>
-              </div>
-              <h4 className="text-base font-bold text-white tracking-tight">
-                MULTIMEDIA UNIVERSITY (MMU)
-              </h4>
-              <p className="text-xs sm:text-sm text-slate-300">
-                {isVi ? 'Sinh viên Trao đổi Truyền thông Đa phương tiện' : 'Multimedia Communications Exchange Student'}
-              </p>
-              <p className="text-xs text-slate-400 leading-relaxed pt-1">
-                {isVi 
-                  ? 'Giao lưu học thuật quốc tế về giao tiếp đa văn hóa, công nghệ nghệ thuật thị giác và sản xuất sáng tạo xuyên biên giới.' 
-                  : 'International academic immersion in multicultural communication, visual arts technology, and cross-border creative production.'}
-              </p>
-            </div>
+            ))}
           </div>
 
           {/* Quick Quote / Philosophy Card */}
           <div className="p-5 rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-950/20 via-slate-900/40 to-slate-950/70">
             <p className="text-xs italic text-slate-300 leading-relaxed">
-              {isVi 
-                ? '"Kết nối các khía cạnh chuyên môn thành một câu chuyện nhất quán giúp công việc trở nên ý nghĩa, hiệu quả và khó quên đối với khán giả."' 
-                : '"Connecting disparate disciplines into one cohesive narrative makes work meaningful, impactful, and unforgettable for the audience."'}
+              <InlineText
+                value={isVi ? about.quoteVi : about.quoteEn}
+                onChange={(val) => updateAbout(isVi ? { quoteVi: val } : { quoteEn: val })}
+                multiline={true}
+              />
             </p>
             <div className="mt-3 text-right">
-              <span className="text-[11px] font-mono tracking-wider uppercase text-cyan-400">— Yến Sam</span>
+              <span className="text-[11px] font-mono tracking-wider uppercase text-cyan-400">
+                — <InlineText
+                  value={about.quoteAuthor}
+                  onChange={(val) => updateAbout({ quoteAuthor: val })}
+                />
+              </span>
             </div>
           </div>
         </div>
@@ -159,3 +216,4 @@ export const AboutSection: React.FC = () => {
     </section>
   );
 };
+
