@@ -16,9 +16,9 @@ interface CardItem {
 }
 
 const PORTRAIT_IMG = 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/1790476859491_lrkwz.jpg';
-// Real Visual LED stage photos from library
-const VISUAL_LED_IMG_1 = '/images/project_mv_showcase_1790314359425.jpg';
-const VISUAL_LED_IMG_2 = '/images/project_event_stage_1790314370784.jpg';
+// User uploaded real Visual LED stage photos
+const VISUAL_LED_IMG_VO_VIET = '/images/visual_led_khoi_nguon_vo_viet.jpg'; // Ảnh 1: Khơi nguồn võ việt
+const VISUAL_LED_IMG_TICH_TICH = '/images/visual_led_tich_tich_tinh_tang.jpg'; // Ảnh 2: Tích tịch tình tang
 const MV_GIAIDIEU_IMG = '/images/projects/mv-giai-dieu-viet-nam-minh.jpg';
 const HACKATHON_IMG = 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/1790480293325_1mi92.jpg';
 const MV_AI_IMG = '/images/projects/mv-ai-bon-voyaige.jpg';
@@ -56,24 +56,24 @@ const CARDS: CardItem[] = [
     loglineEn: 'Connecting expertise and creativity to craft meaningful stories.',
   },
   {
-    id: 'visual-led-1',
+    id: 'visual-led-tich-tich',
     type: 'visual_led',
     titleVi: 'Visual LED Sân Khấu',
     titleEn: 'Stage Visual LED',
     subtitleVi: 'Đêm Công Diễn Tích Tịch Tình Tang',
     subtitleEn: 'Tich Tich Tinh Tang Concert Stage',
-    image: VISUAL_LED_IMG_1,
+    image: VISUAL_LED_IMG_TICH_TICH,
     loglineVi: 'Thiết kế đồ họa chuyển động Visual LED và bối cảnh sân khấu biểu diễn âm nhạc.',
     loglineEn: 'Motion graphic visual loops and live concert stage environments.',
   },
   {
-    id: 'visual-led-2',
+    id: 'visual-led-vo-viet',
     type: 'visual_led',
     titleVi: 'Visual LED & Sân Khấu',
     titleEn: 'Visual LED & Stage',
     subtitleVi: 'Đêm Công Diễn Khơi Nguồn Võ Việt',
     subtitleEn: 'Khoi Nguon Vo Viet Live Stage',
-    image: VISUAL_LED_IMG_2,
+    image: VISUAL_LED_IMG_VO_VIET,
     loglineVi: 'Hiệu ứng visual ánh sáng màn hình LED hòa quyện cùng âm thanh và võ nhạc.',
     loglineEn: 'Lighting visual synergy with live martial arts musical performance.',
   },
@@ -142,65 +142,37 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
 
   return (
     <section
-      className="relative w-full min-h-[95vh] sm:min-h-screen text-white flex flex-col justify-between items-center overflow-hidden py-10 px-4 select-none bg-[#030712]"
+      className="relative w-full min-h-[95vh] sm:min-h-screen text-white flex flex-col justify-between items-center overflow-hidden pt-8 pb-12 px-4 select-none bg-transparent"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* ── Galaxy Nebula Animated Color-Shifting Background ── */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Dynamic Nebula Clouds */}
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-indigo-600/30 via-purple-600/25 to-pink-600/20 blur-[130px] animate-pulse transition-all duration-[8000ms]" />
-        <div className="absolute top-1/3 -right-40 w-[650px] h-[650px] rounded-full bg-gradient-to-bl from-cyan-600/30 via-blue-600/25 to-violet-600/20 blur-[140px] transition-all duration-[10000ms]" />
-        <div className="absolute -bottom-40 left-1/4 w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-fuchsia-600/25 via-rose-600/20 to-amber-600/15 blur-[150px] transition-all duration-[9000ms]" />
-
-        {/* Shimmering Galaxy Stars */}
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              'radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 150px 180px, #38bdf8, rgba(0,0,0,0)), radial-gradient(1px 1px at 320px 80px, #f43f5e, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 450px 290px, #e879f9, rgba(0,0,0,0)), radial-gradient(1px 1px at 600px 140px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 800px 320px, #38bdf8, rgba(0,0,0,0)), radial-gradient(1px 1px at 950px 90px, #ffffff, rgba(0,0,0,0))',
-            backgroundSize: '1000px 600px',
-          }}
-        />
-
-        {/* 3D Cosmic Hologram Ring at Bottom */}
-        <div
-          className="w-[850px] h-[400px] rounded-full border border-cyan-400/20 absolute bottom-[-100px] left-1/2 -translate-x-1/2 blur-[1px]"
-          style={{ transform: 'rotateX(78deg)' }}
-        />
-        <div
-          className="w-[1100px] h-[520px] rounded-full border border-dashed border-purple-400/15 absolute bottom-[-150px] left-1/2 -translate-x-1/2"
-          style={{ transform: 'rotateX(78deg)' }}
-        />
-      </div>
-
       {/* ── Top Header: Name & Positions ── */}
-      <div className="relative z-30 text-center max-w-4xl mx-auto pt-4 pb-2 px-4">
+      <div className="relative z-30 text-center max-w-4xl mx-auto pt-6 pb-6 px-4">
         {/* Name without breaking */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white whitespace-nowrap drop-shadow-xl">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white whitespace-nowrap drop-shadow-2xl">
           {isVi ? 'Nguyễn Thị Cẩm Yến' : 'Nguyen Thi Cam Yen'}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400"> (Yến Sam)</span>
         </h1>
 
         {/* Positions under Name */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono text-cyan-300 mt-3">
-          <span className="px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 backdrop-blur-md">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono text-cyan-300 mt-4 mb-2">
+          <span className="px-3.5 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-500/40 backdrop-blur-md shadow-lg shadow-cyan-950/50">
             🎬 {isVi ? 'Đạo diễn sản xuất MV' : 'MV Production Director'}
           </span>
           <span className="text-slate-500">✦</span>
-          <span className="px-3 py-1 rounded-full bg-purple-950/60 border border-purple-500/30 backdrop-blur-md text-purple-300">
+          <span className="px-3.5 py-1.5 rounded-full bg-purple-950/70 border border-purple-500/40 backdrop-blur-md text-purple-300 shadow-lg shadow-purple-950/50">
             📡 {isVi ? 'Lãnh đạo truyền thông' : 'Media Leadership'}
           </span>
           <span className="text-slate-500">✦</span>
-          <span className="px-3 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 backdrop-blur-md text-blue-300">
+          <span className="px-3.5 py-1.5 rounded-full bg-blue-950/70 border border-blue-500/40 backdrop-blur-md text-blue-300 shadow-lg shadow-blue-950/50">
             💡 {isVi ? 'Quản lý dự án sáng tạo' : 'Creative Project Manager'}
           </span>
         </div>
       </div>
 
-      {/* ── 3D Rotating Carousel Cylinder Stage ── */}
+      {/* ── 3D Rotating Carousel Cylinder Stage (with generous top margin so position badges never clash) ── */}
       <div
-        className="relative z-20 w-full max-w-5xl h-[420px] sm:h-[460px] flex items-center justify-center my-auto"
+        className="relative z-20 w-full max-w-5xl h-[420px] sm:h-[460px] flex items-center justify-center mt-6 mb-auto"
         style={{
           perspective: '1400px',
           perspectiveOrigin: '50% 50%',
