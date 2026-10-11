@@ -10,6 +10,7 @@ import { GallerySection } from '../components/GallerySection';
 import { SkillsSection } from '../components/SkillsSection';
 import { ContactSection } from '../components/ContactSection';
 import { DockNavigation } from '../components/DockNavigation';
+import { GalaxyBackground } from '../components/GalaxyBackground';
 import { Lock, Mail, Key, Sparkles, ArrowRight } from 'lucide-react';
 
 const ADMIN_SESSION_KEY = 'yensam_admin_authenticated';
@@ -181,7 +182,8 @@ export const Admin: React.FC = () => {
 
   // ==================== VISUAL EDITOR INTERFACE ====================
   return (
-    <div className="min-h-screen bg-[#030611] text-[#E2E8F0] selection:bg-cyan-500/30 selection:text-white relative pb-20">
+    <div className="min-h-screen bg-[#02050f] text-[#E2E8F0] selection:bg-cyan-500/30 selection:text-white relative pb-20">
+      <GalaxyBackground />
       
       {/* 1. TOP FIXED ADMIN TOOLBAR */}
       <TopAdminToolbar

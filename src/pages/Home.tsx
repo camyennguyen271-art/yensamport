@@ -8,6 +8,7 @@ import { GallerySection } from '../components/GallerySection';
 import { SkillsSection } from '../components/SkillsSection';
 import { ContactSection } from '../components/ContactSection';
 import { DockNavigation } from '../components/DockNavigation';
+import { GalaxyBackground } from '../components/GalaxyBackground';
 
 export const Home: React.FC = () => {
   const { t, language, toggleLanguage } = useI18n();
@@ -53,8 +54,9 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#030611] text-[#E2E8F0] selection:bg-cyan-500/30 selection:text-white relative">
-      <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#030611]/80 border-b border-white/[0.08] px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all">
+    <div className="min-h-screen bg-[#02050f] text-[#E2E8F0] selection:bg-cyan-500/30 selection:text-white relative">
+      <GalaxyBackground />
+      <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[#02050f]/80 border-b border-white/[0.08] px-4 sm:px-8 py-3.5 flex items-center justify-between transition-all">
         <a 
           href="#"
           className="text-sm sm:text-base font-extrabold tracking-tight text-white font-display hover:text-cyan-300 transition-colors whitespace-nowrap"

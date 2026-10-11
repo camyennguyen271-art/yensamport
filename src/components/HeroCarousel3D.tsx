@@ -174,20 +174,28 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
         />
       </div>
 
-      {/* ── Top Header Title & Exact Tagline ── */}
-      <div className="relative z-30 text-center max-w-4xl mx-auto pt-2 pb-4 px-4">
+      {/* ── Top Header: Name & Positions ── */}
+      <div className="relative z-30 text-center max-w-4xl mx-auto pt-4 pb-2 px-4">
         {/* Name without breaking */}
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white whitespace-nowrap drop-shadow-xl">
           {isVi ? 'Nguyễn Thị Cẩm Yến' : 'Nguyen Thi Cam Yen'}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400"> (Yến Sam)</span>
         </h1>
 
-        {/* Exact User Requested Tagline */}
-        <p className="text-sm sm:text-base md:text-lg font-light text-slate-200 mt-3 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
-          {isVi
-            ? 'Kết nối chuyên môn và sáng tạo để tạo nên những câu chuyện có ý nghĩa, hiệu quả và đáng nhớ với khán giả.'
-            : 'Connecting expertise and creativity to craft meaningful, impactful, and unforgettable stories for audiences.'}
-        </p>
+        {/* Positions under Name */}
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono text-cyan-300 mt-3">
+          <span className="px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 backdrop-blur-md">
+            🎬 {isVi ? 'Đạo diễn sản xuất MV' : 'MV Production Director'}
+          </span>
+          <span className="text-slate-500">✦</span>
+          <span className="px-3 py-1 rounded-full bg-purple-950/60 border border-purple-500/30 backdrop-blur-md text-purple-300">
+            📡 {isVi ? 'Lãnh đạo truyền thông' : 'Media Leadership'}
+          </span>
+          <span className="text-slate-500">✦</span>
+          <span className="px-3 py-1 rounded-full bg-blue-950/60 border border-blue-500/30 backdrop-blur-md text-blue-300">
+            💡 {isVi ? 'Quản lý dự án sáng tạo' : 'Creative Project Manager'}
+          </span>
+        </div>
       </div>
 
       {/* ── 3D Rotating Carousel Cylinder Stage ── */}
@@ -281,13 +289,13 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
                     </div>
                   )}
 
-                  {/* Standard Image Cards (clean, without category pill badges) */}
+                  {/* Standard Image Cards: Content container with solid dark backing so image does not clash with text */}
                   {card.type !== 'keywords' && (
-                    <div className="relative z-10 p-5 space-y-1">
-                      <h3 className="text-lg sm:text-xl font-bold font-display text-white leading-tight">
+                    <div className="relative z-10 p-4 pt-8 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent space-y-1">
+                      <h3 className="text-base sm:text-lg font-bold font-display text-white leading-tight drop-shadow-md">
                         {isVi ? card.titleVi : card.titleEn}
                       </h3>
-                      <p className="text-xs font-mono text-cyan-300">
+                      <p className="text-xs font-mono text-cyan-300 font-medium">
                         {isVi ? card.subtitleVi : card.subtitleEn}
                       </p>
                       {card.loglineVi && (
