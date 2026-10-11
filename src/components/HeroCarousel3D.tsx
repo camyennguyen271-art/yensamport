@@ -60,8 +60,8 @@ const CARDS: CardItem[] = [
   {
     id: 'visual-led-tich-tich',
     type: 'visual_led',
-    titleVi: 'Visual LED Sân Khấu',
-    titleEn: 'Stage Visual LED',
+    titleVi: 'Visual LED',
+    titleEn: 'Visual LED',
     subtitleVi: 'Đêm Công Diễn Tích Tịch Tình Tang',
     subtitleEn: 'Tich Tich Tinh Tang Concert Stage',
     image: VISUAL_LED_IMG_TICH_TICH,
@@ -71,8 +71,8 @@ const CARDS: CardItem[] = [
   {
     id: 'visual-led-vo-viet',
     type: 'visual_led',
-    titleVi: 'Visual LED & Sân Khấu',
-    titleEn: 'Visual LED & Stage',
+    titleVi: 'Visual LED',
+    titleEn: 'Visual LED',
     subtitleVi: 'Đêm Công Diễn Khơi Nguồn Võ Việt',
     subtitleEn: 'Khoi Nguon Vo Viet Live Stage',
     image: VISUAL_LED_IMG_VO_VIET,
@@ -182,16 +182,6 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
               value={isVi ? (heroData.taglineVi || 'Lãnh đạo truyền thông') : (heroData.taglineEn || 'Media Leadership')}
               onChange={(val) => updateHero(isVi ? { taglineVi: val, tagline: val } : { taglineEn: val })}
               placeholder="Vị trí 2..."
-            />
-          </span>
-          <span className="text-slate-500">✦</span>
-          <span className="px-3.5 py-1.5 rounded-full bg-blue-950/70 border border-blue-500/40 backdrop-blur-md text-blue-300 shadow-lg shadow-blue-950/50">
-            💡{' '}
-            <InlineText
-              as="span"
-              value={isVi ? (heroData.descriptionVi || 'Quản lý dự án sáng tạo') : (heroData.descriptionEn || 'Creative Project Manager')}
-              onChange={(val) => updateHero(isVi ? { descriptionVi: val, description: val } : { descriptionEn: val })}
-              placeholder="Vị trí 3..."
             />
           </span>
         </div>
