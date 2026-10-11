@@ -161,7 +161,7 @@ function Card3D({ card, angle, isActive, onClick }: CardProps) {
     width: 280,
     height: 380,
     left: '50%',
-    top: '50%',
+    top: '55%',
     marginLeft: -140,
     marginTop: -190,
     transform: `rotateY(${angle}deg) translateZ(${RADIUS}px) scale(${scale})`,
@@ -404,15 +404,15 @@ export const HeroCarousel3D: React.FC<HeroCarousel3DProps> = ({ onContactClick, 
       </div>
 
       {/* ── Top intro text ── */}
-      <div className="relative z-20 text-center mb-6 px-4">
-        <p className="text-xs font-mono text-slate-500 tracking-[0.3em] uppercase mb-2">
+      <div className="relative z-20 text-center pt-8 mb-8 px-4">
+        <p className="text-xs font-mono text-cyan-400 tracking-[0.3em] uppercase mb-2">
           {isVi ? 'Hồ Sơ Năng Lực' : 'Creative Portfolio'}
         </p>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">
           {isVi ? 'Yến Sam' : 'Yen Sam'}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"> ✦</span>
         </h1>
-        <p className="text-sm text-slate-400 mt-1 font-mono">
+        <p className="text-sm text-slate-400 mt-2 font-mono">
           {isVi
             ? 'Creative Director · Media Specialist · MV Producer'
             : 'Creative Director · Media Specialist · MV Producer'}
@@ -424,8 +424,8 @@ export const HeroCarousel3D: React.FC<HeroCarousel3DProps> = ({ onContactClick, 
         className="relative z-10"
         style={{
           width: '100%',
-          height: 420,
-          perspective: '1100px',
+          height: 460,
+          perspective: '1200px',
           perspectiveOrigin: '50% 50%',
         }}
       >
