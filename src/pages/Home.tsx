@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useI18n } from '../lib/i18n';
-import { HeroSection } from '../components/HeroSection';
+import { HeroCarousel3D } from '../components/HeroCarousel3D';
 import { AboutSection } from '../components/AboutSection';
 import { ExperienceSection } from '../components/ExperienceSection';
 import { ProjectsSection } from '../components/ProjectsSection';
@@ -89,7 +89,7 @@ export const Home: React.FC = () => {
       </header>
 
       <main>
-        <HeroSection
+        <HeroCarousel3D
           onContactClick={handleContactClick}
           onNavigate={handleNavigate}
         />

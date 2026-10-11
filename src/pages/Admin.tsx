@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSiteData } from '../lib/SiteDataContext';
 import { useI18n } from '../lib/i18n';
 import { TopAdminToolbar } from '../components/admin/TopAdminToolbar';
-import { HeroSection } from '../components/HeroSection';
+import { HeroCarousel3D } from '../components/HeroCarousel3D';
 import { AboutSection } from '../components/AboutSection';
 import { ExperienceSection } from '../components/ExperienceSection';
 import { ProjectsSection } from '../components/ProjectsSection';
@@ -16,7 +16,8 @@ const ADMIN_SESSION_KEY = 'yensam_admin_authenticated';
 
 export const Admin: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+    // Use sessionStorage so auth is cleared when browser/tab closes
+    return sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true';
   });
 
   const [email, setEmail] = useState('');
@@ -79,7 +80,7 @@ export const Admin: React.FC = () => {
 
     if (email.trim() === adminEmail && password === adminPassword) {
       setIsAuthenticated(true);
-      localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+      sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
       setLoginError('');
       setIsEditMode(true);
     } else {
@@ -90,7 +91,8 @@ export const Admin: React.FC = () => {
   const handleLogout = () => {
     if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
       setIsAuthenticated(false);
-      localStorage.removeItem(ADMIN_SESSION_KEY);
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      localStorage.removeItem(ADMIN_SESSION_KEY); // clear old localStorage key too
       setIsEditMode(false);
     }
   };
@@ -204,7 +206,7 @@ export const Admin: React.FC = () => {
 
       {/* 2. SITE MAIN CONTENT (Visual Editor context) */}
       <main className={isEditMode ? 'ring-1 ring-cyan-500/20' : ''}>
-        <HeroSection
+        <HeroCarousel3D
           onContactClick={handleContactClick}
           onNavigate={handleNavigate}
         />
