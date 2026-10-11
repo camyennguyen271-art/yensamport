@@ -10,7 +10,7 @@ export const ExperienceSection: React.FC = () => {
   const { data, updateExperienceItem, addExperienceItem, deleteExperienceItem, reorderExperiences, isEditMode } = useSiteData();
   const experiences = data.experiences;
   const isVi = language === 'vi';
-  const [expandedId, setExpandedId] = useState<string | null>(experiences[0]?.id || 'fpt-comms-2024');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedId(prev => prev === id ? null : id);
