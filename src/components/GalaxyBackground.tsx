@@ -30,6 +30,10 @@ export const GalaxyBackground: React.FC = () => {
   const lastMouseRef = useRef({ x: 0, y: 0, time: 0 });
 
   useEffect(() => {
+    // Only mount canvas particle loop on devices with pointer/mouse to prevent mobile GPU crashes
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+    if (isTouch) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -38,6 +42,7 @@ export const GalaxyBackground: React.FC = () => {
     let animId: number;
 
     const resize = () => {
+      if (!canvas) return;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };

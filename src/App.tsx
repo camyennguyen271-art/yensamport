@@ -4,11 +4,13 @@ import { Home } from './pages/Home';
 import { Admin } from './pages/Admin';
 import { I18nProvider } from './lib/i18n';
 import { SiteDataProvider } from './lib/SiteDataContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export default function App() {
   return (
-    <I18nProvider>
-      <SiteDataProvider>
+    <ErrorBoundary>
+      <I18nProvider>
+        <SiteDataProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -17,5 +19,6 @@ export default function App() {
         </BrowserRouter>
       </SiteDataProvider>
     </I18nProvider>
+  </ErrorBoundary>
   );
 }
