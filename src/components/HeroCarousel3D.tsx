@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useI18n } from '../lib/i18n';
+import { useSiteData } from '../lib/SiteDataContext';
+import { InlineText, InlineImage } from './admin/InlineEditHelpers';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 
 interface CardItem {
@@ -119,6 +121,8 @@ interface HeroProps {
 
 export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate }) => {
   const { language } = useI18n();
+  const { data, updateHero } = useSiteData();
+  const heroData = data.hero;
   const isVi = language === 'vi';
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -146,26 +150,49 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* ── Top Header: Name & Positions ── */}
+      {/* ── Top Header: Name & Positions with Inline Edit capability ── */}
       <div className="relative z-30 text-center max-w-4xl mx-auto pt-6 pb-6 px-4">
-        {/* Name without breaking */}
+        {/* Name without breaking lines */}
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white whitespace-nowrap drop-shadow-2xl">
-          {isVi ? 'Nguyễn Thị Cẩm Yến' : 'Nguyen Thi Cam Yen'}
+          <InlineText
+            as="span"
+            value={isVi ? (heroData.titleVi || heroData.title || 'Nguyễn Thị Cẩm Yến') : (heroData.titleEn || heroData.title || 'Nguyen Thi Cam Yen')}
+            onChange={(val) => updateHero(isVi ? { titleVi: val, title: val } : { titleEn: val })}
+            placeholder="Tên của bạn..."
+          />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400"> (Yến Sam)</span>
         </h1>
 
         {/* Positions under Name */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono text-cyan-300 mt-4 mb-2">
           <span className="px-3.5 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-500/40 backdrop-blur-md shadow-lg shadow-cyan-950/50">
-            🎬 {isVi ? 'Đạo diễn sản xuất MV' : 'MV Production Director'}
+            🎬{' '}
+            <InlineText
+              as="span"
+              value={isVi ? (heroData.subtitleVi || 'Đạo diễn sản xuất MV') : (heroData.subtitleEn || 'MV Production Director')}
+              onChange={(val) => updateHero(isVi ? { subtitleVi: val, subtitle: val } : { subtitleEn: val })}
+              placeholder="Vị trí 1..."
+            />
           </span>
           <span className="text-slate-500">✦</span>
           <span className="px-3.5 py-1.5 rounded-full bg-purple-950/70 border border-purple-500/40 backdrop-blur-md text-purple-300 shadow-lg shadow-purple-950/50">
-            📡 {isVi ? 'Lãnh đạo truyền thông' : 'Media Leadership'}
+            📡{' '}
+            <InlineText
+              as="span"
+              value={isVi ? (heroData.taglineVi || 'Lãnh đạo truyền thông') : (heroData.taglineEn || 'Media Leadership')}
+              onChange={(val) => updateHero(isVi ? { taglineVi: val, tagline: val } : { taglineEn: val })}
+              placeholder="Vị trí 2..."
+            />
           </span>
           <span className="text-slate-500">✦</span>
           <span className="px-3.5 py-1.5 rounded-full bg-blue-950/70 border border-blue-500/40 backdrop-blur-md text-blue-300 shadow-lg shadow-blue-950/50">
-            💡 {isVi ? 'Quản lý dự án sáng tạo' : 'Creative Project Manager'}
+            💡{' '}
+            <InlineText
+              as="span"
+              value={isVi ? (heroData.descriptionVi || 'Quản lý dự án sáng tạo') : (heroData.descriptionEn || 'Creative Project Manager')}
+              onChange={(val) => updateHero(isVi ? { descriptionVi: val, description: val } : { descriptionEn: val })}
+              placeholder="Vị trí 3..."
+            />
           </span>
         </div>
       </div>
