@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useI18n } from '../lib/i18n';
 import { useSiteData } from '../lib/SiteDataContext';
 import { InlineText, InlineImage } from './admin/InlineEditHelpers';
@@ -137,6 +137,18 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
     setActiveIndex((prev) => (prev - 1 + total) % total);
   }, [total]);
 
+  const [isMobile, setIsMobile] = useState(false);
+  const touchStartX = useRef(0);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Auto-play
   useEffect(() => {
     if (isHovered) return;
@@ -144,28 +156,42 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
     return () => clearInterval(interval);
   }, [isHovered, next]);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) prev();
+      else next();
+    }
+  };
+
   return (
     <section
-      className="relative w-full min-h-[95vh] sm:min-h-screen text-white flex flex-col justify-between items-center overflow-hidden pt-8 pb-12 px-4 select-none bg-transparent"
+      className="relative w-full min-h-[90vh] sm:min-h-screen text-white flex flex-col justify-between items-center overflow-hidden pt-6 pb-12 px-3 sm:px-4 select-none bg-transparent"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* ── Top Header: Name & Positions with Inline Edit capability ── */}
-      <div className="relative z-30 text-center max-w-4xl mx-auto pt-6 pb-6 px-4">
-        {/* Name without breaking lines */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white whitespace-nowrap drop-shadow-2xl">
+      <div className="relative z-30 text-center max-w-4xl mx-auto pt-4 pb-4 px-2">
+        {/* Name with responsive text sizing on mobile */}
+        <h1 className="text-2xl sm:text-5xl md:text-6xl font-extrabold font-display tracking-tight text-white drop-shadow-2xl">
           <InlineText
             as="span"
             value={isVi ? (heroData.titleVi || heroData.title || 'Nguyễn Thị Cẩm Yến') : (heroData.titleEn || heroData.title || 'Nguyen Thi Cam Yen')}
             onChange={(val) => updateHero(isVi ? { titleVi: val, title: val } : { titleEn: val })}
             placeholder="Tên của bạn..."
           />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400"> (Yến Sam)</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 whitespace-nowrap"> (Yến Sam)</span>
         </h1>
 
         {/* Positions under Name */}
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono text-cyan-300 mt-4 mb-2">
-          <span className="px-3.5 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-500/40 backdrop-blur-md shadow-lg shadow-cyan-950/50">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-3 text-[11px] sm:text-sm font-mono text-cyan-300 mt-3 mb-1">
+          <span className="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-cyan-950/70 border border-cyan-500/40 backdrop-blur-md shadow-lg shadow-cyan-950/50">
             🎬{' '}
             <InlineText
               as="span"
@@ -175,7 +201,7 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
             />
           </span>
           <span className="text-slate-500">✦</span>
-          <span className="px-3.5 py-1.5 rounded-full bg-purple-950/70 border border-purple-500/40 backdrop-blur-md text-purple-300 shadow-lg shadow-purple-950/50">
+          <span className="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-purple-950/70 border border-purple-500/40 backdrop-blur-md text-purple-300 shadow-lg shadow-purple-950/50">
             📡{' '}
             <InlineText
               as="span"
@@ -187,11 +213,11 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
         </div>
       </div>
 
-      {/* ── 3D Rotating Carousel Cylinder Stage (with generous top margin so position badges never clash) ── */}
+      {/* ── 3D Rotating Carousel Cylinder Stage (responsive dimensions for mobile & desktop) ── */}
       <div
-        className="relative z-20 w-full max-w-5xl h-[420px] sm:h-[460px] flex items-center justify-center mt-6 mb-auto"
+        className="relative z-20 w-full max-w-5xl h-[360px] sm:h-[460px] flex items-center justify-center mt-3 sm:mt-6 mb-auto"
         style={{
-          perspective: '1400px',
+          perspective: isMobile ? '900px' : '1400px',
           perspectiveOrigin: '50% 50%',
         }}
       >
@@ -209,23 +235,27 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
             const isCenter = offset === 0;
             const absOffset = Math.abs(offset);
 
-            if (absOffset > 2) return null;
+            // On mobile, only show 1 neighbor card on each side to avoid screen clutter
+            const maxVisibleOffset = isMobile ? 1 : 2;
+            if (absOffset > maxVisibleOffset) return null;
 
-            // 3D positioning
-            const rotateY = offset * 36;
-            const translateZ = isCenter ? 280 : 280 - absOffset * 135;
-            const translateX = offset * 240;
-            const scale = isCenter ? 1.05 : Math.max(0.72, 1 - absOffset * 0.16);
-            const opacity = isCenter ? 1 : Math.max(0.35, 1 - absOffset * 0.35);
+            // 3D positioning adapted for mobile
+            const rotateY = isMobile ? offset * 45 : offset * 36;
+            const translateZ = isMobile
+              ? isCenter ? 120 : 120 - absOffset * 100
+              : isCenter ? 280 : 280 - absOffset * 135;
+            const translateX = isMobile ? offset * 140 : offset * 240;
+            const scale = isCenter ? 1 : Math.max(0.68, 1 - absOffset * 0.2);
+            const opacity = isCenter ? 1 : Math.max(0.3, 1 - absOffset * 0.45);
             const zIndex = 25 - absOffset * 5;
 
             return (
               <div
                 key={card.id}
                 onClick={() => setActiveIndex(i)}
-                className={`absolute w-[270px] sm:w-[310px] h-[380px] sm:h-[420px] rounded-3xl p-3.5 bg-slate-900/85 border backdrop-blur-2xl transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer overflow-hidden ${
+                className={`absolute w-[240px] sm:w-[310px] h-[330px] sm:h-[420px] rounded-3xl p-3 sm:p-3.5 bg-slate-900/85 border backdrop-blur-2xl transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer overflow-hidden ${
                   isCenter
-                    ? 'border-cyan-400/70 shadow-[0_0_60px_rgba(6,182,212,0.4)] ring-1 ring-cyan-300/50'
+                    ? 'border-cyan-400/70 shadow-[0_0_50px_rgba(6,182,212,0.4)] ring-1 ring-cyan-300/50'
                     : 'border-white/10 hover:border-white/25 shadow-2xl'
                 }`}
                 style={{
