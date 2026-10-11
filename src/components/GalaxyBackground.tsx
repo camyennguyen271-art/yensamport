@@ -1,20 +1,160 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  alpha: number;
+  decay: number;
+  vx: number;
+  vy: number;
+  rotation: number;
+  vRot: number;
+}
+
+const STAR_COLORS = [
+  '#38bdf8', // sky cyan
+  '#a855f7', // cosmic purple
+  '#f43f5e', // rose pink
+  '#facc15', // star gold
+  '#ffffff', // diamond white
+  '#22d3ee', // neon cyan
+];
 
 export const GalaxyBackground: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const particlesRef = useRef<Particle[]>([]);
+  const lastPosRef = useRef({ x: 0, y: 0, time: 0 });
 
   useEffect(() => {
-    // Only track mouse on desktop devices
-    if (window.innerWidth < 768) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId: number;
+
+    const resize = () => {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Optimized Sparkle Star drawing
+    const drawSparkle = (
+      c: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      radius: number,
+      color: string,
+      alpha: number,
+      rotation: number
+    ) => {
+      c.save();
+      c.translate(x, y);
+      c.rotate(rotation);
+      c.globalAlpha = Math.max(0, alpha);
+
+      c.fillStyle = color;
+
+      // 4-pointed diamond sparkle star
+      c.beginPath();
+      for (let i = 0; i < 4; i++) {
+        c.lineTo(0, radius);
+        c.quadraticCurveTo(0, 0, radius * 0.22, 0);
+        c.lineTo(radius, 0);
+        c.quadraticCurveTo(0, 0, 0, -radius * 0.22);
+        c.rotate(Math.PI / 2);
+      }
+      c.closePath();
+      c.fill();
+
+      // Bright diamond center core
+      c.beginPath();
+      c.arc(0, 0, radius * 0.35, 0, Math.PI * 2);
+      c.fillStyle = '#ffffff';
+      c.fill();
+
+      c.restore();
+    };
+
+    // Render loop
+    const render = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const particles = particlesRef.current;
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+        p.rotation += p.vRot;
+        p.size *= 0.985;
+
+        if (p.alpha <= 0 || p.size <= 0.5) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        drawSparkle(ctx, p.x, p.y, p.size, p.color, p.alpha, p.rotation);
+      }
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    // Spawn sparkles along cursor or finger drag trail
+    const spawnSparkles = (clientX: number, clientY: number) => {
+      const px = (clientX / window.innerWidth) * 100;
+      const py = (clientY / window.innerHeight) * 100;
+      setMousePos({ x: px, y: py });
+
+      const dist = Math.hypot(clientX - lastPosRef.current.x, clientY - lastPosRef.current.y);
+      lastPosRef.current = { x: clientX, y: clientY, time: Date.now() };
+
+      const count = Math.min(Math.floor(dist / 6) + 1, 4);
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 1.5 + 0.3;
+        particlesRef.current.push({
+          x: clientX + (Math.random() - 0.5) * 16,
+          y: clientY + (Math.random() - 0.5) * 16,
+          size: Math.random() * 8 + 4,
+          color: STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)],
+          alpha: Math.random() * 0.4 + 0.6,
+          decay: Math.random() * 0.02 + 0.015,
+          vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 0.4,
+          vy: Math.sin(angle) * speed - Math.random() * 0.5,
+          rotation: Math.random() * Math.PI,
+          vRot: (Math.random() - 0.5) * 0.08,
+        });
+      }
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth) * 100;
-      const y = (e.clientY / window.innerHeight) * 100;
-      setMousePos({ x, y });
+      spawnSparkles(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches[0]) {
+        spawnSparkles(e.touches[0].clientX, e.touches[0].clientY);
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+      cancelAnimationFrame(animId);
+    };
   }, []);
 
   return (
@@ -64,6 +204,13 @@ export const GalaxyBackground: React.FC = () => {
           `,
           backgroundSize: '1000px 600px',
         }}
+      />
+
+      {/* ── Real-time Sparkling Star Dust Canvas Trail (Blink Blink Galaxy Trail) ── */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none z-10"
+        style={{ mixBlendMode: 'screen' }}
       />
 
       {/* Subtle Depth Vignette */}
