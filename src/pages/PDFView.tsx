@@ -4,7 +4,10 @@ import { useSiteData } from '../lib/SiteDataContext';
 const PRINT_STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;700&display=swap');
   * { box-sizing: border-box; }
-  @page { size: A4; margin: 12mm 14mm; }
+  @page {
+    size: A4;
+    margin: 12mm 14mm;
+  }
   html, body {
     margin: 0; padding: 0;
     background: #fff !important;
@@ -60,7 +63,7 @@ export function PDFView() {
 
   const vi = lang === 'vi';
   const mvProjects   = projects.filter(p => p.category === 'mv');
-  const leadProjects = projects.filter(p => p.category === 'lead').slice(0, 6);
+  const leadProjects = projects.filter(p => p.category === 'lead');
 
   const TAGLINES_VI = ['🎬 Đạo diễn sản xuất MV', '📡 Lãnh đạo truyền thông', '🎯 Quản lý dự án sáng tạo'];
   const TAGLINES_EN = ['🎬 MV Production Director', '📡 Media Leadership', '🎯 Creative Project Manager'];
@@ -81,12 +84,12 @@ export function PDFView() {
       </div>
 
       {/* ══════════════════════════════════════════
-          TRANG 1 — HEADER + ABOUT + EDUCATION
+          TRANG 1 — HEADER + ABOUT + VALUES + EDUCATION
       ══════════════════════════════════════════ */}
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 40px 0' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '40px 40px 0' }}>
 
         {/* Header */}
-        <div className="no-break" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 32, paddingBottom: 28, borderBottom: `3px solid ${ACCENT}`, marginBottom: 24 }}>
+        <div className="no-break" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 32, paddingBottom: 24, borderBottom: `3px solid ${ACCENT}`, marginBottom: 20 }}>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', color: ACCENT, textTransform: 'uppercase', marginBottom: 6 }}>
               Portfolio · Media Specialist
@@ -113,7 +116,7 @@ export function PDFView() {
         </div>
 
         {/* Stats */}
-        <div className="no-break" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: 28, background: NAVY, borderRadius: 12, overflow: 'hidden' }}>
+        <div className="no-break" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: 24, background: NAVY, borderRadius: 12, overflow: 'hidden' }}>
           {about.stats.map((stat, i) => (
             <div key={stat.id} style={{ padding: '14px 12px', textAlign: 'center', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
               <div style={{ fontSize: 20, fontWeight: 800, color: '#fff', lineHeight: 1 }}>{stat.value}</div>
@@ -143,7 +146,7 @@ export function PDFView() {
         </div>
 
         {/* Education */}
-        <div className="no-break" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 8 }}>
+        <div className="no-break" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
           {about.education.map(edu => (
             <div key={edu.id} style={{ padding: '11px 14px', borderRadius: 10, background: LIGHT_BG, borderLeft: `3px solid ${ACCENT2}` }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: ACCENT2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{edu.period} · {vi ? edu.locationVi : edu.locationEn}</div>
@@ -156,18 +159,18 @@ export function PDFView() {
       </div>
 
       {/* ══════════════════════════════════════════
-          TRANG 2 — KINH NGHIỆM + MV PROJECTS
+          TRANG 2 — TOÀN BỘ KINH NGHIỆM LÀM VIỆC (5 VỊ TRÍ)
       ══════════════════════════════════════════ */}
       <div className="pdf-page-break" style={{ maxWidth: 900, margin: '0 auto', padding: '40px 40px 0' }}>
 
         <SectionHeader title={vi ? 'Kinh Nghiệm Làm Việc' : 'Work Experience'} subtitle={vi ? 'WORK EXPERIENCE' : 'PROFESSIONAL HISTORY'} accent={ACCENT} />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 32 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
           {experiences.map((exp, i) => {
             const cols = [ACCENT, '#0ea5e9', '#10b981', '#f59e0b', '#e11d48'];
             const c = cols[i % cols.length];
             return (
-              <div key={exp.id} className="no-break" style={{ display: 'grid', gridTemplateColumns: '130px 1fr', gap: 14, padding: '13px 15px', background: i % 2 === 0 ? LIGHT_BG : '#fff', borderRadius: 10, border: `1px solid ${BORDER}`, borderLeft: `4px solid ${c}` }}>
+              <div key={exp.id} className="no-break" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: 16, padding: '14px 16px', background: i % 2 === 0 ? LIGHT_BG : '#fff', borderRadius: 10, border: `1px solid ${BORDER}`, borderLeft: `4px solid ${c}` }}>
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 700, color: TEXT_MUTED, marginBottom: 4 }}>{exp.year}</div>
                   <div style={{ fontSize: 10, fontWeight: 600, color: '#fff', background: c, borderRadius: 4, padding: '2px 6px', display: 'inline-block' }}>{vi ? exp.categoryVi : exp.categoryEn}</div>
@@ -175,8 +178,8 @@ export function PDFView() {
                 <div>
                   <div style={{ fontSize: 13.5, fontWeight: 700, color: NAVY, marginBottom: 2 }}>{vi ? exp.roleVi : exp.roleEn}</div>
                   <div style={{ fontSize: 11.5, fontWeight: 600, color: ACCENT, marginBottom: 4 }}>{vi ? exp.companyVi : exp.companyEn}</div>
-                  <div style={{ fontSize: 11, color: TEXT_BODY, lineHeight: 1.5, marginBottom: 3 }}>{vi ? exp.taglineVi : exp.taglineEn}</div>
-                  {(vi ? exp.achievementsVi : exp.achievementsEn).slice(0, 2).map((a, ai) => (
+                  <div style={{ fontSize: 11, color: TEXT_BODY, lineHeight: 1.5, marginBottom: 4 }}>{vi ? exp.taglineVi : exp.taglineEn}</div>
+                  {(vi ? exp.achievementsVi : exp.achievementsEn).slice(0, 3).map((a, ai) => (
                     <div key={ai} style={{ fontSize: 11, color: TEXT_BODY, lineHeight: 1.5, marginTop: 2, paddingLeft: 12, position: 'relative' }}>
                       <span style={{ position: 'absolute', left: 2, color: c, fontWeight: 700 }}>·</span>
                       {a}
@@ -188,46 +191,56 @@ export function PDFView() {
           })}
         </div>
 
-        {/* MV Projects — 3 cột hàng 1 */}
+      </div>
+
+      {/* ══════════════════════════════════════════
+          TRANG 3 — DỰ ÁN MUSIC VIDEO
+      ══════════════════════════════════════════ */}
+      <div className="pdf-page-break" style={{ maxWidth: 900, margin: '0 auto', padding: '40px 40px 0' }}>
+
         <SectionHeader title={vi ? 'Dự Án Nổi Bật — Music Video' : 'Featured Projects — Music Video'} subtitle="MV PRODUCTION" accent={ACCENT} />
-        <div className="no-break" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 12 }}>
-          {mvProjects.slice(0, 3).map(proj => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 24 }}>
+          {mvProjects.map(proj => (
             <ProjectCard key={proj.id} proj={proj} lang={lang} accent={ACCENT} textBody={TEXT_BODY} navy={NAVY} border={BORDER} />
           ))}
         </div>
-        {mvProjects.length > 3 && (
-          <div className="no-break" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 8 }}>
-            {mvProjects.slice(3).map(proj => (
-              <ProjectCard key={proj.id} proj={proj} lang={lang} accent={ACCENT} textBody={TEXT_BODY} navy={NAVY} border={BORDER} />
-            ))}
-          </div>
-        )}
 
       </div>
 
       {/* ══════════════════════════════════════════
-          TRANG 3 — LEAD PROJECTS + SKILLS
+          TRANG 4 — DỰ ÁN LÃNH ĐẠO TRUYỀN THÔNG & SỰ KIỆN
       ══════════════════════════════════════════ */}
       <div className="pdf-page-break" style={{ maxWidth: 900, margin: '0 auto', padding: '40px 40px 0' }}>
 
         <SectionHeader title={vi ? 'Dự Án Lãnh Đạo Truyền Thông' : 'Media Leadership Projects'} subtitle={vi ? 'MEDIA LEADERSHIP' : 'EVENT & CAMPAIGN MANAGEMENT'} accent={ACCENT2} />
-        <div className="no-break" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 24 }}>
           {leadProjects.map(proj => (
             <ProjectCard key={proj.id} proj={proj} lang={lang} accent={ACCENT2} textBody={TEXT_BODY} navy={NAVY} border={BORDER} />
           ))}
         </div>
 
+      </div>
+
+      {/* ══════════════════════════════════════════
+          TRANG 5 — NĂNG LỰC CHUYÊN MÔN (SKILLS) & FOOTER
+      ══════════════════════════════════════════ */}
+      <div className="pdf-page-break" style={{ maxWidth: 900, margin: '0 auto', padding: '40px 40px 0' }}>
+
         <SectionHeader title={vi ? 'Năng Lực Chuyên Môn' : 'Core Competencies'} subtitle={vi ? 'CORE SKILLS' : 'PROFESSIONAL SKILLS'} accent={ACCENT} />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12, marginBottom: 32 }}>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 36 }}>
           {skills.map((skill, i) => {
             const cols = [ACCENT, ACCENT2, '#10b981', '#f59e0b', '#e11d48', '#8b5cf6'];
             const c = cols[i % cols.length];
             return (
-              <div key={skill.id} className="no-break" style={{ padding: '13px 15px', borderRadius: 10, background: LIGHT_BG, border: `1px solid ${BORDER}`, borderTop: `3px solid ${c}` }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY, marginBottom: 2 }}>{vi ? skill.nameVi : skill.nameEn}</div>
-                <div style={{ fontSize: 10, fontWeight: 600, color: c, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 5 }}>{vi ? skill.categoryVi : skill.categoryEn}</div>
-                {(vi ? skill.highlightsVi : skill.highlightsEn).slice(0, 3).map((h, hi) => (
-                  <div key={hi} style={{ fontSize: 10.5, color: TEXT_BODY, lineHeight: 1.4, paddingLeft: 10, position: 'relative', marginTop: 2 }}>
+              <div key={skill.id} className="no-break" style={{ padding: '16px 18px', borderRadius: 10, background: LIGHT_BG, border: `1px solid ${BORDER}`, borderTop: `4px solid ${c}` }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: NAVY, marginBottom: 3 }}>{vi ? skill.nameVi : skill.nameEn}</div>
+                <div style={{ fontSize: 10.5, fontWeight: 600, color: c, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>{vi ? skill.categoryVi : skill.categoryEn}</div>
+                <div style={{ fontSize: 11, color: TEXT_MUTED, lineHeight: 1.5, marginBottom: 8, fontStyle: 'italic' }}>
+                  {vi ? skill.descriptionVi : skill.descriptionEn}
+                </div>
+                {(vi ? skill.highlightsVi : skill.highlightsEn).map((h, hi) => (
+                  <div key={hi} style={{ fontSize: 11, color: TEXT_BODY, lineHeight: 1.5, paddingLeft: 12, position: 'relative', marginTop: 3 }}>
                     <span style={{ position: 'absolute', left: 1, color: c, fontWeight: 700 }}>·</span>{h}
                   </div>
                 ))}
@@ -237,7 +250,7 @@ export function PDFView() {
         </div>
 
         {/* Footer */}
-        <div className="no-break" style={{ borderTop: `2px solid ${ACCENT}`, paddingTop: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 40 }}>
+        <div className="no-break" style={{ borderTop: `2px solid ${ACCENT}`, paddingTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
           <div style={{ fontSize: 12, color: TEXT_MUTED }}>
             <span style={{ fontWeight: 700, color: NAVY }}>{vi ? 'NGUYỄN THỊ CẨM YẾN (YẾN SAM)' : 'NGUYEN THI CAM YEN (YEN SAM)'}</span>
             {' · '}{vi ? 'Media Specialist · Đạo diễn sản xuất MV' : 'Media Specialist · MV Production Director'}
@@ -250,7 +263,7 @@ export function PDFView() {
   );
 }
 
-// ── Section Header (gắn className section-hdr để CSS print apply) ──
+// ── Section Header ──
 function SectionHeader({ title, subtitle, accent }: { title: string; subtitle: string; accent: string }) {
   return (
     <div className="section-hdr" style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
@@ -299,14 +312,14 @@ function ProjectCard({ proj, lang, accent, textBody, navy, border }: ProjectCard
 
   return (
     <div className="no-break" style={{ borderRadius: 10, overflow: 'hidden', border: `1px solid ${border}`, background: '#fff' }}>
-      <div style={{ height: 100, overflow: 'hidden', background: '#e2e8f0' }}>
+      <div style={{ height: 110, overflow: 'hidden', background: '#e2e8f0' }}>
         <img src={proj.image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
       </div>
-      <div style={{ padding: '9px 11px' }}>
+      <div style={{ padding: '10px 12px' }}>
         <div style={{ fontSize: 9, fontWeight: 700, color: accent, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 3 }}>{cat} · {proj.year}</div>
-        <div style={{ fontSize: 11.5, fontWeight: 700, color: navy, lineHeight: 1.3, marginBottom: 2 }}>{title}</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: navy, lineHeight: 1.3, marginBottom: 2 }}>{title}</div>
         <div style={{ fontSize: 10, fontWeight: 600, color: TEXT_MUTED, marginBottom: 4 }}>{role}</div>
-        <div style={{ fontSize: 10, color: textBody, lineHeight: 1.4, marginBottom: 5 }}>{shortDesc}</div>
+        <div style={{ fontSize: 10, color: textBody, lineHeight: 1.4, marginBottom: 6 }}>{shortDesc}</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
           {tags.map(t => (
             <span key={t} style={{ fontSize: 8.5, padding: '2px 5px', borderRadius: 4, background: `${accent}10`, color: accent, border: `1px solid ${accent}25`, fontWeight: 600 }}>{t}</span>
