@@ -108,22 +108,22 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/15 text-[11px] font-mono tracking-widest uppercase text-cyan-300 backdrop-blur-md mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                 <InlineText
-                  value={heroData.subtitle}
-                  onChange={(val) => updateHero({ subtitle: val })}
+                  value={isVi ? (heroData.subtitleVi || heroData.subtitle) : (heroData.subtitleEn || heroData.subtitle)}
+                  onChange={(val) => updateHero(isVi ? { subtitleVi: val, subtitle: val } : { subtitleEn: val })}
                 />
               </span>
 
               <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight font-display drop-shadow-md">
                 <InlineText
-                  value={heroData.title}
-                  onChange={(val) => updateHero({ title: val })}
+                  value={isVi ? (heroData.titleVi || heroData.title) : (heroData.titleEn || heroData.title)}
+                  onChange={(val) => updateHero(isVi ? { titleVi: val, title: val } : { titleEn: val })}
                 />
               </h1>
 
               <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-sm mx-auto font-normal leading-relaxed drop-shadow">
                 <InlineText
-                  value={heroData.tagline}
-                  onChange={(val) => updateHero({ tagline: val })}
+                  value={isVi ? (heroData.taglineVi || heroData.tagline) : (heroData.taglineEn || heroData.tagline)}
+                  onChange={(val) => updateHero(isVi ? { taglineVi: val, tagline: val } : { taglineEn: val })}
                 />
               </p>
             </div>
@@ -134,8 +134,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="mt-6 text-center max-w-xl mx-auto px-4">
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
             <InlineText
-              value={heroData.description}
-              onChange={(val) => updateHero({ description: val })}
+              value={isVi ? (heroData.descriptionVi || heroData.description) : (heroData.descriptionEn || heroData.description)}
+              onChange={(val) => updateHero(isVi ? { descriptionVi: val, description: val } : { descriptionEn: val })}
               multiline={true}
             />
           </p>

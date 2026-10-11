@@ -1,23 +1,11 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, Youtube, Plus, Trash2, Link as LinkIcon, Camera } from 'lucide-react';
+import { X, CheckCircle2, Youtube, Plus, Trash2, Link as LinkIcon, Camera, Globe } from 'lucide-react';
 import { useSiteData } from '../lib/SiteDataContext';
+import { useI18n } from '../lib/i18n';
 import { InlineText, InlineImage } from './admin/InlineEditHelpers';
+import { ProjectItemData } from '../data/mockSiteData';
 
-export interface ProjectItem {
-  id: string;
-  title: string;
-  role: string;
-  category: 'mv' | 'lead' | 'sublead' | 'podcast';
-  categoryLabel: string;
-  year: string;
-  organization: string;
-  description: string;
-  deliverables: string[];
-  image?: string;
-  tags: string[];
-  featured?: boolean;
-  youtubeUrl?: string;
-}
+export type ProjectItem = ProjectItemData;
 
 interface ProjectModalProps {
   project: ProjectItem | null;
@@ -35,10 +23,12 @@ function getYouTubeId(url: string): string | null {
 
 export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
   const { isEditMode, updateProjectItem } = useSiteData();
+  const { language, toggleLanguage } = useI18n();
   const [showUrlEdit, setShowUrlEdit] = useState(false);
 
   if (!project) return null;
 
+  const isVi = language === 'vi';
   const ytId = project.youtubeUrl ? getYouTubeId(project.youtubeUrl) : null;
 
   return (
@@ -62,6 +52,20 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
 
         {/* Modal Header */}
         <div className="space-y-2 pr-8">
+          {/* Active Editing Language Pill */}
+          {isEditMode && (
+            <div className="flex items-center gap-2 mb-2">
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                className="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <Globe className="w-3 h-3 text-cyan-400" />
+                <span>Đang sửa: {isVi ? '🇻🇳 Tiếng Việt (Khóa riêng)' : '🇬🇧 English (Khóa riêng)'}</span>
+              </button>
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-cyan-400">
             <span>
               <InlineText
@@ -72,31 +76,31 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             <span aria-hidden="true">·</span>
             <span>
               <InlineText
-                value={project.organization}
-                onChange={(val) => updateProjectItem(project.id, { organization: val })}
+                value={isVi ? (project.organizationVi || project.organization) : (project.organizationEn || project.organization)}
+                onChange={(val) => updateProjectItem(project.id, isVi ? { organizationVi: val, organization: val } : { organizationEn: val })}
               />
             </span>
             <span aria-hidden="true">·</span>
             <span className="text-rose-400 font-semibold">
               <InlineText
-                value={project.categoryLabel}
-                onChange={(val) => updateProjectItem(project.id, { categoryLabel: val })}
+                value={isVi ? (project.categoryLabelVi || project.categoryLabel) : (project.categoryLabelEn || project.categoryLabel)}
+                onChange={(val) => updateProjectItem(project.id, isVi ? { categoryLabelVi: val, categoryLabel: val } : { categoryLabelEn: val })}
               />
             </span>
           </div>
 
           <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-display tracking-tight">
             <InlineText
-              value={project.title}
-              onChange={(val) => updateProjectItem(project.id, { title: val })}
+              value={isVi ? (project.titleVi || project.title) : (project.titleEn || project.title)}
+              onChange={(val) => updateProjectItem(project.id, isVi ? { titleVi: val, title: val } : { titleEn: val })}
             />
           </h3>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-xs font-mono text-cyan-300">
             <span>Role:</span>
             <InlineText
-              value={project.role}
-              onChange={(val) => updateProjectItem(project.id, { role: val })}
+              value={isVi ? (project.roleVi || project.role) : (project.roleEn || project.role)}
+              onChange={(val) => updateProjectItem(project.id, isVi ? { roleVi: val, role: val } : { roleEn: val })}
             />
           </div>
         </div>
@@ -185,8 +189,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             <h4 className="text-xs uppercase font-mono tracking-wider text-slate-400 mb-1.5">Mô tả dự án (Overview)</h4>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
               <InlineText
-                value={project.description}
-                onChange={(val) => updateProjectItem(project.id, { description: val })}
+                value={isVi ? (project.descriptionVi || project.description) : (project.descriptionEn || project.description)}
+                onChange={(val) => updateProjectItem(project.id, isVi ? { descriptionVi: val, description: val } : { descriptionEn: val })}
                 multiline={true}
               />
             </p>
@@ -195,32 +199,40 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
           {/* Key Deliverables */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs uppercase font-mono tracking-wider text-slate-400">Kết quả & Giao nộp chính (Deliverables)</h4>
+              <h4 className="text-xs uppercase font-mono tracking-wider text-slate-400">
+                {isVi ? 'Kết quả & Giao nộp chính (Deliverables)' : 'Key Deliverables & Outputs'}
+              </h4>
               {isEditMode && (
                 <button
                   type="button"
                   onClick={() => {
-                    const currentList = project.deliverables || [];
-                    updateProjectItem(project.id, { deliverables: [...currentList, 'Hạng mục giao nộp mới...'] });
+                    const currentList = isVi
+                      ? (project.deliverablesVi || project.deliverables || [])
+                      : (project.deliverablesEn || project.deliverables || []);
+                    const newItem = isVi ? 'Hạng mục giao nộp mới...' : 'New deliverable item...';
+                    const nextList = [...currentList, newItem];
+                    updateProjectItem(project.id, isVi ? { deliverablesVi: nextList, deliverables: nextList } : { deliverablesEn: nextList });
                   }}
                   className="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-mono cursor-pointer"
                 >
-                  <Plus className="w-3 h-3" /> Thêm Dòng
+                  <Plus className="w-3 h-3" /> {isVi ? 'Thêm Dòng' : 'Add Item'}
                 </button>
               )}
             </div>
 
             <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
-              {(project.deliverables || []).map((item, idx) => (
+              {(isVi ? (project.deliverablesVi || project.deliverables || []) : (project.deliverablesEn || project.deliverables || [])).map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5 group/deliv">
                   <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                   <div className="flex-1">
                     <InlineText
                       value={item}
                       onChange={(val) => {
-                        const updated = [...(project.deliverables || [])];
-                        updated[idx] = val;
-                        updateProjectItem(project.id, { deliverables: updated });
+                        const currentList = isVi
+                          ? [...(project.deliverablesVi || project.deliverables || [])]
+                          : [...(project.deliverablesEn || project.deliverables || [])];
+                        currentList[idx] = val;
+                        updateProjectItem(project.id, isVi ? { deliverablesVi: currentList, deliverables: currentList } : { deliverablesEn: currentList });
                       }}
                       multiline={true}
                     />
@@ -229,11 +241,14 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
                     <button
                       type="button"
                       onClick={() => {
-                        const updated = (project.deliverables || []).filter((_, i) => i !== idx);
-                        updateProjectItem(project.id, { deliverables: updated });
+                        const currentList = isVi
+                          ? (project.deliverablesVi || project.deliverables || [])
+                          : (project.deliverablesEn || project.deliverables || []);
+                        const nextList = currentList.filter((_, i) => i !== idx);
+                        updateProjectItem(project.id, isVi ? { deliverablesVi: nextList, deliverables: nextList } : { deliverablesEn: nextList });
                       }}
                       className="text-rose-400 opacity-0 group-hover/deliv:opacity-100 transition-opacity p-1 hover:bg-rose-500/10 rounded cursor-pointer"
-                      title="Xóa dòng này"
+                      title={isVi ? "Xóa dòng này" : "Delete this item"}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -245,13 +260,15 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
 
           {/* Tags */}
           <div className="pt-2 border-t border-white/10">
-            <h4 className="text-xs uppercase font-mono tracking-wider text-slate-400 mb-2">Thẻ Kỹ Năng / Từ Khóa (Tags)</h4>
+            <h4 className="text-xs uppercase font-mono tracking-wider text-slate-400 mb-2">
+              {isVi ? 'Thẻ Kỹ Năng / Từ Khóa (Tags)' : 'Skill Tags / Keywords'}
+            </h4>
             <div className="flex flex-wrap gap-2 text-xs text-slate-300 font-mono">
               <InlineText
-                value={(project.tags || []).join(' · ')}
+                value={(isVi ? (project.tagsVi || project.tags || []) : (project.tagsEn || project.tags || [])).join(' · ')}
                 onChange={(val) => {
                   const updatedTags = val.split('·').map(t => t.trim()).filter(Boolean);
-                  updateProjectItem(project.id, { tags: updatedTags });
+                  updateProjectItem(project.id, isVi ? { tagsVi: updatedTags, tags: updatedTags } : { tagsEn: updatedTags });
                 }}
                 placeholder="Tag1 · Tag2 · Tag3"
               />

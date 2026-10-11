@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { ProjectItem, ProjectModal } from './ProjectModal';
-import { Youtube, Plus } from 'lucide-react';
+import { Youtube, Plus, Globe } from 'lucide-react';
 import { useSiteData } from '../lib/SiteDataContext';
+import { useI18n } from '../lib/i18n';
 import { InlineText, InlineImage, ItemControls } from './admin/InlineEditHelpers';
 import { ProjectItemData } from '../data/mockSiteData';
 
@@ -10,14 +11,17 @@ export const ProjectsSection: React.FC = () => {
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
   const { data, updateProjectItem, addProjectItem, deleteProjectItem, reorderProjects, isEditMode } = useSiteData();
+  const { language, toggleLanguage } = useI18n();
+  const isVi = language === 'vi';
+
   const projects = data.projects;
   const activeProject = projects.find(p => p.id === activeProjectId) || null;
 
   const categories = [
-    { id: 'all', label: 'All Projects' },
-    { id: 'mv', label: 'Music Videos & Creative' },
-    { id: 'lead', label: 'Media Leadership' },
-    { id: 'podcast', label: 'Original Podcasts' },
+    { id: 'all', label: isVi ? 'Tất cả dự án' : 'All Projects' },
+    { id: 'mv', label: isVi ? 'Music Videos & Sáng tạo' : 'Music Videos & Creative' },
+    { id: 'lead', label: isVi ? 'Lãnh đạo truyền thông' : 'Media Leadership' },
+    { id: 'podcast', label: isVi ? 'Podcasts độc quyền' : 'Original Podcasts' },
   ];
 
   const filteredProjects = selectedCategory === 'all'
@@ -29,17 +33,31 @@ export const ProjectsSection: React.FC = () => {
     const newItem: ProjectItemData = {
       id: newId,
       title: 'Tên Dự Án Mới',
+      titleVi: 'Tên Dự Án Mới',
+      titleEn: 'New Project Title',
       role: 'Producer / Director',
+      roleVi: 'Producer / Director',
+      roleEn: 'Producer / Director',
       category: 'mv',
-      categoryLabel: 'Music Video & Creative',
+      categoryLabel: isVi ? 'Music Video & Sáng Tạo' : 'Music Video & Creative',
+      categoryLabelVi: 'Music Video & Sáng Tạo',
+      categoryLabelEn: 'Music Video & Creative',
       year: '2024',
       organization: 'FPT Education / Media Production',
+      organizationVi: 'FPT Education / Sản Xuất Truyền Thông',
+      organizationEn: 'FPT Education / Media Production',
       featured: true,
-      image: '/src/assets/images/project_mv_showcase_1790314359425.jpg',
+      image: 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/project_mv_showcase_1790314359425.jpg',
       youtubeUrl: '',
-      description: 'Mô tả dự án ngắn gọn và ấn tượng...',
-      deliverables: ['Giao nộp 1', 'Giao nộp 2'],
-      tags: ['Creative Producing', 'Media Campaign']
+      description: isVi ? 'Mô tả dự án ngắn gọn và ấn tượng...' : 'Concise and impactful project description...',
+      descriptionVi: 'Mô tả dự án ngắn gọn và ấn tượng...',
+      descriptionEn: 'Concise and impactful project description...',
+      deliverables: isVi ? ['Giao nộp 1', 'Giao nộp 2'] : ['Deliverable 1', 'Deliverable 2'],
+      deliverablesVi: ['Giao nộp 1', 'Giao nộp 2'],
+      deliverablesEn: ['Deliverable 1', 'Deliverable 2'],
+      tags: isVi ? ['Sản Xuất Sáng Tạo', 'Chiến Dịch Truyền Thông'] : ['Creative Producing', 'Media Campaign'],
+      tagsVi: ['Sản Xuất Sáng Tạo', 'Chiến Dịch Truyền Thông'],
+      tagsEn: ['Creative Producing', 'Media Campaign']
     };
     addProjectItem(newItem);
   };
@@ -51,23 +69,35 @@ export const ProjectsSection: React.FC = () => {
         <div>
           <span className="text-xs uppercase font-mono tracking-widest text-cyan-400">03 / CURATED SHOWCASE</span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white font-display tracking-tight mt-1">
-            Key Projects
+            {isVi ? 'Dự Án Trọng Điểm' : 'Key Projects'}
           </h2>
         </div>
 
-        <div className="flex items-center gap-3 mt-4 sm:mt-0">
+        <div className="flex flex-wrap items-center gap-3 mt-4 sm:mt-0">
           {isEditMode && (
-            <button
-              type="button"
-              onClick={handleAddNewProject}
-              className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Thêm dự án</span>
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                title="Bấm để đổi ngôn ngữ đang sửa"
+                className="px-3 py-1.5 rounded-full text-xs font-mono font-semibold bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5 cursor-pointer shadow"
+              >
+                <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Đang sửa: {isVi ? '🇻🇳 VIE' : '🇬🇧 ENG'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleAddNewProject}
+                className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Thêm dự án</span>
+              </button>
+            </>
           )}
           <p className="text-xs sm:text-sm text-slate-400 font-mono">
-            {projects.length} Productions & Creative Releases
+            {projects.length} {isVi ? 'Dự án & Sản phẩm sáng tạo' : 'Productions & Creative Releases'}
           </p>
         </div>
       </div>
@@ -159,30 +189,30 @@ export const ProjectsSection: React.FC = () => {
                   <span aria-hidden="true">·</span>
                   <span>
                     <InlineText
-                      value={project.categoryLabel}
-                      onChange={(val) => updateProjectItem(project.id, { categoryLabel: val })}
+                      value={isVi ? (project.categoryLabelVi || project.categoryLabel) : (project.categoryLabelEn || project.categoryLabel)}
+                      onChange={(val) => updateProjectItem(project.id, isVi ? { categoryLabelVi: val, categoryLabel: val } : { categoryLabelEn: val })}
                     />
                   </span>
                 </div>
 
                 <h3 className="text-lg font-bold text-white font-display tracking-tight group-hover:text-cyan-300 transition-colors">
                   <InlineText
-                    value={project.title}
-                    onChange={(val) => updateProjectItem(project.id, { title: val })}
+                    value={isVi ? (project.titleVi || project.title) : (project.titleEn || project.title)}
+                    onChange={(val) => updateProjectItem(project.id, isVi ? { titleVi: val, title: val } : { titleEn: val })}
                   />
                 </h3>
 
                 <p className="text-xs font-semibold text-rose-300 mt-1 font-mono">
                   <InlineText
-                    value={project.role}
-                    onChange={(val) => updateProjectItem(project.id, { role: val })}
+                    value={isVi ? (project.roleVi || project.role) : (project.roleEn || project.role)}
+                    onChange={(val) => updateProjectItem(project.id, isVi ? { roleVi: val, role: val } : { roleEn: val })}
                   />
                 </p>
 
                 <p className="text-xs text-slate-300 mt-2.5 line-clamp-3 leading-relaxed">
                   <InlineText
-                    value={project.description}
-                    onChange={(val) => updateProjectItem(project.id, { description: val })}
+                    value={isVi ? (project.descriptionVi || project.description) : (project.descriptionEn || project.description)}
+                    onChange={(val) => updateProjectItem(project.id, isVi ? { descriptionVi: val, description: val } : { descriptionEn: val })}
                     multiline={true}
                   />
                 </p>
@@ -192,8 +222,11 @@ export const ProjectsSection: React.FC = () => {
               <div className="pt-4 mt-4 border-t border-white/10 flex items-center justify-between">
                 <div className="text-[11px] text-slate-400 font-mono truncate max-w-[75%]">
                   <InlineText
-                    value={(project.tags || []).slice(0, 3).join(' · ')}
-                    onChange={(val) => updateProjectItem(project.id, { tags: val.split('·').map(t => t.trim()) })}
+                    value={(isVi ? (project.tagsVi || project.tags) : (project.tagsEn || project.tags) || []).slice(0, 3).join(' · ')}
+                    onChange={(val) => {
+                      const parsed = val.split('·').map(t => t.trim()).filter(Boolean);
+                      updateProjectItem(project.id, isVi ? { tagsVi: parsed, tags: parsed } : { tagsEn: parsed });
+                    }}
                   />
                 </div>
                 <button
@@ -201,7 +234,7 @@ export const ProjectsSection: React.FC = () => {
                   onClick={() => setActiveProjectId(project.id)}
                   className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
                 >
-                  Chi tiết →
+                  {isVi ? 'Chi tiết →' : 'Details →'}
                 </button>
               </div>
             </div>

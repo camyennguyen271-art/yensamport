@@ -126,34 +126,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
       ...prev,
       about: { ...prev.about, ...fields }
     }));
-
-    // Auto-translate Vietnamese fields to English asynchronously
-    const viKeys = ['headingVi', 'paragraph1Vi', 'paragraph2Vi', 'quoteVi', 'candidateDossierVi', 'titleVi', 'locationEmailVi'] as const;
-    const enMapping: Record<string, keyof AboutData> = {
-      headingVi: 'headingEn',
-      paragraph1Vi: 'paragraph1En',
-      paragraph2Vi: 'paragraph2En',
-      quoteVi: 'quoteEn',
-      candidateDossierVi: 'candidateDossierEn',
-      titleVi: 'titleEn',
-      locationEmailVi: 'locationEmailEn'
-    };
-
-    Object.keys(fields).forEach(async (key) => {
-      if (viKeys.includes(key as any) && fields[key as keyof AboutData]) {
-        const textVi = fields[key as keyof AboutData] as string;
-        const enKey = enMapping[key];
-        if (enKey && !fields[enKey]) {
-          const translatedEn = await translateViToEn(textVi);
-          if (translatedEn) {
-            setData(prev => ({
-              ...prev,
-              about: { ...prev.about, [enKey]: translatedEn }
-            }));
-          }
-        }
-      }
-    });
   };
 
   // Update Experience Item
@@ -162,34 +134,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
       ...prev,
       experiences: prev.experiences.map(item => item.id === id ? { ...item, ...updated } : item)
     }));
-
-    const viEnMap: Array<[keyof ExperienceItemData, keyof ExperienceItemData]> = [
-      ['roleVi', 'roleEn'],
-      ['companyVi', 'companyEn'],
-      ['taglineVi', 'taglineEn'],
-      ['categoryVi', 'categoryEn']
-    ];
-
-    viEnMap.forEach(async ([viKey, enKey]) => {
-      if (updated[viKey] && typeof updated[viKey] === 'string' && !updated[enKey]) {
-        const translated = await translateViToEn(updated[viKey] as string);
-        if (translated) {
-          setData(prev => ({
-            ...prev,
-            experiences: prev.experiences.map(item => item.id === id ? { ...item, [enKey]: translated } : item)
-          }));
-        }
-      }
-    });
-
-    if (updated.achievementsVi && !updated.achievementsEn) {
-      Promise.all(updated.achievementsVi.map(line => translateViToEn(line))).then(translatedLines => {
-        setData(prev => ({
-          ...prev,
-          experiences: prev.experiences.map(item => item.id === id ? { ...item, achievementsEn: translatedLines } : item)
-        }));
-      });
-    }
   };
 
   const addExperienceItem = (newItem: ExperienceItemData) => {
@@ -252,33 +196,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
       ...prev,
       skills: prev.skills.map(item => item.id === id ? { ...item, ...updated } : item)
     }));
-
-    const viEnMap: Array<[keyof SkillGroupData, keyof SkillGroupData]> = [
-      ['nameVi', 'nameEn'],
-      ['categoryVi', 'categoryEn'],
-      ['descriptionVi', 'descriptionEn']
-    ];
-
-    viEnMap.forEach(async ([viKey, enKey]) => {
-      if (updated[viKey] && typeof updated[viKey] === 'string' && !updated[enKey]) {
-        const translated = await translateViToEn(updated[viKey] as string);
-        if (translated) {
-          setData(prev => ({
-            ...prev,
-            skills: prev.skills.map(item => item.id === id ? { ...item, [enKey]: translated } : item)
-          }));
-        }
-      }
-    });
-
-    if (updated.highlightsVi && !updated.highlightsEn) {
-      Promise.all(updated.highlightsVi.map(line => translateViToEn(line))).then(translatedLines => {
-        setData(prev => ({
-          ...prev,
-          skills: prev.skills.map(item => item.id === id ? { ...item, highlightsEn: translatedLines } : item)
-        }));
-      });
-    }
   };
 
   const addSkillItem = (newItem: SkillGroupData) => {
@@ -301,25 +218,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
       ...prev,
       contact: { ...prev.contact, ...fields }
     }));
-
-    const viEnMap: Array<[keyof ContactData, keyof ContactData]> = [
-      ['titleVi', 'titleEn'],
-      ['subtitleVi', 'subtitleEn'],
-      ['descriptionVi', 'descriptionEn'],
-      ['addressVi', 'addressEn']
-    ];
-
-    viEnMap.forEach(async ([viKey, enKey]) => {
-      if (fields[viKey] && typeof fields[viKey] === 'string' && !fields[enKey]) {
-        const translated = await translateViToEn(fields[viKey] as string);
-        if (translated) {
-          setData(prev => ({
-            ...prev,
-            contact: { ...prev.contact, [enKey]: translated }
-          }));
-        }
-      }
-    });
   };
 
   const updateSocialLink = (id: string, updated: Partial<SocialLinkItem>) => {
@@ -358,24 +256,6 @@ export const SiteDataProvider: React.FC<{ children: ReactNode }> = ({ children }
       ...prev,
       galleryAlbums: (prev.galleryAlbums || []).map(album => album.id === id ? { ...album, ...updated } : album)
     }));
-
-    const viEnMap: Array<[keyof GalleryAlbum, keyof GalleryAlbum]> = [
-      ['titleVi', 'titleEn'],
-      ['categoryVi', 'categoryEn'],
-      ['descriptionVi', 'descriptionEn']
-    ];
-
-    viEnMap.forEach(async ([viKey, enKey]) => {
-      if (updated[viKey] && typeof updated[viKey] === 'string' && !updated[enKey]) {
-        const translated = await translateViToEn(updated[viKey] as string);
-        if (translated) {
-          setData(prev => ({
-            ...prev,
-            galleryAlbums: (prev.galleryAlbums || []).map(album => album.id === id ? { ...album, [enKey]: translated } : album)
-          }));
-        }
-      }
-    });
   };
 
   const addGalleryAlbum = (newAlbum: GalleryAlbum) => {

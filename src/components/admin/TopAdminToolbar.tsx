@@ -156,15 +156,19 @@ export const TopAdminToolbar: React.FC<TopAdminToolbarProps> = ({
             </button>
           )}
 
-          {/* Language Toggle */}
+          {/* Language Toggle with Dedicated Lock Indicator */}
           <button
             type="button"
             onClick={toggleLanguage}
-            title="Chuyển đổi ngôn ngữ để chỉnh sửa"
-            className="px-3 py-1.5 text-xs font-medium bg-slate-800 text-slate-200 rounded-full hover:bg-slate-700 flex items-center gap-1.5 border border-white/10 transition-colors cursor-pointer"
+            title={`Đang chỉnh sửa: ${language === 'vi' ? 'Tiếng Việt' : 'English'}. Bấm để chuyển đổi và khóa dữ liệu riêng biệt.`}
+            className={`px-3 py-1.5 text-xs font-mono font-bold rounded-full flex items-center gap-1.5 border transition-all cursor-pointer shadow-sm ${
+              language === 'vi'
+                ? 'bg-red-950/60 text-red-200 border-red-500/40 hover:bg-red-900/60'
+                : 'bg-blue-950/60 text-cyan-200 border-cyan-500/40 hover:bg-blue-900/60'
+            }`}
           >
             <Globe className="w-3.5 h-3.5 text-cyan-400" />
-            <span>{language === 'vi' ? 'VIE' : 'ENG'}</span>
+            <span>{language === 'vi' ? '🇻🇳 VIE (Khóa riêng)' : '🇬🇧 ENG (Khóa riêng)'}</span>
           </button>
 
           {/* Logout */}

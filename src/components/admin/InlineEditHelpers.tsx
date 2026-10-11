@@ -121,11 +121,13 @@ export const InlineImage: React.FC<InlineImageProps> = ({
   const [urlInput, setUrlInput] = useState(src);
   const [uploading, setUploading] = useState(false);
   const [previewSrc, setPreviewSrc] = useState(src);
+  const [hasError, setHasError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setPreviewSrc(src);
     setUrlInput(src);
+    setHasError(false);
   }, [src]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,17 +141,26 @@ export const InlineImage: React.FC<InlineImageProps> = ({
     if (uploadedUrl) {
       setPreviewSrc(uploadedUrl);
       setUrlInput(uploadedUrl);
+      setHasError(false);
     }
   };
 
   const handleSaveImage = () => {
     onChange(urlInput);
+    setHasError(false);
     setModalOpen(false);
   };
 
-  if (!isEditMode) {
-    return <img src={src} alt={alt} className={className} />;
-  }
+  const isFbExpired = (previewSrc || src || '').includes('fbcdn.net');
+
+  // Fallback visual when image fails to load
+  const renderFallback = () => (
+    <div className={`relative flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-cyan-950/40 border border-white/10 text-center p-4 ${className.includes('h-full') ? 'h-full' : 'min-h-[160px]'} ${className.includes('w-full') ? 'w-full' : ''}`}>
+      <Camera className="w-8 h-8 text-cyan-400/60 mb-2" />
+      <span className="text-xs font-semibold text-slate-300 font-display line-clamp-1">{alt || 'Yến Sam Portfolio'}</span>
+      <span className="text-[10px] text-cyan-400/80 font-mono mt-0.5">Visual Showcase</span>
+    </div>
+  );
 
   const modalContent = modalOpen ? (
     <div 
@@ -173,20 +184,33 @@ export const InlineImage: React.FC<InlineImageProps> = ({
             Cập nhật Hình ảnh
           </h3>
           <p className="text-xs text-slate-400 mt-1">
-            Chọn file từ thiết bị của bạn hoặc dán đường dẫn URL hình ảnh mới.
+            Chọn file từ thiết bị để lưu trữ vĩnh viễn trên Supabase Storage.
           </p>
+        </div>
+
+        {/* Informative Guidance Banner */}
+        <div className="p-3 rounded-2xl bg-cyan-950/60 border border-cyan-500/30 text-xs text-cyan-200 leading-relaxed">
+          💡 <strong>Mẹo lưu ảnh vĩnh viễn:</strong> Hãy dùng tùy chọn <strong>"1. Tải ảnh từ thiết bị"</strong> để lưu trực tiếp vào Supabase Storage. Link ảnh từ Facebook sẽ tự hết hạn sau 2 tuần.
         </div>
 
         {/* Preview Box */}
         <div className="w-full h-48 rounded-2xl overflow-hidden bg-slate-950 border border-white/10 flex items-center justify-center relative">
-          {urlInput ? (
-            <img src={urlInput} alt="Preview" className="w-full h-full object-cover" />
+          {urlInput && !hasError ? (
+            <img 
+              src={urlInput} 
+              alt="Preview" 
+              onError={() => setHasError(true)}
+              className="w-full h-full object-cover" 
+            />
           ) : (
-            <span className="text-xs text-slate-500">Chưa có hình ảnh</span>
+            <div className="flex flex-col items-center justify-center text-center p-4">
+              <Camera className="w-8 h-8 text-cyan-400/50 mb-2" />
+              <span className="text-xs text-slate-400">{hasError ? 'Ảnh link cũ đã hết hạn (403)' : 'Chưa có hình ảnh'}</span>
+            </div>
           )}
           {uploading && (
-            <div className="absolute inset-0 bg-black/75 backdrop-blur-xs flex items-center justify-center text-cyan-400 text-xs font-semibold">
-              Đang tải ảnh lên...
+            <div className="absolute inset-0 bg-black/85 backdrop-blur-xs flex items-center justify-center text-cyan-400 text-xs font-semibold">
+              Đang tải ảnh lên Supabase Storage...
             </div>
           )}
         </div>
@@ -196,7 +220,7 @@ export const InlineImage: React.FC<InlineImageProps> = ({
           {/* File Upload Button */}
           <div>
             <label className="block text-xs font-medium text-slate-300 mb-1.5 font-mono">
-              1. TẢI ẢNH TỪ THIẾT BỊ / MÁY TÍNH
+              1. TẢI ẢNH TỪ THIẾT BỊ / MÁY TÍNH (KHUYÊN DÙNG - LƯU VĨNH VIỄN)
             </label>
             <input
               type="file"
@@ -209,10 +233,10 @@ export const InlineImage: React.FC<InlineImageProps> = ({
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 border border-white/15 rounded-xl text-xs font-semibold text-cyan-300 flex items-center justify-center gap-2 transition-all cursor-pointer"
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-xl text-xs font-bold text-slate-950 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
             >
-              <Upload className="w-4 h-4" />
-              <span>{uploading ? 'Đang xử lý tải...' : 'Chọn file ảnh từ thiết bị...'}</span>
+              <Upload className="w-4 h-4 text-slate-950" />
+              <span>{uploading ? 'Đang xử lý tải lên Supabase...' : 'Chọn file ảnh từ máy tính (Upload Supabase)...'}</span>
             </button>
           </div>
 
@@ -230,8 +254,9 @@ export const InlineImage: React.FC<InlineImageProps> = ({
                   onChange={(e) => {
                     setUrlInput(e.target.value);
                     setPreviewSrc(e.target.value);
+                    setHasError(false);
                   }}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="https://your-domain.com/image.jpg"
                   className="w-full bg-slate-950 border border-white/15 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400 font-mono"
                 />
               </div>
@@ -261,9 +286,58 @@ export const InlineImage: React.FC<InlineImageProps> = ({
     </div>
   ) : null;
 
+  if (!isEditMode) {
+    if (hasError || !src) {
+      return renderFallback();
+    }
+    return (
+      <img 
+        src={src} 
+        alt={alt} 
+        onError={() => setHasError(true)} 
+        className={className} 
+      />
+    );
+  }
+
+  // If in Edit Mode and image has error / expired link
+  if (hasError) {
+    return (
+      <div 
+        onClick={(e) => {
+          e.stopPropagation();
+          setModalOpen(true);
+        }}
+        className={`relative flex flex-col items-center justify-center bg-slate-950/95 border-2 border-dashed border-amber-500/50 hover:border-cyan-400 text-center p-4 cursor-pointer group/err transition-all ${className.includes('h-full') ? 'h-full' : 'min-h-[160px]'} ${className.includes('w-full') ? 'w-full' : ''}`}
+      >
+        <Camera className="w-7 h-7 text-amber-400 mb-2 group-hover/err:scale-110 transition-transform" />
+        <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full mb-2">
+          {isFbExpired ? '⚠️ Ảnh Facebook đã hết hạn (403)' : '⚠️ Ảnh chưa tải được'}
+        </span>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setModalOpen(true);
+          }}
+          className="px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shadow-lg flex items-center gap-1.5 cursor-pointer"
+        >
+          <Upload className="w-3.5 h-3.5" />
+          <span>Tải ảnh mới lên Supabase</span>
+        </button>
+        {modalOpen && createPortal(modalContent, document.body)}
+      </div>
+    );
+  }
+
   return (
     <div className={`relative group/image overflow-hidden ${className.includes('h-full') ? 'h-full' : ''} ${className.includes('w-full') ? 'w-full' : ''}`}>
-      <img src={previewSrc || src} alt={alt} className={className} />
+      <img 
+        src={previewSrc || src} 
+        alt={alt} 
+        onError={() => setHasError(true)}
+        className={className} 
+      />
       
       {/* Overlay Hover Edit Button */}
       <div 

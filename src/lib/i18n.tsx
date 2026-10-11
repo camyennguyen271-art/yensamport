@@ -37,15 +37,13 @@ const DEFAULT_TRANSLATIONS: TranslationMap = {
 };
 
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<'vi' | 'en'>(
-    (localStorage.getItem('lang') as 'vi' | 'en') || 'vi'
-  );
+  // Always default to Vietnamese ('vi') whenever opening the website
+  const [language, setLanguage] = useState<'vi' | 'en'>('vi');
   const [translations, setTranslations] = useState<TranslationMap>(DEFAULT_TRANSLATIONS);
 
   const toggleLanguage = () => {
     const newLang = language === 'vi' ? 'en' : 'vi';
     setLanguage(newLang);
-    localStorage.setItem('lang', newLang);
   };
 
   useEffect(() => {
