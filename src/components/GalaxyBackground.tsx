@@ -113,31 +113,28 @@ export const GalaxyBackground: React.FC = () => {
 
     render();
 
-    // Mouse movement tracker to spawn sparkle particles
-    const handleMouseMove = (e: MouseEvent) => {
-      // Relative mouse percentage for nebula background
-      const px = (e.clientX / window.innerWidth) * 100;
-      const py = (e.clientY / window.innerHeight) * 100;
+    // Spawn sparkle particle helper
+    const spawnSparkles = (clientX: number, clientY: number) => {
+      const px = (clientX / window.innerWidth) * 100;
+      const py = (clientY / window.innerHeight) * 100;
       setMousePos({ x: px, y: py });
 
-      const now = Date.now();
-      const dist = Math.hypot(e.clientX - lastMouseRef.current.x, e.clientY - lastMouseRef.current.y);
-      lastMouseRef.current = { x: e.clientX, y: e.clientY, time: now };
+      const dist = Math.hypot(clientX - lastMouseRef.current.x, clientY - lastMouseRef.current.y);
+      lastMouseRef.current = { x: clientX, y: clientY, time: Date.now() };
 
-      // Spawn galaxy star trail
-      const count = Math.min(Math.floor(dist / 6) + 1, 5);
+      const count = Math.min(Math.floor(dist / 6) + 1, 4);
       for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 1.8 + 0.3;
+        const speed = Math.random() * 1.5 + 0.3;
         particlesRef.current.push({
-          x: e.clientX + (Math.random() - 0.5) * 16,
-          y: e.clientY + (Math.random() - 0.5) * 16,
-          size: Math.random() * 8 + 4, // 4px to 12px sparkle star
+          x: clientX + (Math.random() - 0.5) * 16,
+          y: clientY + (Math.random() - 0.5) * 16,
+          size: Math.random() * 7 + 4,
           color: STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)],
           alpha: Math.random() * 0.4 + 0.6,
-          decay: Math.random() * 0.018 + 0.012, // stays visible for ~1.5s
-          vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 0.5,
-          vy: Math.sin(angle) * speed - Math.random() * 0.6, // float upwards gently
+          decay: Math.random() * 0.02 + 0.015,
+          vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 0.4,
+          vy: Math.sin(angle) * speed - Math.random() * 0.5,
           rotation: Math.random() * Math.PI,
           vRot: (Math.random() - 0.5) * 0.08,
           points: 4,
@@ -145,11 +142,23 @@ export const GalaxyBackground: React.FC = () => {
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    const handleMouseMove = (e: MouseEvent) => {
+      spawnSparkles(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches && e.touches[0]) {
+        spawnSparkles(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
       cancelAnimationFrame(animId);
     };
   }, []);

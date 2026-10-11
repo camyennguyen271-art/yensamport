@@ -267,13 +267,15 @@ export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate
               >
                 {/* Inner Card Content */}
                 <div className="w-full h-full rounded-2xl overflow-hidden relative flex flex-col justify-end bg-slate-950">
-                  {/* Background Image */}
+                  {/* Background Image: Ensure portrait shows full head and face without cutting */}
                   {card.image && (
-                    <div className="absolute inset-0">
+                    <div className="absolute inset-0 bg-slate-950 flex items-center justify-center">
                       <img
                         src={card.image}
                         alt={card.titleVi}
-                        className="w-full h-full object-cover object-top transition-transform duration-700 ease-out hover:scale-105"
+                        className={`w-full h-full ${
+                          card.type === 'portrait' ? 'object-cover object-[center_10%]' : 'object-cover object-center'
+                        } transition-transform duration-700 ease-out hover:scale-105`}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent" />
                     </div>
