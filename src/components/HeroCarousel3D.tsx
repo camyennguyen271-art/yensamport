@@ -1,522 +1,381 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useI18n } from '../lib/i18n';
-import { ChevronLeft, ChevronRight, ExternalLink, Play } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Sparkles, ArrowRight, Film } from 'lucide-react';
 
-// ─── Card Data ──────────────────────────────────────────────────────────────
+interface Scene {
+  id: string;
+  duration: number; // in milliseconds
+  tagVi: string;
+  tagEn: string;
+  titleVi: string;
+  titleEn: string;
+  subtitleVi: string;
+  subtitleEn: string;
+  quoteVi?: string;
+  quoteEn?: string;
+  image: string;
+  accent: string;
+  glow: string;
+  keywords?: string[];
+}
 
-const PORTRAIT_URL =
-  'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/1790476859491_lrkwz.jpg';
+const PORTRAIT_IMG = 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/1790476859491_lrkwz.jpg';
+const MV_GIAIDIEU_IMG = 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/project_mv-giai-dieu-viet-nam-minh.jpg';
+const HACKATHON_IMG = 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/1790480293325_1mi92.jpg';
+const MV_AI_IMG = 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/project_mv-ai-bon-voyaige.jpg';
 
-const CARDS_VI = [
+const SCENES: Scene[] = [
   {
-    id: 'portrait',
-    type: 'portrait',
-    image: PORTRAIT_URL,
-    label: '🎬 Creative Director',
-    name: 'Nguyễn Thị Cẩm Yến',
-    nick: 'Yến Sam',
-    role: 'Media Specialist · Đạo diễn MV',
-    accent: 'from-cyan-500 to-blue-600',
-    glow: 'shadow-cyan-500/40',
+    id: 'intro',
+    duration: 5000,
+    tagVi: '01 / ĐẠO DIỄN SÁNG TẠO',
+    tagEn: '01 / CREATIVE DIRECTOR',
+    titleVi: 'NGUYỄN THỊ CẨM YẾN',
+    titleEn: 'NGUYEN THI CAM YEN',
+    subtitleVi: 'YẾN SAM · MEDIA SPECIALIST',
+    subtitleEn: 'YEN SAM · MEDIA SPECIALIST',
+    quoteVi: 'Biến tầm nhìn sáng tạo thành những dự án truyền thông để đời.',
+    quoteEn: 'Transforming visionary ideas into unforgettable media milestones.',
+    image: PORTRAIT_IMG,
+    accent: 'from-cyan-400 via-blue-500 to-indigo-600',
+    glow: 'rgba(6, 182, 212, 0.45)',
   },
   {
-    id: 'keywords',
-    type: 'keywords',
-    label: '✦ Hồ Sơ Năng Lực',
-    logline: '"Biến tầm nhìn sáng tạo thành những dự án truyền thông để đời."',
+    id: 'identity',
+    duration: 4500,
+    tagVi: '02 / NĂNG LỰC CỐT LÕI',
+    tagEn: '02 / CORE CAPABILITIES',
+    titleVi: 'VISUAL STORYTELLING',
+    titleEn: 'VISUAL STORYTELLING',
+    subtitleVi: 'KẾT NỐI CẢM XÚC BẰNG HÌNH ẢNH & ÂM THANH',
+    subtitleEn: 'CONNECTING EMOTIONS THROUGH CINEMATIC SIGHT & SOUND',
     keywords: [
-      'Đạo diễn MV', 'Motion Design', 'Visual Storytelling',
-      'Media Strategy', 'Event Production', 'Creative Leadership',
-      'AI × Art', 'Truyền thông số',
+      'Đạo Diễn MV',
+      'Motion Graphics',
+      'Media Strategy',
+      'Creative Leadership',
+      'AI Prompting',
+      'Sân Khấu 3D LED',
+      'Event Direction'
     ],
-    accent: 'from-rose-500 to-pink-600',
-    glow: 'shadow-rose-500/40',
+    image: PORTRAIT_IMG,
+    accent: 'from-rose-500 via-pink-500 to-amber-500',
+    glow: 'rgba(244, 63, 94, 0.4)',
   },
   {
     id: 'mv-giai-dieu',
-    type: 'project',
-    image: 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/project_mv-giai-dieu-viet-nam-minh.jpg',
-    label: '🎵 Dự Án Nổi Bật',
-    title: 'MV "Giai Điệu Việt Nam Mình"',
-    sub: 'feat. Masew · FPT Edu',
-    tags: ['MV Production', 'Cultural', '10M+ Views'],
-    accent: 'from-yellow-500 to-orange-600',
-    glow: 'shadow-orange-500/40',
+    duration: 5500,
+    tagVi: '03 / DỰ ÁN TIÊU BIỂU · TRIỆU VIEW',
+    tagEn: '03 / FEATURED WORK · MILLION VIEWS',
+    titleVi: 'GIAI ĐIỆU VIỆT NAM MÌNH',
+    titleEn: 'GIAI DIEU VIET NAM MINH',
+    subtitleVi: 'MV ÂM NHẠC TRUYỀN THỐNG KẾT HỢP HIỆN ĐẠI feat. MASEW',
+    subtitleEn: 'CULTURAL ANTHEM MEETS CONTEMPORARY SOUND feat. MASEW',
+    quoteVi: 'Lan tỏa tinh thần tự hào dân tộc qua ngôn ngữ hình ảnh trẻ trung, giàu năng lượng.',
+    quoteEn: 'Empowering Vietnamese cultural heritage through high-energy modern visuals.',
+    image: MV_GIAIDIEU_IMG,
+    accent: 'from-amber-400 via-orange-500 to-rose-600',
+    glow: 'rgba(245, 158, 11, 0.45)',
   },
   {
     id: 'fpt-hackathon',
-    type: 'project',
-    image: 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/1790480293325_1mi92.jpg',
-    label: '🏆 Giải Thưởng',
-    title: 'FPT Edu Hackathon 2024',
-    sub: 'Trưởng ban truyền thông',
-    tags: ['Hackathon', 'Event', 'National Scale'],
-    accent: 'from-green-500 to-emerald-600',
-    glow: 'shadow-green-500/40',
+    duration: 5000,
+    tagVi: '04 / QUẢN TRỊ TRUYỀN THÔNG TOÀN QUỐC',
+    tagEn: '04 / NATIONWIDE MEDIA CAMPAIGN',
+    titleVi: 'FPT EDU HACKATHON 2024',
+    titleEn: 'FPT EDU HACKATHON 2024',
+    subtitleVi: 'TRƯỞNG BAN TRUYỀN THÔNG · SỰ KIỆN CÔNG NGHỆ QUỐC GIA',
+    subtitleEn: 'HEAD OF COMMUNICATIONS · NATIONAL TECH COMPETITION',
+    quoteVi: 'Quy tụ hàng ngàn tài năng trẻ với chiến dịch phủ sóng đa kênh mạnh mẽ.',
+    quoteEn: 'Connecting thousands of young innovators through multi-channel viral reach.',
+    image: HACKATHON_IMG,
+    accent: 'from-emerald-400 via-teal-500 to-cyan-600',
+    glow: 'rgba(16, 185, 129, 0.45)',
   },
   {
     id: 'mv-ai',
-    type: 'project',
-    image: 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/project_mv-ai-bon-voyaige.jpg',
-    label: '🤖 AI × Sáng Tạo',
-    title: 'MV AI "Bon VoyAIge"',
-    sub: 'Ứng dụng AI tạo sinh trong MV',
-    tags: ['AI Generative', 'MV', 'Innovation'],
-    accent: 'from-violet-500 to-purple-600',
-    glow: 'shadow-purple-500/40',
+    duration: 5000,
+    tagVi: '05 / CÔNG NGHỆ MỚI & TƯƠNG LAI',
+    tagEn: '05 / FRONTIER AI & INNOVATION',
+    titleVi: 'MV AI "BON VOYAI-GE"',
+    titleEn: 'AI MV "BON VOYAI-GE"',
+    subtitleVi: 'TIÊN PHONG ỨNG DỤNG GENERATIVE AI TRONG SẢN XUẤT MV',
+    subtitleEn: 'PIONEERING GENERATIVE AI IN MUSIC VIDEO PRODUCTION',
+    quoteVi: 'Phá vỡ giới hạn sáng tạo thị giác với công nghệ trí tuệ nhân tạo.',
+    quoteEn: 'Redefining the creative visual boundaries with generative artificial intelligence.',
+    image: MV_AI_IMG,
+    accent: 'from-violet-400 via-purple-500 to-pink-500',
+    glow: 'rgba(168, 85, 247, 0.45)',
   },
 ];
 
-const CARDS_EN = [
-  {
-    id: 'portrait',
-    type: 'portrait',
-    image: PORTRAIT_URL,
-    label: '🎬 Creative Director',
-    name: 'Nguyen Thi Cam Yen',
-    nick: 'Yen Sam',
-    role: 'Media Specialist · MV Director',
-    accent: 'from-cyan-500 to-blue-600',
-    glow: 'shadow-cyan-500/40',
-  },
-  {
-    id: 'keywords',
-    type: 'keywords',
-    label: '✦ Creative Profile',
-    logline: '"Turning creative vision into media projects that leave a lasting mark."',
-    keywords: [
-      'MV Director', 'Motion Design', 'Visual Storytelling',
-      'Media Strategy', 'Event Production', 'Creative Leadership',
-      'AI × Art', 'Digital Media',
-    ],
-    accent: 'from-rose-500 to-pink-600',
-    glow: 'shadow-rose-500/40',
-  },
-  {
-    id: 'mv-giai-dieu',
-    type: 'project',
-    image: 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/project_mv-giai-dieu-viet-nam-minh.jpg',
-    label: '🎵 Featured Project',
-    title: 'MV "Giai Dieu Viet Nam Minh"',
-    sub: 'feat. Masew · FPT Edu',
-    tags: ['MV Production', 'Cultural', '10M+ Views'],
-    accent: 'from-yellow-500 to-orange-600',
-    glow: 'shadow-orange-500/40',
-  },
-  {
-    id: 'fpt-hackathon',
-    type: 'project',
-    image: 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/1790480293325_1mi92.jpg',
-    label: '🏆 Award',
-    title: 'FPT Edu Hackathon 2024',
-    sub: 'Head of Communications',
-    tags: ['Hackathon', 'Event', 'National Scale'],
-    accent: 'from-green-500 to-emerald-600',
-    glow: 'shadow-green-500/40',
-  },
-  {
-    id: 'mv-ai',
-    type: 'project',
-    image: 'https://umcffywhiiwznyxsmpnr.supabase.co/storage/v1/object/public/images/uploads/project_mv-ai-bon-voyaige.jpg',
-    label: '🤖 AI × Creativity',
-    title: 'AI MV "Bon VoyAIge"',
-    sub: 'Generative AI applied in MV',
-    tags: ['AI Generative', 'MV', 'Innovation'],
-    accent: 'from-violet-500 to-purple-600',
-    glow: 'shadow-purple-500/40',
-  },
-];
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-const TOTAL = CARDS_VI.length;
-// Angle per card: evenly distributed around a circle
-const ANGLE_STEP = 360 / TOTAL;
-
-function getCardAngle(index: number, activeIndex: number): number {
-  return (index - activeIndex) * ANGLE_STEP;
-}
-
-// ─── Sub-components ──────────────────────────────────────────────────────────
-
-interface CardProps {
-  card: (typeof CARDS_VI)[number];
-  angle: number;          // degrees Y rotation
-  isActive: boolean;
-  onClick: () => void;
-}
-
-const RADIUS = 420; // px — distance from center to card
-
-function Card3D({ card, angle, isActive, onClick }: CardProps) {
-  // Determine how "visible" this card is: active = 0°, ±ANGLE_STEP = one step away etc.
-  const absAngle = Math.abs(((angle % 360) + 540) % 360 - 180);
-  // absAngle: 0 = front, 180 = back
-  const opacity = absAngle > 90 ? 0 : 1 - absAngle / 110;
-  const scale = isActive ? 1 : 0.82 - (absAngle / 180) * 0.1;
-  const zIndex = isActive ? 10 : Math.round(10 - absAngle / 18);
-
-  const style: React.CSSProperties = {
-    position: 'absolute',
-    width: 280,
-    height: 380,
-    left: '50%',
-    top: '55%',
-    marginLeft: -140,
-    marginTop: -190,
-    transform: `rotateY(${angle}deg) translateZ(${RADIUS}px) scale(${scale})`,
-    opacity,
-    zIndex,
-    transition: 'transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.7s ease, scale 0.7s ease',
-    cursor: isActive ? 'default' : 'pointer',
-    willChange: 'transform, opacity',
-  };
-
-  const base =
-    'w-full h-full rounded-2xl overflow-hidden relative select-none border border-white/10 backdrop-blur-sm';
-  const activeRing = isActive
-    ? `ring-2 ring-white/30 shadow-2xl ${card.glow}`
-    : 'shadow-lg';
-
-  return (
-    <div style={style} onClick={!isActive ? onClick : undefined} role="button" tabIndex={isActive ? -1 : 0}>
-      <div className={`${base} ${activeRing} transition-all duration-500`}>
-        {card.type === 'portrait' && <PortraitCard card={card as any} isActive={isActive} />}
-        {card.type === 'keywords' && <KeywordsCard card={card as any} isActive={isActive} />}
-        {card.type === 'project' && <ProjectCard card={card as any} isActive={isActive} />}
-
-        {/* Active glow border overlay */}
-        {isActive && (
-          <div className={`absolute inset-0 rounded-2xl bg-gradient-to-b ${card.accent} opacity-10 pointer-events-none`} />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function PortraitCard({ card, isActive }: { card: any; isActive: boolean }) {
-  return (
-    <div className="w-full h-full bg-slate-900 relative">
-      <img
-        src={card.image}
-        alt={card.name}
-        className="w-full h-full object-cover object-top"
-        loading="lazy"
-      />
-      {/* Gradient overlay bottom */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
-
-      {/* Top label */}
-      <div className="absolute top-3 left-3 right-3">
-        <span className={`text-xs font-mono font-bold px-2 py-1 rounded-full bg-gradient-to-r ${card.accent} text-white/90`}>
-          {card.label}
-        </span>
-      </div>
-
-      {/* Bottom info */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <p className="text-white font-display font-extrabold text-lg leading-tight tracking-tight">
-          {card.name}
-        </p>
-        <p className={`text-sm font-bold bg-gradient-to-r ${card.accent} bg-clip-text text-transparent`}>
-          {card.nick}
-        </p>
-        <p className="text-xs text-slate-300 mt-1 font-mono">{card.role}</p>
-      </div>
-    </div>
-  );
-}
-
-function KeywordsCard({ card, isActive }: { card: any; isActive: boolean }) {
-  return (
-    <div className={`w-full h-full bg-gradient-to-br from-slate-900 to-slate-800 p-5 flex flex-col`}>
-      {/* Label */}
-      <span className={`text-xs font-mono font-bold px-2 py-1 rounded-full bg-gradient-to-r ${card.accent} text-white/90 self-start mb-4`}>
-        {card.label}
-      </span>
-
-      {/* Keywords grid */}
-      <div className="flex flex-wrap gap-2 flex-1">
-        {card.keywords.map((kw: string, i: number) => (
-          <span
-            key={i}
-            className="text-xs px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-200 font-medium hover:bg-white/10 transition-colors"
-          >
-            {kw}
-          </span>
-        ))}
-      </div>
-
-      {/* Logline */}
-      <div className="mt-4 pt-4 border-t border-white/10">
-        <p className="text-xs text-slate-300 italic leading-relaxed font-light">
-          {card.logline}
-        </p>
-      </div>
-
-      {/* Decorative gradient orbs */}
-      <div className={`absolute -bottom-10 -right-10 w-32 h-32 rounded-full bg-gradient-to-br ${card.accent} opacity-20 blur-2xl pointer-events-none`} />
-      <div className={`absolute -top-5 -left-5 w-20 h-20 rounded-full bg-gradient-to-br ${card.accent} opacity-10 blur-xl pointer-events-none`} />
-    </div>
-  );
-}
-
-function ProjectCard({ card, isActive }: { card: any; isActive: boolean }) {
-  return (
-    <div className="w-full h-full bg-slate-900 relative">
-      {/* BG image */}
-      <img
-        src={card.image}
-        alt={card.title}
-        className="w-full h-full object-cover"
-        loading="lazy"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-slate-900/10" />
-
-      {/* Top label */}
-      <div className="absolute top-3 left-3 right-3">
-        <span className={`text-xs font-mono font-bold px-2 py-1 rounded-full bg-gradient-to-r ${card.accent} text-white/90`}>
-          {card.label}
-        </span>
-      </div>
-
-      {/* Bottom info */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <p className="text-white font-display font-extrabold text-base leading-tight mb-1">
-          {card.title}
-        </p>
-        <p className="text-xs text-slate-300 mb-2 font-mono">{card.sub}</p>
-        <div className="flex flex-wrap gap-1">
-          {card.tags.map((t: string, i: number) => (
-            <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-white/70 border border-white/10">
-              {t}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Play icon if active */}
-      {isActive && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100">
-          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-            <Play className="w-5 h-5 text-white fill-white" />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Main Component ──────────────────────────────────────────────────────────
-
-interface HeroCarousel3DProps {
+interface HeroProps {
   onContactClick?: () => void;
   onNavigate?: (section: string) => void;
 }
 
-export const HeroCarousel3D: React.FC<HeroCarousel3DProps> = ({ onContactClick, onNavigate }) => {
+export const HeroCarousel3D: React.FC<HeroProps> = ({ onContactClick, onNavigate }) => {
   const { language } = useI18n();
   const isVi = language === 'vi';
-  const CARDS = isVi ? CARDS_VI : CARDS_EN;
 
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const touchStartX = useRef<number>(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [progress, setProgress] = useState(0); // 0 to 100
+  const progressAnimRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
 
-  const next = useCallback(() => {
-    setActiveIndex((i) => (i + 1) % TOTAL);
-  }, []);
+  const currentScene = SCENES[currentIdx];
 
-  const prev = useCallback(() => {
-    setActiveIndex((i) => (i - 1 + TOTAL) % TOTAL);
-  }, []);
-
-  // Auto-rotate
+  // Control timeline progress
   useEffect(() => {
-    if (isHovered || isDragging) return;
-    intervalRef.current = setInterval(next, 3500);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [isHovered, isDragging, next]);
+    if (!isPlaying) {
+      if (progressAnimRef.current) cancelAnimationFrame(progressAnimRef.current);
+      return;
+    }
 
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') next();
-      if (e.key === 'ArrowLeft') prev();
+    startTimeRef.current = Date.now() - (progress / 100) * currentScene.duration;
+
+    const tick = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const pct = Math.min((elapsed / currentScene.duration) * 100, 100);
+      setProgress(pct);
+
+      if (pct >= 100) {
+        setCurrentIdx((prev) => (prev + 1) % SCENES.length);
+        setProgress(0);
+        startTimeRef.current = Date.now();
+      } else {
+        progressAnimRef.current = requestAnimationFrame(tick);
+      }
     };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [next, prev]);
 
-  // Touch swipe
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    setIsDragging(true);
-  };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(dx) > 40) dx < 0 ? next() : prev();
-    setIsDragging(false);
+    progressAnimRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (progressAnimRef.current) cancelAnimationFrame(progressAnimRef.current);
+    };
+  }, [currentIdx, isPlaying, currentScene.duration]);
+
+  const goToScene = (index: number) => {
+    setCurrentIdx(index);
+    setProgress(0);
+    startTimeRef.current = Date.now();
   };
 
-  const activeCard = CARDS[activeIndex];
+  const handleNext = () => {
+    goToScene((currentIdx + 1) % SCENES.length);
+  };
+
+  const handlePrev = () => {
+    goToScene((currentIdx - 1 + SCENES.length) % SCENES.length);
+  };
 
   return (
-    <section
-      className="relative w-full min-h-screen bg-[#030611] flex flex-col items-center justify-center overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* ── Ambient background glow from active card ── */}
-      <div
-        className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none`}
-        style={{
-          background: `radial-gradient(ellipse 60% 50% at 50% 60%, rgba(${
-            activeCard.id === 'portrait' ? '6,182,212' :
-            activeCard.id === 'keywords' ? '244,63,94' :
-            activeCard.id === 'mv-giai-dieu' ? '234,179,8' :
-            activeCard.id === 'fpt-hackathon' ? '34,197,94' :
-            '139,92,246'
-          }, 0.08) 0%, transparent 70%)`,
-        }}
-      />
-
-      {/* ── Static starfield dots ── */}
-      <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 40 }).map((_, i) => (
+    <section className="relative w-full min-h-[92vh] sm:min-h-screen bg-[#02040a] text-white flex flex-col justify-between overflow-hidden select-none border-b border-white/[0.08]">
+      {/* ── Background Backdrop Layers with Ken Burns effect ── */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {SCENES.map((scene, i) => (
           <div
-            key={i}
-            className="absolute rounded-full bg-white"
-            style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.4 + 0.1,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
+            key={scene.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              i === currentIdx ? 'opacity-100 z-0' : 'opacity-0 -z-10'
+            }`}
+          >
+            <img
+              src={scene.image}
+              alt={scene.titleVi}
+              className={`w-full h-full object-cover object-center scale-105 transition-transform duration-[6000ms] ease-out ${
+                i === currentIdx ? 'scale-115 translate-y-[-2%]' : 'scale-100'
+              }`}
+              style={{ filter: 'brightness(0.32) saturate(1.25) blur(1px)' }}
+            />
+            {/* Film Grain & Cinematic Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#02040a] via-[#02040a]/70 to-[#02040a]/40" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(2,4,10,0.85)_100%)]" />
+          </div>
         ))}
-      </div>
 
-      {/* ── Top intro text ── */}
-      <div className="relative z-20 text-center pt-8 mb-8 px-4">
-        <p className="text-xs font-mono text-cyan-400 tracking-[0.3em] uppercase mb-2">
-          {isVi ? 'Hồ Sơ Năng Lực' : 'Creative Portfolio'}
-        </p>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-extrabold text-white tracking-tight">
-          {isVi ? 'Yến Sam' : 'Yen Sam'}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500"> ✦</span>
-        </h1>
-        <p className="text-sm text-slate-400 mt-2 font-mono">
-          {isVi
-            ? 'Creative Director · Media Specialist · MV Producer'
-            : 'Creative Director · Media Specialist · MV Producer'}
-        </p>
-      </div>
-
-      {/* ── 3D Carousel stage ── */}
-      <div
-        className="relative z-10"
-        style={{
-          width: '100%',
-          height: 460,
-          perspective: '1200px',
-          perspectiveOrigin: '50% 50%',
-        }}
-      >
+        {/* Ambient Color Spotlight */}
         <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: '100%',
-            transformStyle: 'preserve-3d',
-          }}
-        >
-          {CARDS.map((card, i) => {
-            const angle = getCardAngle(i, activeIndex);
-            return (
-              <Card3D
-                key={card.id}
-                card={card}
-                angle={angle}
-                isActive={i === activeIndex}
-                onClick={() => setActiveIndex(i)}
+          className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[120px] transition-all duration-1000 pointer-events-none opacity-40"
+          style={{ backgroundColor: currentScene.glow }}
+        />
+        <div
+          className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] rounded-full blur-[140px] transition-all duration-1000 pointer-events-none opacity-30"
+          style={{ backgroundColor: currentScene.glow }}
+        />
+      </div>
+
+      {/* ── Top Cinematic Bar (Timecode & Badge) ── */}
+      <div className="relative z-20 w-full px-6 sm:px-12 pt-8 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-mono text-cyan-300">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            <Film className="w-3.5 h-3.5" />
+            <span>CINEMATIC SHOWREEL</span>
+          </div>
+          <span className="text-xs font-mono text-slate-400 tracking-wider">
+            SCENE 0{currentIdx + 1} / 0{SCENES.length}
+          </span>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsPlaying(!isPlaying)}
+            className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-xs font-mono flex items-center gap-1.5 text-white transition-all hover:scale-105 active:scale-95"
+            title={isPlaying ? 'Tạm dừng' : 'Phát tiếp'}
+          >
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+            <span className="hidden sm:inline">{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+          </button>
+          <button
+            onClick={() => goToScene(0)}
+            className="p-2 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/10 text-slate-300 hover:text-white transition-all"
+            title="Xem lại từ đầu"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* ── Main Dynamic Stage (Center Motion Display) ── */}
+      <div className="relative z-20 w-full max-w-6xl mx-auto px-6 sm:px-12 py-10 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        {/* Left Column: Kinetic Typography & Copywriting */}
+        <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-6">
+          <div className="inline-flex items-center gap-2">
+            <span
+              className={`text-xs sm:text-sm font-mono font-bold tracking-[0.2em] uppercase px-3 py-1 rounded-md bg-gradient-to-r ${currentScene.accent} text-slate-950 shadow-lg`}
+            >
+              {isVi ? currentScene.tagVi : currentScene.tagEn}
+            </span>
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-white leading-[1.1] drop-shadow-2xl">
+            {isVi ? currentScene.titleVi : currentScene.titleEn}
+          </h1>
+
+          <p className="text-base sm:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-slate-200 via-white to-slate-400 font-display tracking-wide">
+            {isVi ? currentScene.subtitleVi : currentScene.subtitleEn}
+          </p>
+
+          {/* Quotes or Keywords */}
+          {currentScene.quoteVi && (
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-light border-l-2 border-cyan-400 pl-4 py-1 italic max-w-xl">
+              "{isVi ? currentScene.quoteVi : currentScene.quoteEn}"
+            </p>
+          )}
+
+          {currentScene.keywords && (
+            <div className="flex flex-wrap gap-2 pt-2">
+              {currentScene.keywords.map((kw, i) => (
+                <span
+                  key={i}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/15 text-slate-200 font-medium backdrop-blur-md transition-colors"
+                >
+                  ✦ {kw}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Interactive CTAs */}
+          <div className="flex items-center gap-4 pt-4 flex-wrap">
+            <button
+              onClick={() => onNavigate?.('projects')}
+              className="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-slate-950 font-extrabold text-xs sm:text-sm tracking-wide uppercase shadow-lg shadow-cyan-500/25 hover:shadow-cyan-400/40 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+            >
+              <span>{isVi ? 'Khám Phá Toàn Bộ Dự Án' : 'Explore All Works'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={onContactClick}
+              className="px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold text-xs sm:text-sm tracking-wide transition-all hover:scale-105"
+            >
+              {isVi ? 'Hợp Tác / Liên Hệ' : 'Get In Touch'}
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column: 3D Holographic Card Display with Parallax Float */}
+        <div className="lg:col-span-5 flex justify-center lg:justify-end">
+          <div className="relative w-72 sm:w-80 h-96 sm:h-[26rem] rounded-3xl overflow-hidden p-2 bg-gradient-to-br from-white/20 via-white/5 to-white/0 backdrop-blur-xl border border-white/20 shadow-2xl group transition-all duration-700 hover:scale-105">
+            <div className="w-full h-full rounded-2xl overflow-hidden relative">
+              <img
+                src={currentScene.image}
+                alt={currentScene.titleVi}
+                className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+              
+              <div className="absolute bottom-4 left-4 right-4 text-left">
+                <span className="text-[10px] font-mono tracking-widest text-cyan-300 uppercase block mb-1">
+                  HIGHLIGHT CLIP
+                </span>
+                <p className="text-sm font-bold text-white leading-tight">
+                  {isVi ? currentScene.titleVi : currentScene.titleEn}
+                </p>
+                <p className="text-[11px] text-slate-300 line-clamp-1 mt-0.5">
+                  {isVi ? currentScene.subtitleVi : currentScene.subtitleEn}
+                </p>
+              </div>
+
+              {/* Glowing Corner Badge */}
+              <div className="absolute top-3 right-3 p-2 rounded-full bg-slate-900/80 backdrop-blur-md border border-white/20 text-cyan-300">
+                <Sparkles className="w-3.5 h-3.5 animate-spin" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Bottom Timeline Scrubber (Video Player Bar) ── */}
+      <div className="relative z-20 w-full px-6 sm:px-12 pb-8">
+        {/* Progress Bar Segments */}
+        <div className="grid grid-cols-5 gap-2 sm:gap-3 mb-4">
+          {SCENES.map((scene, i) => {
+            const isPast = i < currentIdx;
+            const isCurrent = i === currentIdx;
+            const fillWidth = isPast ? '100%' : isCurrent ? `${progress}%` : '0%';
+
+            return (
+              <button
+                key={scene.id}
+                onClick={() => goToScene(i)}
+                className="group flex flex-col text-left focus:outline-none"
+              >
+                {/* Track */}
+                <div className="w-full h-1.5 sm:h-2 rounded-full bg-white/15 overflow-hidden relative mb-1.5">
+                  <div
+                    className={`h-full transition-all duration-100 ${
+                      isCurrent
+                        ? `bg-gradient-to-r ${scene.accent}`
+                        : isPast
+                        ? 'bg-white/80'
+                        : 'bg-transparent'
+                    }`}
+                    style={{ width: fillWidth }}
+                  />
+                </div>
+                {/* Scene Label on Desktop */}
+                <span className="hidden md:inline text-[11px] font-mono text-slate-400 group-hover:text-white transition-colors truncate">
+                  0{i + 1} {isVi ? scene.titleVi : scene.titleEn}
+                </span>
+              </button>
             );
           })}
         </div>
-      </div>
 
-      {/* ── Navigation ── */}
-      <div className="relative z-20 flex items-center gap-6 mt-8">
-        {/* Prev */}
-        <button
-          onClick={prev}
-          className="w-10 h-10 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95"
-          aria-label="Previous"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-
-        {/* Dots */}
-        <div className="flex items-center gap-2">
-          {CARDS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveIndex(i)}
-              className={`transition-all duration-300 rounded-full ${
-                i === activeIndex
-                  ? 'w-6 h-2 bg-white'
-                  : 'w-2 h-2 bg-white/30 hover:bg-white/50'
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
+        {/* Navigation Arrows on mobile */}
+        <div className="flex md:hidden items-center justify-between text-xs text-slate-400 font-mono">
+          <button onClick={handlePrev} className="px-3 py-1 rounded bg-white/10 text-white">
+            ← PREV
+          </button>
+          <span>{currentIdx + 1} / {SCENES.length}</span>
+          <button onClick={handleNext} className="px-3 py-1 rounded bg-white/10 text-white">
+            NEXT →
+          </button>
         </div>
-
-        {/* Next */}
-        <button
-          onClick={next}
-          className="w-10 h-10 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95"
-          aria-label="Next"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* ── CTA Buttons ── */}
-      <div className="relative z-20 flex items-center gap-3 mt-6 flex-wrap justify-center px-4">
-        <button
-          onClick={() => onNavigate?.('projects')}
-          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold text-sm hover:from-cyan-400 hover:to-blue-500 transition-all hover:scale-105 shadow-lg shadow-cyan-500/20"
-        >
-          {isVi ? '🎬 Khám Phá Dự Án' : '🎬 Explore Projects'}
-        </button>
-        <button
-          onClick={onContactClick}
-          className="px-5 py-2.5 rounded-full border border-white/20 text-white text-sm font-semibold hover:bg-white/10 transition-all hover:scale-105"
-        >
-          {isVi ? '✉️ Liên Hệ' : '✉️ Contact'}
-        </button>
-        <button
-          onClick={() => onNavigate?.('experience')}
-          className="px-5 py-2.5 rounded-full border border-white/10 text-slate-400 text-sm font-semibold hover:bg-white/5 hover:text-white transition-all"
-        >
-          {isVi ? 'Kinh nghiệm →' : 'Experience →'}
-        </button>
-      </div>
-
-      {/* ── Scroll hint ── */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 opacity-40">
-        <span className="text-[10px] font-mono text-slate-400 tracking-widest uppercase">
-          {isVi ? 'Cuộn xuống' : 'Scroll down'}
-        </span>
-        <div className="w-px h-8 bg-gradient-to-b from-slate-400 to-transparent animate-pulse" />
       </div>
     </section>
   );
